@@ -9,11 +9,12 @@ void _vkh_image_create (vkh_device *pDev, VkImageType imageType,
     img->pDev = pDev;
     img->width = width;
     img->height = height;
+    img->layout = layout;
 
     VkImageCreateInfo image_info = { .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
                                      .imageType = imageType,
                                      .tiling = tiling,
-                                     .initialLayout = layout,
+                                     .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
                                      .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
                                      .usage = usage,
                                      .format = format,
@@ -36,9 +37,9 @@ void _vkh_image_create (vkh_device *pDev, VkImageType imageType,
 }
 void vkh_tex2d_array_create (vkh_device *pDev,
                              VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, vkh_image* img){
+                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout, vkh_image* img){
     _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers, VK_IMAGE_LAYOUT_PREINITIALIZED, img);
+        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers, layout, img);
 }
 
 void vkh_image_create (vkh_device *pDev,
@@ -60,7 +61,7 @@ void vkh_image_create_descriptor(vkh_image* img, VkImageViewType viewType, VkIma
                                  VkFilter minFilter, VkSamplerMipmapMode mipmapMode)
 {
     img->pDescriptor = (VkDescriptorImageInfo*)malloc(sizeof(VkDescriptorImageInfo));
-    img->pDescriptor->imageLayout = img->infos.initialLayout;
+    img->pDescriptor->imageLayout = img->layout;
     VkImageViewCreateInfo viewInfo = { .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
                                          .image = img->image,
                                          .viewType = viewType,
