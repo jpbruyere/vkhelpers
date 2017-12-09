@@ -3,10 +3,10 @@
 
 #include "vkhelpers.h"
 
-typedef struct vkh_device_t{
-	VkDevice vkDev;
-	VkPhysicalDeviceMemoryProperties phyMemProps;
-	VkRenderPass renderPass;
-}vkh_device;
+typedef struct _vkh_device_t{
+    VkDevice vkDev;
+    VkPhysicalDeviceMemoryProperties phyMemProps;
+    VkRenderPass renderPass;
+}vkh_device_t;
 
 #endif

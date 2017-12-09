@@ -1,7 +1,8 @@
 #include "vkh_buffer.h"
-#include "vkhelpers.h"
+#include "vkh_device.h"
 
-void vkh_buffer_create(vkh_device *pDev, VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size, vkh_buffer* buff){
+VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size){
+    VkhBuffer buff = (VkhBuffer)malloc(sizeof(vkh_buffer_t));
     buff->pDev = pDev;
     VkBufferCreateInfo bufCreateInfo = {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
@@ -21,27 +22,30 @@ void vkh_buffer_create(vkh_device *pDev, VkBufferUsageFlags usage, VkMemoryPrope
     buff->memoryPropertyFlags = memoryPropertyFlags;
 
     VK_CHECK_RESULT(vkh_buffer_bind(buff));
+    return buff;
 }
 
-void vkh_buffer_destroy(vkh_buffer* buff){
+void vkh_buffer_destroy(VkhBuffer buff){
     if (buff->buffer)
         vkDestroyBuffer(buff->pDev->vkDev, buff->buffer, NULL);
     if (buff->memory)
         vkFreeMemory(buff->pDev->vkDev, buff->memory, NULL);
+    free(buff);
+    buff = NULL;
 }
 
 
-VkResult vkh_buffer_map(vkh_buffer* buff){
+VkResult vkh_buffer_map(VkhBuffer buff){
     return vkMapMemory(buff->pDev->vkDev, buff->memory, 0, VK_WHOLE_SIZE, 0, &buff->mapped);
 }
-void vkh_buffer_unmap(vkh_buffer* buff){
+void vkh_buffer_unmap(VkhBuffer buff){
     if (!buff->mapped)
         return;
     vkUnmapMemory(buff->pDev->vkDev, buff->memory);
     buff->mapped = NULL;
 }
 
-VkResult vkh_buffer_bind(vkh_buffer* buff)
+VkResult vkh_buffer_bind(VkhBuffer buff)
 {
     return vkBindBufferMemory(buff->pDev->vkDev, buff->buffer, buff->memory, 0);
 }

@@ -22,14 +22,38 @@
     }																									\
 }
 
+typedef struct _vkh_device_t*   VkhDevice;
+typedef struct _vkh_image_t*    VkhImage;
+typedef struct _vkh_buffer_t*   VkhBuffer;
+
+///////////////////////////////
+VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
+                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage, VkImageLayout layout);
+VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
+                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage, VkImageLayout layout);
+VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
+                                    VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout);
+void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
+                                    VkSamplerMipmapMode mipmapMode);
+void vkh_image_destroy          (VkhImage img);
+
+////////////////////////////////
+VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
+                                    VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size);
+void        vkh_buffer_destroy  (VkhBuffer buff);
+VkResult    vkh_buffer_map      (VkhBuffer buff);
+void        vkh_buffer_unmap    (VkhBuffer buff);
+VkResult    vkh_buffer_bind     (VkhBuffer buff);
+///////////////////////////////
 VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType);
 VkFence vkh_fence_create (VkDevice dev);
 VkSemaphore vkh_semaphore_create (VkDevice dev);
 VkCommandPool vkh_cmd_pool_create (VkDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags);
 VkCommandBuffer vkh_cmd_buff_create (VkDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level);
-void vkh_cmd_begin(VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags);
-void vkh_cmd_end(VkCommandBuffer cmdBuff);
-void vkh_cmd_submit(VkQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
+
+void vkh_cmd_begin  (VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags);
+void vkh_cmd_end    (VkCommandBuffer cmdBuff);
+void vkh_cmd_submit (VkQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 void vkh_cmd_submit_with_semaphores(VkQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
                                     VkSemaphore signalSemaphore, VkFence fence);
 void vkcrow_cmd_copy_submit(VkQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore* pWaitSemaphore, VkSemaphore* pSignalSemaphore);

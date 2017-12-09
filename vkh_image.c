@@ -1,11 +1,14 @@
 #include "vkh_image.h"
+#include "vkh_device.h"
 
-void _vkh_image_create (vkh_device *pDev, VkImageType imageType,
+VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
                   VkFormat format, uint32_t width, uint32_t height,
                   VkMemoryPropertyFlags memprops, VkImageUsageFlags usage,
                   VkSampleCountFlagBits samples, VkImageTiling tiling,
                   uint32_t mipLevels, uint32_t arrayLayers,
-                  VkImageLayout layout, vkh_image* img){
+                  VkImageLayout layout){
+    VkhImage img = (VkhImage)malloc(sizeof(vkh_image_t));
+
     img->pDev = pDev;
     img->width = width;
     img->height = height;
@@ -34,30 +37,31 @@ void _vkh_image_create (vkh_device *pDev, VkImageType imageType,
     assert(memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex));
     VK_CHECK_RESULT(vkAllocateMemory(pDev->vkDev, &memAllocInfo, NULL, &img->memory));
     VK_CHECK_RESULT(vkBindImageMemory(pDev->vkDev, img->image, img->memory, 0));
+    return img;
 }
-void vkh_tex2d_array_create (vkh_device *pDev,
+VkhImage vkh_tex2d_array_create (VkhDevice pDev,
                              VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout, vkh_image* img){
-    _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers, layout, img);
+                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout){
+    return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
+        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers, layout);
 }
 
-void vkh_image_create (vkh_device *pDev,
+VkhImage vkh_image_create (VkhDevice pDev,
                            VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
                            VkMemoryPropertyFlags memprops,
-                           VkImageUsageFlags usage, VkImageLayout layout, vkh_image* img)
+                           VkImageUsageFlags usage, VkImageLayout layout)
 {
-    _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-                      VK_SAMPLE_COUNT_1_BIT, tiling, 1, 1, layout, img);
+    return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
+                      VK_SAMPLE_COUNT_1_BIT, tiling, 1, 1, layout);
 }
-void vkh_image_ms_create (vkh_device *pDev,
+VkhImage vkh_image_ms_create(VkhDevice pDev,
                            VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
                            VkMemoryPropertyFlags memprops,
-                           VkImageUsageFlags usage, VkImageLayout layout, vkh_image* img){
-    _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-                      num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1, layout, img);
+                           VkImageUsageFlags usage, VkImageLayout layout){
+   return  _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
+                      num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1, layout);
 }
-void vkh_image_create_descriptor(vkh_image* img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter,
+void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter,
                                  VkFilter minFilter, VkSamplerMipmapMode mipmapMode)
 {
     img->pDescriptor = (VkDescriptorImageInfo*)malloc(sizeof(VkDescriptorImageInfo));
@@ -78,7 +82,7 @@ void vkh_image_create_descriptor(vkh_image* img, VkImageViewType viewType, VkIma
     VK_CHECK_RESULT(vkCreateSampler(img->pDev->vkDev, &samplerCreateInfo, NULL, &img->pDescriptor->sampler));
 
 }
-void vkh_image_destroy(vkh_image* img)
+void vkh_image_destroy(VkhImage img)
 {
     if (img->pDescriptor != NULL){
         vkDestroyImageView(img->pDev->vkDev,img->pDescriptor->imageView,NULL);
@@ -88,4 +92,6 @@ void vkh_image_destroy(vkh_image* img)
     free(img->pDescriptor);
     vkDestroyImage(img->pDev->vkDev,img->image,NULL);
     vkFreeMemory(img->pDev->vkDev, img->memory, NULL);
+    free(img);
+    img = NULL;
 }
