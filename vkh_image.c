@@ -7,7 +7,7 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
                   VkSampleCountFlagBits samples, VkImageTiling tiling,
                   uint32_t mipLevels, uint32_t arrayLayers,
                   VkImageLayout layout){
-    VkhImage img = (VkhImage)malloc(sizeof(vkh_image_t));
+    VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
 
     img->pDev = pDev;
     img->width = width;
