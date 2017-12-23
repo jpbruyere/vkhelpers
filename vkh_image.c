@@ -62,7 +62,7 @@ VkhImage vkh_image_ms_create(VkhDevice pDev,
                       num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1, layout);
 }
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter,
-                                 VkFilter minFilter, VkSamplerMipmapMode mipmapMode)
+                                 VkFilter minFilter, VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode)
 {
     img->pDescriptor = (VkDescriptorImageInfo*)malloc(sizeof(VkDescriptorImageInfo));
     img->pDescriptor->imageLayout = img->layout;
@@ -75,10 +75,13 @@ void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImage
     VK_CHECK_RESULT(vkCreateImageView(img->pDev->vkDev, &viewInfo, NULL, &img->pDescriptor->imageView));
 
     VkSamplerCreateInfo samplerCreateInfo = { .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-                                              .maxAnisotropy = 1.0,
-                                              .magFilter = magFilter,
-                                              .minFilter = minFilter,
-                                              .mipmapMode = mipmapMode};
+                                              .maxAnisotropy= 1.0,
+                                              .addressModeU = addressMode,
+                                              .addressModeV = addressMode,
+                                              .addressModeW = addressMode,
+                                              .magFilter    = magFilter,
+                                              .minFilter    = minFilter,
+                                              .mipmapMode   = mipmapMode};
     VK_CHECK_RESULT(vkCreateSampler(img->pDev->vkDev, &samplerCreateInfo, NULL, &img->pDescriptor->sampler));
 
 }

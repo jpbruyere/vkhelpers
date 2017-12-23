@@ -34,7 +34,7 @@ VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountF
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
                                     VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
-                                    VkSamplerMipmapMode mipmapMode);
+                                    VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_destroy          (VkhImage img);
 
 ////////////////////////////////
