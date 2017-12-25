@@ -5,11 +5,14 @@
 
 typedef struct _vkh_image_t {
     VkhDevice				pDev;
-    VkImageCreateInfo		infos;
+    VkFormat                format;
+    uint32_t                layers;
+    uint32_t                mipLevels;
     uint32_t				width, height;
     VkImage					image;
     VkDeviceMemory			memory;
-    VkDescriptorImageInfo*	pDescriptor;
-    VkImageLayout           layout;//used for descriptor creation
+    VkSampler               sampler;
+    VkImageView             view;
+    VkImageLayout           layout; //current layout
 }vkh_image_t;
 #endif

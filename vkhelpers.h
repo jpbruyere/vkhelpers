@@ -35,6 +35,13 @@ VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width
                                     VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
                                     VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);
+void vkh_image_create_sampler   (VkhImage img, VkFilter magFilter, VkFilter minFilter,
+                                    VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask,
+                                    VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
+                                    VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_destroy          (VkhImage img);
 
 ////////////////////////////////
@@ -62,16 +69,15 @@ VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType);
 
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
-void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
-                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
-void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
-                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
-
-
 bool        memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
                                         VkFlags requirements_mask, uint32_t *typeIndex);
 char *      read_spv(const char *filename, size_t *psize);
 uint32_t*   readFile(uint32_t* length, const char* filename);
 
 void dumpLayerExts ();
+
+void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
+                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
+                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 #endif
