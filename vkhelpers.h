@@ -28,11 +28,11 @@ typedef struct _vkh_buffer_t*   VkhBuffer;
 
 ///////////////////////////////
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
-                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage, VkImageLayout layout);
+                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
 VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
-                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage, VkImageLayout layout);
+                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                                    VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout);
+                                    VkMemoryPropertyFlags memprops, VkImageUsageFlags usage);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
                                     VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);

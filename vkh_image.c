@@ -5,14 +5,13 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
                   VkFormat format, uint32_t width, uint32_t height,
                   VkMemoryPropertyFlags memprops, VkImageUsageFlags usage,
                   VkSampleCountFlagBits samples, VkImageTiling tiling,
-                  uint32_t mipLevels, uint32_t arrayLayers,
-                  VkImageLayout layout){
+                  uint32_t mipLevels, uint32_t arrayLayers){
     VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
 
     img->pDev = pDev;
     img->width = width;
     img->height = height;
-    img->layout = layout;
+    img->layout = VK_IMAGE_LAYOUT_UNDEFINED;
     img->format = format;
     img->layers = arrayLayers;
     img->mipLevels = mipLevels;
@@ -31,8 +30,6 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 
     VK_CHECK_RESULT(vkCreateImage(pDev->vkDev, &image_info, NULL, &img->image));
 
-
-
     VkMemoryRequirements memReq;
     vkGetImageMemoryRequirements(pDev->vkDev, img->image, &memReq);
     VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
@@ -44,24 +41,24 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 }
 VkhImage vkh_tex2d_array_create (VkhDevice pDev,
                              VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage, VkImageLayout layout){
+                             VkMemoryPropertyFlags memprops, VkImageUsageFlags usage){
     return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers, layout);
+        VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers);
 }
 VkhImage vkh_image_create (VkhDevice pDev,
                            VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
                            VkMemoryPropertyFlags memprops,
-                           VkImageUsageFlags usage, VkImageLayout layout)
+                           VkImageUsageFlags usage)
 {
     return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-                      VK_SAMPLE_COUNT_1_BIT, tiling, 1, 1, layout);
+                      VK_SAMPLE_COUNT_1_BIT, tiling, 1, 1);
 }
 VkhImage vkh_image_ms_create(VkhDevice pDev,
                            VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
                            VkMemoryPropertyFlags memprops,
-                           VkImageUsageFlags usage, VkImageLayout layout){
+                           VkImageUsageFlags usage){
    return  _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
-                      num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1, layout);
+                      num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1);
 }
 void vkh_image_create_view (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags){
     if(img->view != VK_NULL_HANDLE)
