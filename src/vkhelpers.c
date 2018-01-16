@@ -1,5 +1,5 @@
 
-#include "vkhelpers.h"
+#include "vkh.h"
 
 VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType) {
     uint32_t gpu_count = 0;

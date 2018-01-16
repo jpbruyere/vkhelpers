@@ -25,6 +25,7 @@
 typedef struct _vkh_device_t*   VkhDevice;
 typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
+typedef struct _vkh_presenter_t*    VkhPresenter;
 
 ///////////////////////////////
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,

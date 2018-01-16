@@ -2,7 +2,7 @@
 #define VKH_BUFFER_H
 
 #include <vulkan/vulkan.h>
-#include "vkhelpers.h"
+#include "vkh.h"
 
 typedef struct _vkh_buffer_t {
     VkhDevice               pDev;

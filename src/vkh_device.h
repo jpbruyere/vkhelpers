@@ -1,7 +1,7 @@
 #ifndef VKH_DEVICE_H
 #define VKH_DEVICE_H
 
-#include "vkhelpers.h"
+#include "vkh.h"
 
 typedef struct _vkh_device_t{
     VkDevice vkDev;
