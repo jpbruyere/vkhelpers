@@ -93,6 +93,21 @@ void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImage
     vkh_image_create_view       (img, viewType, aspectFlags);
     vkh_image_create_sampler    (img, magFilter, minFilter, mipmapMode, addressMode);
 }
+VkImage vkh_image_get_vkimage (VkhImage img){
+    return img->image;
+}
+VkImageView vkh_image_get_view (VkhImage img){
+    return img->view;
+}
+VkImageLayout vkh_image_get_layout (VkhImage img){
+    return img->layout;
+}
+VkDescriptorImageInfo vkh_image_get_descriptor (VkhImage img, VkImageLayout imageLayout){
+    VkDescriptorImageInfo desc = { .imageView = img->view,
+                                   .imageLayout = imageLayout,
+                                   .sampler = img->sampler };
+    return desc;
+}
 
 void vkh_image_set_layout(VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask, VkImageLayout new_image_layout,
                       VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages) {

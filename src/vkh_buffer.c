@@ -49,3 +49,10 @@ VkResult vkh_buffer_bind(VkhBuffer buff)
 {
     return vkBindBufferMemory(buff->pDev->vkDev, buff->buffer, buff->memory, 0);
 }
+
+VkBuffer vkh_buffer_get_vkbuffer (VkhBuffer buff){
+    return buff->buffer;
+}
+void* vkh_buffer_get_mapped_pointer (VkhBuffer buff){
+    return buff->mapped;
+}
