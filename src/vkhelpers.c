@@ -5,10 +5,11 @@ VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType) {
     uint32_t gpu_count = 0;
 
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices (inst, &gpu_count, NULL));
-
     VkPhysicalDevice phys[gpu_count];
-
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices (inst, &gpu_count, &phys));
+
+    if (gpu_count == 1)
+        return phys[0];
 
     for (int i=0; i<gpu_count; i++){
         VkPhysicalDeviceProperties phy;
