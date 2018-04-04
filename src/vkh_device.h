@@ -4,9 +4,10 @@
 #include "vkh.h"
 
 typedef struct _vkh_device_t{
-    VkDevice vkDev;
+    VkPhysicalDevice    phy;
+    VkDevice            dev;
+
     VkPhysicalDeviceMemoryProperties phyMemProps;
-    VkRenderPass renderPass;
 }vkh_device_t;
 
 #endif

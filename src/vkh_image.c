@@ -28,15 +28,15 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
                                      .arrayLayers = arrayLayers,
                                      .samples = samples };
 
-    VK_CHECK_RESULT(vkCreateImage(pDev->vkDev, &image_info, NULL, &img->image));
+    VK_CHECK_RESULT(vkCreateImage(pDev->dev, &image_info, NULL, &img->image));
 
     VkMemoryRequirements memReq;
-    vkGetImageMemoryRequirements(pDev->vkDev, img->image, &memReq);
+    vkGetImageMemoryRequirements(pDev->dev, img->image, &memReq);
     VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
                                           .allocationSize = memReq.size };
     assert(memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex));
-    VK_CHECK_RESULT(vkAllocateMemory(pDev->vkDev, &memAllocInfo, NULL, &img->memory));
-    VK_CHECK_RESULT(vkBindImageMemory(pDev->vkDev, img->image, img->memory, 0));
+    VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &img->memory));
+    VK_CHECK_RESULT(vkBindImageMemory(pDev->dev, img->image, img->memory, 0));
     return img;
 }
 VkhImage vkh_tex2d_array_create (VkhDevice pDev,
@@ -62,7 +62,7 @@ VkhImage vkh_image_ms_create(VkhDevice pDev,
 }
 void vkh_image_create_view (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags){
     if(img->view != VK_NULL_HANDLE)
-        vkDestroyImageView  (img->pDev->vkDev,img->view,NULL);
+        vkDestroyImageView  (img->pDev->dev,img->view,NULL);
 
     VkImageViewCreateInfo viewInfo = { .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
                                          .image = img->image,
@@ -70,12 +70,12 @@ void vkh_image_create_view (VkhImage img, VkImageViewType viewType, VkImageAspec
                                          .format = img->format,
                                          .components = {VK_COMPONENT_SWIZZLE_R,VK_COMPONENT_SWIZZLE_G,VK_COMPONENT_SWIZZLE_B,VK_COMPONENT_SWIZZLE_A},
                                          .subresourceRange = {aspectFlags,0,1,0,img->layers}};
-    VK_CHECK_RESULT(vkCreateImageView(img->pDev->vkDev, &viewInfo, NULL, &img->view));
+    VK_CHECK_RESULT(vkCreateImageView(img->pDev->dev, &viewInfo, NULL, &img->view));
 }
 void vkh_image_create_sampler (VkhImage img, VkFilter magFilter, VkFilter minFilter,
                                VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode){
     if(img->sampler != VK_NULL_HANDLE)
-        vkDestroySampler    (img->pDev->vkDev,img->sampler,NULL);
+        vkDestroySampler    (img->pDev->dev,img->sampler,NULL);
     VkSamplerCreateInfo samplerCreateInfo = { .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
                                               .maxAnisotropy= 1.0,
                                               .addressModeU = addressMode,
@@ -84,7 +84,7 @@ void vkh_image_create_sampler (VkhImage img, VkFilter magFilter, VkFilter minFil
                                               .magFilter    = magFilter,
                                               .minFilter    = minFilter,
                                               .mipmapMode   = mipmapMode};
-    VK_CHECK_RESULT(vkCreateSampler(img->pDev->vkDev, &samplerCreateInfo, NULL, &img->sampler));
+    VK_CHECK_RESULT(vkCreateSampler(img->pDev->dev, &samplerCreateInfo, NULL, &img->sampler));
 }
 
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter,
@@ -175,12 +175,12 @@ void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImag
 void vkh_image_destroy(VkhImage img)
 {
     if(img->view != VK_NULL_HANDLE)
-        vkDestroyImageView  (img->pDev->vkDev,img->view,NULL);
+        vkDestroyImageView  (img->pDev->dev,img->view,NULL);
     if(img->sampler != VK_NULL_HANDLE)
-        vkDestroySampler    (img->pDev->vkDev,img->sampler,NULL);
+        vkDestroySampler    (img->pDev->dev,img->sampler,NULL);
 
-    vkDestroyImage                  (img->pDev->vkDev, img->image, NULL);
-    vkFreeMemory                    (img->pDev->vkDev, img->memory, NULL);
+    vkDestroyImage                  (img->pDev->dev, img->image, NULL);
+    vkFreeMemory                    (img->pDev->dev, img->memory, NULL);
 
     free(img);
     img = NULL;
