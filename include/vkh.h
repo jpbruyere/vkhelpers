@@ -28,6 +28,12 @@ typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
 //typedef struct _vkh_presenter_t*    VkhPresenter;
 
+///////////////////
+VkhApp              vkh_app_create      (const char* app_name, const char* extentions[], int ext_count);
+void                vkh_app_destroy     (VkhApp app);
+VkInstance          vkh_app_get_inst    (VkhApp app);
+VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
+
 ///////////////////////////////
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
                                     VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);

@@ -1,7 +1,6 @@
 #ifndef VKH_BUFFER_H
 #define VKH_BUFFER_H
 
-#include <vulkan/vulkan.h>
 #include "vkh.h"
 
 typedef struct _vkh_buffer_t {

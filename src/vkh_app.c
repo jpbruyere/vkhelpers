@@ -37,6 +37,10 @@ void vkh_app_destroy (VkhApp app){
     free (app);
 }
 
+VkInstance vkh_app_get_inst (VkhApp app) {
+    return app->inst;
+}
+
 VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
     uint32_t gpu_count = 0;
 
