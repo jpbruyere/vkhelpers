@@ -51,6 +51,8 @@ void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImag
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_destroy          (VkhImage img);
+void* vkh_image_map             (VkhImage img);
+void vkh_image_unmap            (VkhImage img);
 
 VkImage                 vkh_image_get_vkimage   (VkhImage img);
 VkImageView             vkh_image_get_view      (VkhImage img);

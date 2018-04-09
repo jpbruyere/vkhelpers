@@ -185,3 +185,18 @@ void vkh_image_destroy(VkhImage img)
     free(img);
     img = NULL;
 }
+
+void* vkh_image_map (VkhImage img) {
+    VkImageSubresource subRes = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT};
+    //subRes.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    VkSubresourceLayout subResLayout;
+    VkMemoryRequirements memReqs;
+    void *data;
+    vkGetImageSubresourceLayout(img->pDev->dev, img->image, &subRes, &subResLayout);
+    vkGetImageMemoryRequirements(img->pDev->dev, img->image, &memReqs);
+    VK_CHECK_RESULT(vkMapMemory(img->pDev->dev, img->memory, 0, memReqs.size, 0, &data));
+    return data;
+}
+void vkh_image_unmap (VkhImage img) {
+    vkUnmapMemory (img->pDev->dev, img->memory);
+}
