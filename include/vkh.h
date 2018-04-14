@@ -22,9 +22,17 @@
     }																									\
 }
 
+typedef struct _vkh_app_t*		VkhApp;
 typedef struct _vkh_device_t*   VkhDevice;
 typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
+//typedef struct _vkh_presenter_t*    VkhPresenter;
+
+///////////////////
+VkhApp              vkh_app_create      (const char* app_name, const char* extentions[], int ext_count);
+void                vkh_app_destroy     (VkhApp app);
+VkInstance          vkh_app_get_inst    (VkhApp app);
+VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
 
 ///////////////////////////////
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
@@ -43,7 +51,14 @@ void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImag
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_destroy          (VkhImage img);
+void* vkh_image_map             (VkhImage img);
+void vkh_image_unmap            (VkhImage img);
 
+VkImage                 vkh_image_get_vkimage   (VkhImage img);
+VkImageView             vkh_image_get_view      (VkhImage img);
+VkImageLayout           vkh_image_get_layout    (VkhImage img);
+VkSampler               vkh_image_get_sampler   (VkhImage img);
+VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout imageLayout);
 ////////////////////////////////
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
                                     VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size);
@@ -51,6 +66,9 @@ void        vkh_buffer_destroy  (VkhBuffer buff);
 VkResult    vkh_buffer_map      (VkhBuffer buff);
 void        vkh_buffer_unmap    (VkhBuffer buff);
 VkResult    vkh_buffer_bind     (VkhBuffer buff);
+
+VkBuffer    vkh_buffer_get_vkbuffer         (VkhBuffer buff);
+void*       vkh_buffer_get_mapped_pointer   (VkhBuffer buff);
 ///////////////////////////////
 
 VkFence         vkh_fence_create			(VkDevice dev);

@@ -7,14 +7,14 @@ VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VkMemoryPr
     VkBufferCreateInfo bufCreateInfo = {
         .sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
         .usage = usage, .size = size, .sharingMode = VK_SHARING_MODE_EXCLUSIVE};
-    VK_CHECK_RESULT(vkCreateBuffer(pDev->vkDev, &bufCreateInfo, NULL, &buff->buffer));
+    VK_CHECK_RESULT(vkCreateBuffer(pDev->dev, &bufCreateInfo, NULL, &buff->buffer));
 
     VkMemoryRequirements memReq;
-    vkGetBufferMemoryRequirements(pDev->vkDev, buff->buffer, &memReq);
+    vkGetBufferMemoryRequirements(pDev->dev, buff->buffer, &memReq);
     VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
                                           .allocationSize = memReq.size };
     assert(memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits,memoryPropertyFlags, &memAllocInfo.memoryTypeIndex));
-    VK_CHECK_RESULT(vkAllocateMemory(pDev->vkDev, &memAllocInfo, NULL, &buff->memory));
+    VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &buff->memory));
 
     buff->alignment = memReq.alignment;
     buff->size = memAllocInfo.allocationSize;
@@ -27,25 +27,32 @@ VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VkMemoryPr
 
 void vkh_buffer_destroy(VkhBuffer buff){
     if (buff->buffer)
-        vkDestroyBuffer(buff->pDev->vkDev, buff->buffer, NULL);
+        vkDestroyBuffer(buff->pDev->dev, buff->buffer, NULL);
     if (buff->memory)
-        vkFreeMemory(buff->pDev->vkDev, buff->memory, NULL);
+        vkFreeMemory(buff->pDev->dev, buff->memory, NULL);
     free(buff);
     buff = NULL;
 }
 
 
 VkResult vkh_buffer_map(VkhBuffer buff){
-    return vkMapMemory(buff->pDev->vkDev, buff->memory, 0, VK_WHOLE_SIZE, 0, &buff->mapped);
+    return vkMapMemory(buff->pDev->dev, buff->memory, 0, VK_WHOLE_SIZE, 0, &buff->mapped);
 }
 void vkh_buffer_unmap(VkhBuffer buff){
     if (!buff->mapped)
         return;
-    vkUnmapMemory(buff->pDev->vkDev, buff->memory);
+    vkUnmapMemory(buff->pDev->dev, buff->memory);
     buff->mapped = NULL;
 }
 
 VkResult vkh_buffer_bind(VkhBuffer buff)
 {
-    return vkBindBufferMemory(buff->pDev->vkDev, buff->buffer, buff->memory, 0);
+    return vkBindBufferMemory(buff->pDev->dev, buff->buffer, buff->memory, 0);
+}
+
+VkBuffer vkh_buffer_get_vkbuffer (VkhBuffer buff){
+    return buff->buffer;
+}
+void* vkh_buffer_get_mapped_pointer (VkhBuffer buff){
+    return buff->mapped;
 }

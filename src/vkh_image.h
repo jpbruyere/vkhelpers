@@ -1,7 +1,7 @@
 #ifndef VKH_IMAGE_H
 #define VKH_IMAGE_H
 
-#include "vkhelpers.h"
+#include "vkh.h"
 
 typedef struct _vkh_image_t {
     VkhDevice				pDev;
