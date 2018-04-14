@@ -96,6 +96,9 @@ void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImage
 VkImage vkh_image_get_vkimage (VkhImage img){
     return img->image;
 }
+VkSampler vkh_image_get_sampler (VkhImage img){
+    return img->sampler;
+}
 VkImageView vkh_image_get_view (VkhImage img){
     return img->view;
 }

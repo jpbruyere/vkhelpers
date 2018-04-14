@@ -57,6 +57,7 @@ void vkh_image_unmap            (VkhImage img);
 VkImage                 vkh_image_get_vkimage   (VkhImage img);
 VkImageView             vkh_image_get_view      (VkhImage img);
 VkImageLayout           vkh_image_get_layout    (VkhImage img);
+VkSampler               vkh_image_get_sampler   (VkhImage img);
 VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout imageLayout);
 ////////////////////////////////
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
