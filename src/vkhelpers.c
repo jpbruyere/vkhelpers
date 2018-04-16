@@ -1,30 +1,6 @@
 
 #include "vkh.h"
 
-VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType) {
-    uint32_t gpu_count = 0;
-
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (inst, &gpu_count, NULL));
-    VkPhysicalDevice phys[gpu_count];
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (inst, &gpu_count, &phys));
-
-    if (gpu_count == 1)
-        return phys[0];
-
-    for (int i=0; i<gpu_count; i++){
-        VkPhysicalDeviceProperties phy;
-        vkGetPhysicalDeviceProperties (phys[i], &phy);
-        if (phy.deviceType & phyType){
-            printf ("GPU: %s  vulkan:%d.%d.%d driver:%d\n", phy.deviceName,
-                    phy.apiVersion>>22, phy.apiVersion>>12&2048, phy.apiVersion&8191,
-                    phy.driverVersion);
-            return phys[i];
-        }
-    }
-    fprintf (stderr, "No suitable GPU found\n");
-    exit (-1);
-}
-
 VkFence vkh_fence_create (VkDevice dev) {
     VkFence fence;
     VkFenceCreateInfo fenceInfo = { .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
