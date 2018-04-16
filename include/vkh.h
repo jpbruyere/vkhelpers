@@ -26,10 +26,11 @@ typedef struct _vkh_app_t*		VkhApp;
 typedef struct _vkh_device_t*   VkhDevice;
 typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
+typedef struct _vkh_queue_t*    VkhQueue;
 //typedef struct _vkh_presenter_t*    VkhPresenter;
 
 ///////////////////
-VkhApp              vkh_app_create      (const char* app_name, const char* extentions[], int ext_count);
+VkhApp              vkh_app_create      (const char* app_name, int ext_count, const char* extentions[]);
 void                vkh_app_destroy     (VkhApp app);
 VkInstance          vkh_app_get_inst    (VkhApp app);
 VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
@@ -83,8 +84,6 @@ void vkh_cmd_submit (VkQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 void vkh_cmd_submit_with_semaphores(VkQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
                                     VkSemaphore signalSemaphore, VkFence fence);
 
-VkPhysicalDevice vkh_find_phy (VkInstance inst, VkPhysicalDeviceType phyType);
-
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
 bool        memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
@@ -98,4 +97,9 @@ void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspe
                       VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
                       VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+/////////////////////
+VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex, VkQueueFlags flags);
+void        vkh_queue_destroy   (VkhQueue queue);
+VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
+/////////////////////
 #endif

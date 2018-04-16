@@ -3,7 +3,7 @@
 #define ENGINE_NAME     "vkheplers"
 #define ENGINE_VERSION  1
 
-VkhApp vkh_app_create (const char* app_name, const char* extentions[], int ext_count) {
+VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentions[]) {
     VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
 
     VkApplicationInfo infos = { .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -29,6 +29,9 @@ VkhApp vkh_app_create (const char* app_name, const char* extentions[], int ext_c
                                        .ppEnabledLayerNames = enabledLayers };
 
     VK_CHECK_RESULT(vkCreateInstance (&inst_info, NULL, &app->inst));
+
+    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &app->phyCount, NULL));
+
     return app;
 }
 
@@ -42,18 +45,13 @@ VkInstance vkh_app_get_inst (VkhApp app) {
 }
 
 VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
-    uint32_t gpu_count = 0;
+    VkPhysicalDevice phys[app->phyCount];
+    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &app->phyCount, &phys));
 
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &gpu_count, NULL));
-
-    VkPhysicalDevice phys[gpu_count];
-
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &gpu_count, &phys));
-
-    if (gpu_count == 1)
+    if (app->phyCount == 1)
         return phys[0];
 
-    for (int i=0; i<gpu_count; i++){
+    for (int i=0; i<app->phyCount; i++){
         VkPhysicalDeviceProperties phy;
         vkGetPhysicalDeviceProperties (phys[i], &phy);
         if (phy.deviceType & preferedPhyType){
