@@ -19,7 +19,7 @@ No additional library except vulkan is required.
 
 ### Current status:
 
-Early development stage, api may changed frequently.
+Early development stage, api may change frequently.
 
 ### Building
 
@@ -37,7 +37,7 @@ make && make install
 - clone vkh as a subdirectory of your root dir.
 - in your main CMakeFile, add `add_subdirectory (vkhelpers)`
 - add to your **TARGET_INCLUDE_DIRECTORIES** `${CMAKE_CURRENT_SOURCE_DIR}/vkhelpers/include` and if you want to bypass opaque pointers and be able to address
-fiels of internal structures of vkh, add also `${CMAKE_CURRENT_SOURCE_DIR}/vkhelpers/src`.
+fields of internal structures, add also `${CMAKE_CURRENT_SOURCE_DIR}/vkhelpers/src`.
 - to link vkh staticaly, add to **TARGET_LINK_LIBRARIES** `vkh_static` or `vkh_shared` to link it as a shared library.
 
 
