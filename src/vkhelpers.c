@@ -1,4 +1,4 @@
-
+#include "vkh_queue.h"
 #include "vkh.h"
 
 VkFence vkh_fence_create (VkDevice dev) {
@@ -56,13 +56,15 @@ void vkh_cmd_begin(VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags) {
 void vkh_cmd_end(VkCommandBuffer cmdBuff){
     VK_CHECK_RESULT (vkEndCommandBuffer (cmdBuff));
 }
-void vkh_cmd_submit(VkQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence){
+void vkh_cmd_submit(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence){
+    VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
     VkSubmitInfo submit_info = { .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+                                 .pWaitDstStageMask = &stageFlags,
                                  .commandBufferCount = 1,
                                  .pCommandBuffers = pCmdBuff};
-    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
+    VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submit_info, fence));
 }
-void vkh_cmd_submit_with_semaphores(VkQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
+void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
                                     VkSemaphore signalSemaphore, VkFence fence){
 
     VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
@@ -80,7 +82,7 @@ void vkh_cmd_submit_with_semaphores(VkQueue queue, VkCommandBuffer *pCmdBuff, Vk
         submit_info.pSignalSemaphores= &signalSemaphore;
     }
 
-    VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submit_info, fence));
+    VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submit_info, fence));
 }
 
 

@@ -29,9 +29,6 @@ VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentio
                                        .ppEnabledLayerNames = enabledLayers };
 
     VK_CHECK_RESULT(vkCreateInstance (&inst_info, NULL, &app->inst));
-
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &app->phyCount, NULL));
-
     return app;
 }
 
@@ -44,23 +41,41 @@ VkInstance vkh_app_get_inst (VkhApp app) {
     return app->inst;
 }
 
-VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
-    VkPhysicalDevice phys[app->phyCount];
-    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, &app->phyCount, &phys));
+VkhPhyInfo* vkh_app_get_phyinfos (VkhApp app, uint32_t* count) {
+    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, count, NULL));
+    VkPhysicalDevice phyDevices[(*count)];
+    VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, count, phyDevices));
+    VkhPhyInfo* infos = (VkhPhyInfo*)malloc((*count) * sizeof(VkhPhyInfo));
 
-    if (app->phyCount == 1)
-        return phys[0];
+    for (int i=0; i<(*count); i++)
+        infos[i] = vkh_phyinfo_create (app, phyDevices[i]);
+
+    return infos;
+}
+
+void vkh_app_free_phyinfos (uint32_t count, VkhPhyInfo* infos) {
+    for (int i=0; i<count; i++)
+        vkh_phyinfo_destroy (infos[i]);
+    free (infos);
+}
+
+
+VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
+    /*if (app->phyCount == 1)
+        return app->phyDevices[0];
 
     for (int i=0; i<app->phyCount; i++){
         VkPhysicalDeviceProperties phy;
-        vkGetPhysicalDeviceProperties (phys[i], &phy);
+        vkGetPhysicalDeviceProperties (app->phyDevices[i], &phy);
         if (phy.deviceType & preferedPhyType){
+#if DEBUG
             printf ("GPU: %s  vulkan:%d.%d.%d driver:%d\n", phy.deviceName,
                     phy.apiVersion>>22, phy.apiVersion>>12&2048, phy.apiVersion&8191,
                     phy.driverVersion);
-            return phys[i];
+#endif
+            return app->phyDevices[i];
         }
     }
     fprintf (stderr, "No suitable GPU found\n");
-    exit (-1);
+    exit (-1);*/
 }

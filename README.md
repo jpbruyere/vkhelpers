@@ -13,7 +13,6 @@
 ### What is vkh?
 
 **vkh** is a multiplatform helper library for [Vulkan](https://www.khronos.org/vulkan/) written in **c**.
-
 vkh main goal is to offer an api which will ease the development of wrappers for higher level languages.
 No additional library except vulkan is required.
 
