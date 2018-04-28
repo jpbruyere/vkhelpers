@@ -35,11 +35,10 @@ VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentio
                                 .apiVersion = VK_API_VERSION_1_0};
 #if DEBUG
     const uint32_t enabledLayersCount = 1;
-    //const char* enabledLayers[] = {"VK_LAYER_LUNARG_core_validation"};
     const char* enabledLayers[] = {"VK_LAYER_LUNARG_standard_validation"};
 #else
     const uint32_t enabledLayersCount = 0;
-    const char* enabledLayers[] = NULL;
+    const char* enabledLayers[] = {NULL};
 #endif
 
     VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
