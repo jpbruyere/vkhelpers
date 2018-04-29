@@ -21,3 +21,15 @@
  */
 #include "vkh_device.h"
 
+VkhDevice vkh_device_create (VkPhysicalDevice phy, VkDevice vkDev) {
+    VkhDevice dev = (vkh_device_t*)malloc(sizeof(vkh_device_t));
+    dev->dev = vkDev;
+    dev->phy = phy;
+
+    vkGetPhysicalDeviceMemoryProperties (phy, &dev->phyMemProps);
+    return dev;
+}
+
+void vkh_device_destroy (VkhDevice dev) {
+    free (dev);
+}

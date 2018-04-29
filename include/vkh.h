@@ -66,7 +66,10 @@ void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
 // VkhPhy
 VkhPhyInfo  vkh_phyinfo_create  (VkhApp app, VkPhysicalDevice phy);
-void    vkh_phyinfo_destroy (VkhPhyInfo phy);
+void        vkh_phyinfo_destroy (VkhPhyInfo phy);
+// VkhDevice
+VkhDevice   vkh_device_create   (VkPhysicalDevice phy, VkDevice vkDev);
+void        vkh_device_destroy  (VkhDevice dev);
 // VkhImage
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
                                     VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
