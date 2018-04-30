@@ -60,12 +60,12 @@ VkhApp              vkh_app_create      (const char* app_name, int ext_count, co
 void                vkh_app_destroy     (VkhApp app);
 VkInstance          vkh_app_get_inst    (VkhApp app);
 VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
-VkhPhyInfo*             vkh_app_get_phyinfos    (VkhApp app, uint32_t* count);
+VkhPhyInfo*             vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 
 VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
 // VkhPhy
-VkhPhyInfo  vkh_phyinfo_create  (VkhApp app, VkPhysicalDevice phy);
+VkhPhyInfo  vkh_phyinfo_create  (VkhApp app, VkPhysicalDevice phy, VkSurfaceKHR surface);
 void        vkh_phyinfo_destroy (VkhPhyInfo phy);
 // VkhDevice
 VkhDevice   vkh_device_create   (VkPhysicalDevice phy, VkDevice vkDev);

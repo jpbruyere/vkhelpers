@@ -30,9 +30,10 @@ typedef struct _vkh_phy_t{
     VkPhysicalDeviceProperties          properties;
     VkQueueFamilyProperties*            queues;
     uint32_t                            queueCount;
-    int                                 cQueue;
-    int                                 gQueue;
-    int                                 tQueue;
+    int                                 cQueue;//compute
+    int                                 gQueue;//graphic
+    int                                 tQueue;//transfer
+    int                                 pQueue;//presentation
 
     uint32_t                            qCreateInfosCount;
     VkDeviceQueueCreateInfo*            qCreateInfos;

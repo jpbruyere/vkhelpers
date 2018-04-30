@@ -61,14 +61,14 @@ VkInstance vkh_app_get_inst (VkhApp app) {
     return app->inst;
 }
 
-VkhPhyInfo* vkh_app_get_phyinfos (VkhApp app, uint32_t* count) {
+VkhPhyInfo* vkh_app_get_phyinfos (VkhApp app, uint32_t* count, VkSurfaceKHR surface) {
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, count, NULL));
     VkPhysicalDevice phyDevices[(*count)];
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, count, phyDevices));
     VkhPhyInfo* infos = (VkhPhyInfo*)malloc((*count) * sizeof(VkhPhyInfo));
 
     for (int i=0; i<(*count); i++)
-        infos[i] = vkh_phyinfo_create (app, phyDevices[i]);
+        infos[i] = vkh_phyinfo_create (app, phyDevices[i], surface);
 
     return infos;
 }

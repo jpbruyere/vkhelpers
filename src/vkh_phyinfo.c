@@ -23,7 +23,7 @@
 #include "vkh_app.h"
 
 
-VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy) {
+VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy, VkSurfaceKHR surface) {
     VkhPhyInfo pi = (vkh_phy_t*)calloc(1, sizeof(vkh_phy_t));
     pi->phy = phy;
 
@@ -36,15 +36,22 @@ VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy) {
 
     //identify dedicated queues
 
-    //try to find dedicated queues
     pi->cQueue = -1;
     pi->gQueue = -1;
     pi->tQueue = -1;
+    pi->pQueue = -1;
 
+    //try to find dedicated queues first
     for (int j=0; j<pi->queueCount; j++){
+        VkBool32 present = VK_FALSE;
         switch (pi->queues[j].queueFlags) {
         case VK_QUEUE_GRAPHICS_BIT:
-            if (pi->gQueue<0)
+            if (surface)
+                vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
+            if (present){
+                if (pi->pQueue<0)
+                    pi->pQueue = j;
+            }else if (pi->gQueue<0)
                 pi->gQueue = j;
             break;
         case VK_QUEUE_COMPUTE_BIT:
@@ -59,8 +66,16 @@ VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy) {
     }
     //try to find suitable queue if no dedicated one found
     for (int j=0; j<pi->queueCount; j++){
-        if ((pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (pi->gQueue < 0))
-            pi->gQueue = j;
+        if (pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+            VkBool32 present;
+            if (surface)
+                vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
+            if (present){
+                if (pi->pQueue<0)
+                    pi->pQueue = j;
+            }else if (pi->gQueue<0)
+                pi->gQueue = j;
+        }
         if ((pi->queues[j].queueFlags & VK_QUEUE_COMPUTE_BIT) && (pi->cQueue < 0))
             pi->cQueue = j;
         if ((pi->queues[j].queueFlags & VK_QUEUE_TRANSFER_BIT) && (pi->tQueue < 0))

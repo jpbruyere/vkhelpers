@@ -74,6 +74,16 @@ VkhImage vkh_image_create (VkhDevice pDev,
     return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
                       VK_SAMPLE_COUNT_1_BIT, tiling, 1, 1);
 }
+//create vkhImage from existing VkImage
+VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height) {
+    VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
+    img->pDev = pDev;
+    img->image = vkImg;
+    img->format = format;
+    img->width = width;
+    img->height = height;
+    return img;
+}
 VkhImage vkh_image_ms_create(VkhDevice pDev,
                            VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
                            VkMemoryPropertyFlags memprops,

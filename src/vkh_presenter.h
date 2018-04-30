@@ -24,18 +24,13 @@
 
 #include "vkh.h"
 
-typedef struct ImageBuffer_t {
-    VkImage     image;
-    VkImageView view;
-}ImageBuffer;
-
 typedef struct _vkh_presenter_t {
     VkQueue         queue;
     VkCommandPool   cmdPool;
     uint32_t        qFam;
     VkDevice        dev;
 
-    //GLFWwindow*     window;
+    void*           window;
     VkSurfaceKHR    surface;
 
     VkSemaphore     semaPresentEnd;
@@ -52,7 +47,7 @@ typedef struct _vkh_presenter_t {
 
     VkRenderPass    renderPass;
     VkSwapchainKHR  swapChain;
-    ImageBuffer*    ScBuffers;
+    VkhImage*       ScBuffers;
     VkCommandBuffer* cmdBuffs;
     VkFramebuffer*  frameBuffs;
 }vkh_presenter_t;
