@@ -35,5 +35,6 @@ typedef struct _vkh_image_t {
     VkSampler               sampler;
     VkImageView             view;
     VkImageLayout           layout; //current layout
+    bool                    imported;
 }vkh_image_t;
 #endif

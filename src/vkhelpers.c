@@ -20,49 +20,50 @@
  * THE SOFTWARE.
  */
 #include "vkh_queue.h"
+#include "vkh_device.h"
 #include "vkh.h"
 
-VkFence vkh_fence_create (VkDevice dev) {
+VkFence vkh_fence_create (VkhDevice dev) {
     VkFence fence;
     VkFenceCreateInfo fenceInfo = { .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                                     .pNext = NULL,
                                     .flags = 0 };
-    VK_CHECK_RESULT(vkCreateFence(dev, &fenceInfo, NULL, &fence));
+    VK_CHECK_RESULT(vkCreateFence(dev->dev, &fenceInfo, NULL, &fence));
     return fence;
 }
-VkFence vkh_fence_create_signaled (VkDevice dev) {
+VkFence vkh_fence_create_signaled (VkhDevice dev) {
     VkFence fence;
     VkFenceCreateInfo fenceInfo = { .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
                                     .pNext = NULL,
                                     .flags = VK_FENCE_CREATE_SIGNALED_BIT };
-    VK_CHECK_RESULT(vkCreateFence(dev, &fenceInfo, NULL, &fence));
+    VK_CHECK_RESULT(vkCreateFence(dev->dev, &fenceInfo, NULL, &fence));
     return fence;
 }
-VkSemaphore vkh_semaphore_create (VkDevice dev) {
+VkSemaphore vkh_semaphore_create (VkhDevice dev) {
     VkSemaphore semaphore;
     VkSemaphoreCreateInfo info = { .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
                                                            .pNext = NULL,
                                                            .flags = 0};
-    VK_CHECK_RESULT(vkCreateSemaphore(dev, &info, NULL, &semaphore));
+    VK_CHECK_RESULT(vkCreateSemaphore(dev->dev, &info, NULL, &semaphore));
     return semaphore;
 }
-VkCommandPool vkh_cmd_pool_create (VkDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags){
+VkCommandPool vkh_cmd_pool_create (VkhDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags){
     VkCommandPool cmdPool;
     VkCommandPoolCreateInfo cmd_pool_info = { .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
                                               .pNext = NULL,
                                               .queueFamilyIndex = qFamIndex,
                                               .flags = flags };
-    VK_CHECK_RESULT (vkCreateCommandPool(dev, &cmd_pool_info, NULL, &cmdPool));
+    VK_CHECK_RESULT (vkCreateCommandPool(dev->dev, &cmd_pool_info, NULL, &cmdPool));
     return cmdPool;
 }
-VkCommandBuffer vkh_cmd_buff_create (VkDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level){
+VkCommandBuffer vkh_cmd_buff_create (VkhDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level){
     VkCommandBuffer cmdBuff;
     VkCommandBufferAllocateInfo cmd = { .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
                                         .pNext = NULL,
                                         .commandPool = cmdPool,
                                         .level = level,
                                         .commandBufferCount = 1 };
-    VK_CHECK_RESULT (vkAllocateCommandBuffers (dev, &cmd, &cmdBuff));
+    VK_CHECK_RESULT (vkAllocateCommandBuffers (dev->dev, &cmd, &cmdBuff));
     return cmdBuff;
 }
 

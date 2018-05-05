@@ -53,9 +53,11 @@ typedef struct _vkh_device_t*   VkhDevice;
 typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
 typedef struct _vkh_queue_t*    VkhQueue;
-//typedef struct _vkh_presenter_t*    VkhPresenter;
+typedef struct _vkh_presenter_t* VkhPresenter;
 
-// VkhApp
+/*************
+ * VkhApp    *
+ *************/
 VkhApp              vkh_app_create      (const char* app_name, int ext_count, const char* extentions[]);
 void                vkh_app_destroy     (VkhApp app);
 VkInstance          vkh_app_get_inst    (VkhApp app);
@@ -65,12 +67,28 @@ void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 
 VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
 // VkhPhy
-VkhPhyInfo  vkh_phyinfo_create  (VkhApp app, VkPhysicalDevice phy, VkSurfaceKHR surface);
+VkhPhyInfo  vkh_phyinfo_create  (VkPhysicalDevice phy, VkSurfaceKHR surface);
 void        vkh_phyinfo_destroy (VkhPhyInfo phy);
-// VkhDevice
+
+/*************
+ * VkhDevice *
+ *************/
 VkhDevice   vkh_device_create   (VkPhysicalDevice phy, VkDevice vkDev);
 void        vkh_device_destroy  (VkhDevice dev);
-// VkhImage
+
+/****************
+ * VkhPresenter *
+ ****************/
+VkhPresenter vkh_presenter_create  (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
+                                    uint32_t width, uint32_t height,
+                                    VkFormat preferedFormat, VkPresentModeKHR presentMode);
+void         vkh_presenter_destroy (VkhPresenter r);
+bool         vkh_presenter_draw    (VkhPresenter r);
+void         vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource);
+/************
+ * VkhImage *
+ ************/
+VkhImage vkh_image_import       (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height);
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
                                     VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
 VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
@@ -95,7 +113,10 @@ VkImageView             vkh_image_get_view      (VkhImage img);
 VkImageLayout           vkh_image_get_layout    (VkhImage img);
 VkSampler               vkh_image_get_sampler   (VkhImage img);
 VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout imageLayout);
-// VkhBuffer
+
+/*************
+ * VkhBuffer *
+ *************/
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
                                     VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size);
 void        vkh_buffer_destroy  (VkhBuffer buff);
@@ -105,14 +126,13 @@ VkResult    vkh_buffer_bind     (VkhBuffer buff);
 
 VkBuffer    vkh_buffer_get_vkbuffer         (VkhBuffer buff);
 void*       vkh_buffer_get_mapped_pointer   (VkhBuffer buff);
-///////////////////////////////
 
-VkFence         vkh_fence_create			(VkDevice dev);
-VkFence         vkh_fence_create_signaled	(VkDevice dev);
-VkSemaphore     vkh_semaphore_create		(VkDevice dev);
+VkFence         vkh_fence_create			(VkhDevice dev);
+VkFence         vkh_fence_create_signaled	(VkhDevice dev);
+VkSemaphore     vkh_semaphore_create		(VkhDevice dev);
 
-VkCommandPool   vkh_cmd_pool_create (VkDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags);
-VkCommandBuffer vkh_cmd_buff_create (VkDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level);
+VkCommandPool   vkh_cmd_pool_create (VkhDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags);
+VkCommandBuffer vkh_cmd_buff_create (VkhDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level);
 void vkh_cmd_begin  (VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags);
 void vkh_cmd_end    (VkCommandBuffer cmdBuff);
 void vkh_cmd_submit (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
@@ -135,7 +155,7 @@ void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkIm
 /////////////////////
 VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex, VkQueueFlags flags);
 void        vkh_queue_destroy   (VkhQueue queue);
-VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
+//VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
 /////////////////////
 
 #ifdef __cplusplus

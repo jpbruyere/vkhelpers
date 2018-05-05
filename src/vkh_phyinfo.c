@@ -23,7 +23,7 @@
 #include "vkh_app.h"
 
 
-VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy, VkSurfaceKHR surface) {
+VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
     VkhPhyInfo pi = (vkh_phy_t*)calloc(1, sizeof(vkh_phy_t));
     pi->phy = phy;
 
@@ -76,6 +76,8 @@ VkhPhyInfo vkh_phyinfo_create (VkhApp app, VkPhysicalDevice phy, VkSurfaceKHR su
             }else if (pi->gQueue<0)
                 pi->gQueue = j;
         }
+        if ((pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (pi->gQueue < 0))
+            pi->gQueue = j;
         if ((pi->queues[j].queueFlags & VK_QUEUE_COMPUTE_BIT) && (pi->cQueue < 0))
             pi->cQueue = j;
         if ((pi->queues[j].queueFlags & VK_QUEUE_TRANSFER_BIT) && (pi->tQueue < 0))

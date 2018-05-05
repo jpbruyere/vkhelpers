@@ -28,9 +28,8 @@ typedef struct _vkh_presenter_t {
     VkQueue         queue;
     VkCommandPool   cmdPool;
     uint32_t        qFam;
-    VkDevice        dev;
+    VkhDevice       dev;
 
-    void*           window;
     VkSurfaceKHR    surface;
 
     VkSemaphore     semaPresentEnd;

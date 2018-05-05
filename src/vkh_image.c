@@ -36,6 +36,7 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
     img->format = format;
     img->layers = arrayLayers;
     img->mipLevels = mipLevels;
+    img->imported = false;
 
     VkImageCreateInfo image_info = { .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
                                      .imageType = imageType,
@@ -82,6 +83,7 @@ VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint3
     img->format = format;
     img->width = width;
     img->height = height;
+    img->imported = true;
     return img;
 }
 VkhImage vkh_image_ms_create(VkhDevice pDev,
@@ -213,8 +215,10 @@ void vkh_image_destroy(VkhImage img)
     if(img->sampler != VK_NULL_HANDLE)
         vkDestroySampler    (img->pDev->dev,img->sampler,NULL);
 
-    vkDestroyImage                  (img->pDev->dev, img->image, NULL);
-    vkFreeMemory                    (img->pDev->dev, img->memory, NULL);
+    if (!img->imported){
+        vkDestroyImage      (img->pDev->dev, img->image, NULL);
+        vkFreeMemory        (img->pDev->dev, img->memory, NULL);
+    }
 
     free(img);
     img = NULL;

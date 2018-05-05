@@ -68,7 +68,7 @@ VkhPhyInfo* vkh_app_get_phyinfos (VkhApp app, uint32_t* count, VkSurfaceKHR surf
     VkhPhyInfo* infos = (VkhPhyInfo*)malloc((*count) * sizeof(VkhPhyInfo));
 
     for (int i=0; i<(*count); i++)
-        infos[i] = vkh_phyinfo_create (app, phyDevices[i], surface);
+        infos[i] = vkh_phyinfo_create (phyDevices[i], surface);
 
     return infos;
 }
