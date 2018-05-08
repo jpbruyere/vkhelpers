@@ -22,6 +22,10 @@
 #ifndef VKH_PRESENTER_H
 #define VKH_PRESENTER_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "vkh.h"
 
 typedef struct _vkh_presenter_t {
@@ -51,4 +55,7 @@ typedef struct _vkh_presenter_t {
     VkFramebuffer*  frameBuffs;
 }vkh_presenter_t;
 
+#ifdef __cplusplus
+}
+#endif
 #endif

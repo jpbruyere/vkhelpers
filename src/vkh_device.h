@@ -25,9 +25,10 @@
 #include "vkh.h"
 
 typedef struct _vkh_device_t{
-	VkDevice				dev;
-	VkPhysicalDeviceMemoryProperties phyMemProps;
-	VkPhysicalDevice        phy;
+    VkDevice				dev;
+    VkPhysicalDeviceMemoryProperties phyMemProps;
+    VkPhysicalDevice        phy;
+    VmaAllocator            allocator;
 }vkh_device_t;
 
 #endif

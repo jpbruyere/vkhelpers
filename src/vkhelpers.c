@@ -23,6 +23,8 @@
 #include "vkh_device.h"
 #include "vkh.h"
 
+#define CHECK_BIT(var,pos) (((var)>>(pos)) & 1)
+
 VkFence vkh_fence_create (VkhDevice dev) {
     VkFence fence;
     VkFenceCreateInfo fenceInfo = { .sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
@@ -170,10 +172,10 @@ void set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubr
     vkCmdPipelineBarrier(cmdBuff, src_stages, dest_stages, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
 }
 
-bool memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits, VkFlags requirements_mask, uint32_t *typeIndex) {
+bool vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits, VkFlags requirements_mask, uint32_t *typeIndex) {
     // Search memtypes to find first index with those properties
     for (uint32_t i = 0; i < memory_properties->memoryTypeCount; i++) {
-        if ((typeBits & 1) == 1) {
+        if (CHECK_BIT(typeBits, i)) {
             // Type is available, does it match user properties?
             if ((memory_properties->memoryTypes[i].propertyFlags & requirements_mask) == requirements_mask) {
                 *typeIndex = i;

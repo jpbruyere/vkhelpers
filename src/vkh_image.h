@@ -31,7 +31,8 @@ typedef struct _vkh_image_t {
     uint32_t                mipLevels;
     uint32_t				width, height;
     VkImage					image;
-    VkDeviceMemory			memory;
+    VmaAllocation           alloc;
+    VmaAllocationInfo       allocInfo;
     VkSampler               sampler;
     VkImageView             view;
     VkImageLayout           layout; //current layout

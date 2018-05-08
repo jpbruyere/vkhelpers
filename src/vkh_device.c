@@ -27,9 +27,17 @@ VkhDevice vkh_device_create (VkPhysicalDevice phy, VkDevice vkDev) {
     dev->phy = phy;
 
     vkGetPhysicalDeviceMemoryProperties (phy, &dev->phyMemProps);
+
+    VmaAllocatorCreateInfo allocatorInfo = {
+        .physicalDevice = phy,
+        .device = vkDev
+    };
+    vmaCreateAllocator(&allocatorInfo, &dev->allocator);
+
     return dev;
 }
 
 void vkh_device_destroy (VkhDevice dev) {
+    vmaDestroyAllocator (dev->allocator);
     free (dev);
 }

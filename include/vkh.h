@@ -26,6 +26,9 @@
 extern "C" {
 #endif
 
+#include <vulkan/vulkan.h>
+#include "vk_mem_alloc.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -33,7 +36,9 @@ extern "C" {
 #include <stdint.h>
 #include <math.h>
 
-#include <vulkan/vulkan.h>
+#define VKH_KO      0x00000400
+#define VKH_MO      0x00100000
+#define VKH_GO      0x40000000
 
 #define FB_COLOR_FORMAT VK_FORMAT_B8G8R8A8_UNORM
 
@@ -62,7 +67,7 @@ VkhApp              vkh_app_create      (const char* app_name, int ext_count, co
 void                vkh_app_destroy     (VkhApp app);
 VkInstance          vkh_app_get_inst    (VkhApp app);
 VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
-VkhPhyInfo*             vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
+VkhPhyInfo*         vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 
 VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
@@ -90,11 +95,11 @@ void         vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource);
  ************/
 VkhImage vkh_image_import       (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height);
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
-                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
+                                    VmaMemoryUsage memprops,	VkImageUsageFlags usage);
 VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
-                                    VkMemoryPropertyFlags memprops,	VkImageUsageFlags usage);
+                                    VmaMemoryUsage memprops,	VkImageUsageFlags usage);
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                                    VkMemoryPropertyFlags memprops, VkImageUsageFlags usage);
+                                    VmaMemoryUsage memprops, VkImageUsageFlags usage);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
                                     VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);
@@ -141,7 +146,7 @@ void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, V
 
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
-bool        memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
+bool        vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
                                         VkFlags requirements_mask, uint32_t *typeIndex);
 char *      read_spv(const char *filename, size_t *psize);
 uint32_t*   readFile(uint32_t* length, const char* filename);

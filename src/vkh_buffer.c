@@ -34,7 +34,7 @@ VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VkMemoryPr
     vkGetBufferMemoryRequirements(pDev->dev, buff->buffer, &memReq);
     VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
                                           .allocationSize = memReq.size };
-    assert(memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits,memoryPropertyFlags, &memAllocInfo.memoryTypeIndex));
+    assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits,memoryPropertyFlags, &memAllocInfo.memoryTypeIndex));
     VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &buff->memory));
 
     buff->alignment = memReq.alignment;

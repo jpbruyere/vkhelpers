@@ -27,6 +27,7 @@
 typedef struct _vkh_buffer_t {
     VkhDevice               pDev;
     VkBuffer                buffer;
+
     VkDeviceMemory          memory;
     VkDescriptorBufferInfo  descriptor;
     VkDeviceSize            size;
