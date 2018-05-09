@@ -41,6 +41,7 @@ VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, V
     r->cmdPool          = vkh_cmd_pool_create  (r->dev, presentQueueFamIdx, 0);
     r->semaPresentEnd   = vkh_semaphore_create (r->dev);
     r->semaDrawEnd      = vkh_semaphore_create (r->dev);
+    r->evtReady         = vkh_event_create     (r->dev);
 
     _init_phy_surface (r, preferedFormat, presentMode);
 
@@ -54,6 +55,7 @@ void vkh_presenter_destroy (VkhPresenter r) {
 
     _swapchain_destroy (r);
 
+    vkDestroyEvent      (r->dev->dev, r->evtReady, NULL);
     vkDestroySemaphore  (r->dev->dev, r->semaDrawEnd, NULL);
     vkDestroySemaphore  (r->dev->dev, r->semaPresentEnd, NULL);
     vkDestroyCommandPool(r->dev->dev, r->cmdPool, NULL);

@@ -22,6 +22,10 @@
 #ifndef VKH_IMAGE_H
 #define VKH_IMAGE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "vkh.h"
 
 typedef struct _vkh_image_t {
@@ -38,4 +42,7 @@ typedef struct _vkh_image_t {
     VkImageLayout           layout; //current layout
     bool                    imported;
 }vkh_image_t;
+#ifdef __cplusplus
+}
+#endif
 #endif

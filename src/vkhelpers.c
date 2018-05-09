@@ -49,6 +49,12 @@ VkSemaphore vkh_semaphore_create (VkhDevice dev) {
     VK_CHECK_RESULT(vkCreateSemaphore(dev->dev, &info, NULL, &semaphore));
     return semaphore;
 }
+VkEvent vkh_event_create (VkhDevice dev) {
+    VkEvent evt;
+    VkEventCreateInfo evtInfo = {.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO};
+    VK_CHECK_RESULT(vkCreateEvent (dev->dev, &evtInfo, NULL, &evt));
+    return evt;
+}
 VkCommandPool vkh_cmd_pool_create (VkhDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags){
     VkCommandPool cmdPool;
     VkCommandPoolCreateInfo cmd_pool_info = { .sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,

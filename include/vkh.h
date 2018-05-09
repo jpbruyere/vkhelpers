@@ -135,6 +135,7 @@ void*       vkh_buffer_get_mapped_pointer   (VkhBuffer buff);
 VkFence         vkh_fence_create			(VkhDevice dev);
 VkFence         vkh_fence_create_signaled	(VkhDevice dev);
 VkSemaphore     vkh_semaphore_create		(VkhDevice dev);
+VkEvent         vkh_event_create            (VkhDevice dev);
 
 VkCommandPool   vkh_cmd_pool_create (VkhDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags);
 VkCommandBuffer vkh_cmd_buff_create (VkhDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level);
