@@ -21,7 +21,7 @@
  */
 #include "vkh_app.h"
 
-#define ENGINE_NAME     "vkheplers"
+#define ENGINE_NAME     "vkhelpers"
 #define ENGINE_VERSION  1
 
 VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentions[]) {

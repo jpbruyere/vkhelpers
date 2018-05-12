@@ -223,12 +223,10 @@ void vkh_image_destroy(VkhImage img)
 }
 
 void* vkh_image_map (VkhImage img) {
-    VkImageSubresource subRes = { .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT};
-    VkSubresourceLayout subResLayout;
-
-    vkGetImageSubresourceLayout (img->pDev->dev, img->image, &subRes, &subResLayout);
-    return (void*)img->allocInfo.pMappedData + subResLayout.offset;
+    void* data;
+    vmaMapMemory(img->pDev->allocator, img->alloc, &data);
+    return data;
 }
 void vkh_image_unmap (VkhImage img) {
-    //vkUnmapMemory (img->pDev->dev, img->memory);
+    vmaUnmapMemory(img->pDev->allocator, img->alloc);
 }
