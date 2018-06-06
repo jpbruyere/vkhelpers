@@ -30,18 +30,16 @@ extern "C" {
 
 typedef struct _vkh_image_t {
     VkhDevice				pDev;
-    VkFormat                format;
-    uint32_t                layers;
-    uint32_t                mipLevels;
-    uint32_t				width, height;
+    VkImageCreateInfo       infos;
     VkImage					image;
     VmaAllocation           alloc;
     VmaAllocationInfo       allocInfo;
     VkSampler               sampler;
     VkImageView             view;
     VkImageLayout           layout; //current layout
-    bool                    imported;
+    bool                    imported;//dont destroy vkimage at end
 }vkh_image_t;
+
 #ifdef __cplusplus
 }
 #endif

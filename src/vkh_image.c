@@ -30,42 +30,31 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
     VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
 
     img->pDev = pDev;
-    img->width = width;
-    img->height = height;
-    img->layout = VK_IMAGE_LAYOUT_UNDEFINED;
-    img->format = format;
-    img->layers = arrayLayers;
-    img->mipLevels = mipLevels;
-    img->imported = false;
-    img->alloc = VK_NULL_HANDLE;
-    img->image = VK_NULL_HANDLE;
 
-    VkImageCreateInfo image_info = { .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
-                                     .imageType = imageType,
-                                     .tiling = tiling,
-                                     .initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
-                                     .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
-                                     .usage = usage,
-                                     .format = format,
-                                     .extent = {width,height,1},
-                                     .mipLevels = mipLevels,
-                                     .arrayLayers = arrayLayers,
-                                     .samples = samples };
+    VkImageCreateInfo* pInfo = &img->infos;
+    pInfo->sType            = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    pInfo->imageType        = imageType;
+    pInfo->tiling           = tiling;
+    pInfo->initialLayout    = (tiling == VK_IMAGE_TILING_OPTIMAL) ? VK_IMAGE_LAYOUT_UNDEFINED : VK_IMAGE_LAYOUT_PREINITIALIZED;
+    pInfo->sharingMode      = VK_SHARING_MODE_EXCLUSIVE;
+    pInfo->usage            = usage;
+    pInfo->format           = format;
+    pInfo->extent.width     = width;
+    pInfo->extent.height    = height;
+    pInfo->extent.depth     = 1;
+    pInfo->mipLevels        = mipLevels;
+    pInfo->arrayLayers      = arrayLayers;
+    pInfo->samples          = samples;
+
+    img->imported = false;
+
+    img->alloc  = VK_NULL_HANDLE;
+    img->image  = VK_NULL_HANDLE;
+    img->sampler= VK_NULL_HANDLE;
+    img->view   = VK_NULL_HANDLE;
 
     VmaAllocationCreateInfo allocInfo = { .usage = memprops };
-    VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, &image_info, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
-
-    /*VK_CHECK_RESULT(vkCreateImage(pDev->dev, &image_info, NULL, &img->image));
-
-    VkMemoryRequirements memReq;
-    vkGetImageMemoryRequirements(pDev->dev, img->image, &memReq);
-
-    VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-                                          .allocationSize = memReq.size };
-    assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex));
-
-    VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &img->memory));
-    VK_CHECK_RESULT(vkBindImageMemory(pDev->dev, img->image, img->memory, offset));*/
+    VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
 
     return img;
 }
@@ -88,10 +77,18 @@ VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint3
     VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
     img->pDev = pDev;
     img->image = vkImg;
-    img->format = format;
-    img->width = width;
-    img->height = height;
     img->imported = true;
+
+    VkImageCreateInfo* pInfo = &img->infos;
+    pInfo->imageType        = VK_IMAGE_TYPE_2D;
+    pInfo->format           = format;
+    pInfo->extent.width     = width;
+    pInfo->extent.height    = height;
+    pInfo->extent.depth     = 1;
+    pInfo->mipLevels        = 1;
+    pInfo->arrayLayers      = 1;
+    //pInfo->samples          = samples;
+
     return img;
 }
 VkhImage vkh_image_ms_create(VkhDevice pDev,
@@ -108,9 +105,9 @@ void vkh_image_create_view (VkhImage img, VkImageViewType viewType, VkImageAspec
     VkImageViewCreateInfo viewInfo = { .sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
                                          .image = img->image,
                                          .viewType = viewType,
-                                         .format = img->format,
+                                         .format = img->infos.format,
                                          .components = {VK_COMPONENT_SWIZZLE_R,VK_COMPONENT_SWIZZLE_G,VK_COMPONENT_SWIZZLE_B,VK_COMPONENT_SWIZZLE_A},
-                                         .subresourceRange = {aspectFlags,0,1,0,img->layers}};
+                                         .subresourceRange = {aspectFlags,0,1,0,img->infos.arrayLayers}};
     VK_CHECK_RESULT(vkCreateImageView(img->pDev->dev, &viewInfo, NULL, &img->view));
 }
 void vkh_image_create_sampler (VkhImage img, VkFilter magFilter, VkFilter minFilter,
@@ -153,14 +150,15 @@ VkDescriptorImageInfo vkh_image_get_descriptor (VkhImage img, VkImageLayout imag
     return desc;
 }
 
-void vkh_image_set_layout(VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask, VkImageLayout new_image_layout,
+void vkh_image_set_layout(VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask,
+                          VkImageLayout old_image_layout, VkImageLayout new_image_layout,
                       VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages) {
     VkImageSubresourceRange subres = {aspectMask,0,1,0,1};
-    vkh_image_set_layout_subres(cmdBuff, image, subres, new_image_layout, src_stages, dest_stages);
+    vkh_image_set_layout_subres(cmdBuff, image, subres, old_image_layout, new_image_layout, src_stages, dest_stages);
 }
 
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
-                             VkImageLayout new_image_layout,
+                             VkImageLayout old_image_layout, VkImageLayout new_image_layout,
                              VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages) {
     VkImageMemoryBarrier image_memory_barrier = { .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
                                                   .oldLayout = image->layout,
@@ -170,7 +168,7 @@ void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImag
                                                   .image = image->image,
                                                   .subresourceRange = subresourceRange};
 
-    switch (image->layout) {
+    switch (old_image_layout) {
         case VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL:
             image_memory_barrier.srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
             break;

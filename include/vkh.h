@@ -105,9 +105,9 @@ void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImage
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);
 void vkh_image_create_sampler   (VkhImage img, VkFilter magFilter, VkFilter minFilter,
                                     VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
-void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask,
+void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
-void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
+void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_destroy          (VkhImage img);
 void* vkh_image_map             (VkhImage img);
