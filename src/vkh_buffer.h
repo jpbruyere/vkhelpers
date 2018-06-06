@@ -30,16 +30,13 @@ extern "C" {
 
 typedef struct _vkh_buffer_t {
     VkhDevice               pDev;
+    VkBufferCreateInfo      infos;
+    VmaMemoryUsage          memprops;
     VkBuffer                buffer;
-
-    VkDeviceMemory          memory;
+    VmaAllocation           alloc;
+    VmaAllocationInfo       allocInfo;
     VkDescriptorBufferInfo  descriptor;
-    VkDeviceSize            size;
     VkDeviceSize            alignment;
-
-    VkBufferUsageFlags      usageFlags;
-    VkMemoryPropertyFlags   memoryPropertyFlags;
-
     void*                   mapped;
 }vkh_buffer_t;
 #ifdef __cplusplus

@@ -123,11 +123,10 @@ VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout ima
  * VkhBuffer *
  *************/
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
-                                    VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size);
+                                    VmaMemoryUsage memprops, VkDeviceSize size);
 void        vkh_buffer_destroy  (VkhBuffer buff);
 VkResult    vkh_buffer_map      (VkhBuffer buff);
 void        vkh_buffer_unmap    (VkhBuffer buff);
-VkResult    vkh_buffer_bind     (VkhBuffer buff);
 
 VkBuffer    vkh_buffer_get_vkbuffer         (VkhBuffer buff);
 void*       vkh_buffer_get_mapped_pointer   (VkhBuffer buff);
