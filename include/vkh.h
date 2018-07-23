@@ -27,7 +27,10 @@ extern "C" {
 #endif
 
 #include <vulkan/vulkan.h>
-#include "vk_mem_alloc.h"
+
+typedef enum VmaMemoryUsage VmaMemoryUsage;
+
+//#include "vk_mem_alloc.h"
 
 #include <stdlib.h>
 #include <stdio.h>

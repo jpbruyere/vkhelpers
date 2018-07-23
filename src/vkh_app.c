@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "vkh_app.h"
+#include "vk_mem_alloc.h"
 
 #define ENGINE_NAME     "vkhelpers"
 #define ENGINE_VERSION  1
@@ -33,13 +34,13 @@ VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentio
                                 .pEngineName = ENGINE_NAME,
                                 .engineVersion = ENGINE_VERSION,
                                 .apiVersion = VK_API_VERSION_1_0};
-#if DEBUG
+/*#if DEBUG
     const uint32_t enabledLayersCount = 1;
     const char* enabledLayers[] = {"VK_LAYER_LUNARG_standard_validation"};
-#else
+#else*/
     const uint32_t enabledLayersCount = 0;
     const char* enabledLayers[] = {NULL};
-#endif
+//#endif
 
     VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                        .pApplicationInfo = &infos,
@@ -49,6 +50,7 @@ VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentio
                                        .ppEnabledLayerNames = enabledLayers };
 
     VK_CHECK_RESULT(vkCreateInstance (&inst_info, NULL, &app->inst));
+    app->infos = infos;
     return app;
 }
 

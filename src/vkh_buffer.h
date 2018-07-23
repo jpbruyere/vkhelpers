@@ -27,6 +27,7 @@ extern "C" {
 #endif
 
 #include "vkh.h"
+#include "vk_mem_alloc.h"
 
 typedef struct _vkh_buffer_t {
     VkhDevice               pDev;
