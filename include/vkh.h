@@ -92,7 +92,7 @@ VkhPresenter vkh_presenter_create  (VkhDevice dev, uint32_t presentQueueFamIdx, 
                                     VkFormat preferedFormat, VkPresentModeKHR presentMode);
 void         vkh_presenter_destroy (VkhPresenter r);
 bool         vkh_presenter_draw    (VkhPresenter r);
-void         vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource);
+void         vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
 /************
  * VkhImage *
  ************/

@@ -98,7 +98,7 @@ bool vkh_presenter_draw (VkhPresenter r) {
     return true;
 }
 
-void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource){
+void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height){
 
     for (int32_t i = 0; i < r->imgCount; ++i)
     {
@@ -119,7 +119,7 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource){
                                 .dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
                                 .srcOffset = {},
                                 .dstOffset = {0,0,0},
-                                .extent = {1024,800,1}};
+                                .extent = {width, height,1}};
 
         vkCmdCopyImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &cregion);
