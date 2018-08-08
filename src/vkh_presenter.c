@@ -23,6 +23,14 @@
 #include "vkh_device.h"
 #include "vkh_image.h"
 
+#ifndef MIN
+# define MIN(a,b) (((a) < (b)) ? (a) : (b))
+#endif
+
+#ifndef MAX
+# define MAX(a,b) (((a) > (b)) ? (a) : (b))
+#endif
+
 void _swapchain_create  (VkhPresenter r);
 void _swapchain_destroy (VkhPresenter r);
 void _init_phy_surface  (VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR presentMode);
@@ -100,6 +108,8 @@ bool vkh_presenter_draw (VkhPresenter r) {
 
 void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height){
 
+    uint32_t w = MIN(width, r->width), h = MIN(height, r->height);
+
     for (int32_t i = 0; i < r->imgCount; ++i)
     {
         VkImage bltDstImage = r->ScBuffers[i]->image;
@@ -119,7 +129,7 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
                                 .dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
                                 .srcOffset = {},
                                 .dstOffset = {0,0,0},
-                                .extent = {width, height,1}};
+                                .extent = {w, h,1}};
 
         vkCmdCopyImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &cregion);
