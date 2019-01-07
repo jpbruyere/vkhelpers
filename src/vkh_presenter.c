@@ -115,7 +115,7 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
         VkImage bltDstImage = r->ScBuffers[i]->image;
         VkCommandBuffer cb = r->cmdBuffs[i];
 
-        vkh_cmd_begin(cb,VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT);
+        vkh_cmd_begin(cb,0);
 
         set_image_layout(cb, bltDstImage, VK_IMAGE_ASPECT_COLOR_BIT,
                 VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
@@ -127,9 +127,9 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
 
         VkImageCopy cregion = { .srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
                                 .dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
-                                .srcOffset = {},
+                                .srcOffset = {0},
                                 .dstOffset = {0,0,0},
-                                .extent = {w, h,1}};
+                                .extent = {MIN(w,r->width), MIN(h,r->height),1}};
 
         vkCmdCopyImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                        1, &cregion);
