@@ -70,6 +70,7 @@ VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
             VkBool32 present;
             if (surface)
                 vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
+            //printf ("surf=%d, q=%d, present=%d\n",surface,j,present);
             if (present){
                 if (pi->pQueue<0)
                     pi->pQueue = j;

@@ -197,7 +197,7 @@ bool vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_pr
 VkShaderModule vkh_load_module(VkDevice dev, const char* path){
     VkShaderModule module;
     size_t filelength;
-    char* pCode = read_spv(path, &filelength);
+    uint32_t* pCode = (uint32_t*)read_spv(path, &filelength);
     VkShaderModuleCreateInfo createInfo = { .sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
                                             .pCode = pCode,
                                             .codeSize = filelength };
@@ -208,7 +208,7 @@ VkShaderModule vkh_load_module(VkDevice dev, const char* path){
 }
 
 char *read_spv(const char *filename, size_t *psize) {
-    long int size;
+    size_t size;
     size_t retval;
     void *shader_code;
 
@@ -221,7 +221,7 @@ char *read_spv(const char *filename, size_t *psize) {
         return NULL;
 
     fseek(fp, 0L, SEEK_END);
-    size = ftell(fp);
+    size = (size_t)ftell(fp);
 
     fseek(fp, 0L, SEEK_SET);
 
