@@ -34,6 +34,7 @@ typedef struct _vkh_device_t{
     VkPhysicalDeviceMemoryProperties phyMemProps;
     VkPhysicalDevice        phy;
     VmaAllocator            allocator;
+    VkInstance              instance;
 }vkh_device_t;
 
 #ifdef __cplusplus

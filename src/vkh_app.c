@@ -25,7 +25,7 @@
 #define ENGINE_NAME     "vkhelpers"
 #define ENGINE_VERSION  1
 
-VkhApp vkh_app_create (const char* app_name, int ext_count, const char* extentions[]) {
+VkhApp vkh_app_create (const char* app_name, uint32_t ext_count, const char* extentions[]) {
     VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
 
     VkApplicationInfo infos = { .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,

@@ -39,5 +39,6 @@ VkhDevice vkh_device_create (VkPhysicalDevice phy, VkDevice vkDev) {
 
 void vkh_device_destroy (VkhDevice dev) {
     vmaDestroyAllocator (dev->allocator);
+    vkDestroyDevice (dev->dev, NULL);
     free (dev);
 }
