@@ -135,12 +135,18 @@ VkImage vkh_image_get_vkimage (VkhImage img){
     return img->image;
 }
 VkSampler vkh_image_get_sampler (VkhImage img){
+    if (img == NULL)
+        return NULL;
     return img->sampler;
 }
 VkImageView vkh_image_get_view (VkhImage img){
+    if (img == NULL)
+        return NULL;
     return img->view;
 }
 VkImageLayout vkh_image_get_layout (VkhImage img){
+    if (img == NULL)
+        return VK_IMAGE_LAYOUT_UNDEFINED;
     return img->layout;
 }
 VkDescriptorImageInfo vkh_image_get_descriptor (VkhImage img, VkImageLayout imageLayout){

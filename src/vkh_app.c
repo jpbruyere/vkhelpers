@@ -36,7 +36,7 @@ VkhApp vkh_app_create (const char* app_name, uint32_t ext_count, const char* ext
                                 .apiVersion = VK_API_VERSION_1_0};
 #if VKH_USE_VALIDATION
     const uint32_t enabledLayersCount = 1;
-    const char* enabledLayers[] = {"VK_LAYER_LUNARG_standard_validation"};
+    const char* enabledLayers[] = {"VK_LAYER_KHRONOS_validation"};
 #else
     const uint32_t enabledLayersCount = 0;
     const char* enabledLayers[] = {NULL};

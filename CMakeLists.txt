@@ -27,6 +27,7 @@ if (NOT VULKAN_SDK)
 	if (VULKAN_SDK)
 			set(ENV{VULKAN_SDK} ${VULKAN_SDK})
 			SET(ENV{VK_LAYER_PATH} "${VULKAN_SDK}/etc/explicit_layer.d")
+			link_directories("${VULKAN_SDK}/lib")
 	endif ()
 endif ()
 
