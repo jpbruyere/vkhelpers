@@ -81,8 +81,12 @@ void        vkh_phyinfo_destroy (VkhPhyInfo phy);
 /*************
  * VkhDevice *
  *************/
-VkhDevice   vkh_device_create   (VkPhysicalDevice phy, VkDevice vkDev);
+VkhDevice   vkh_device_create   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
 void        vkh_device_destroy  (VkhDevice dev);
+
+VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugReportFlagsEXT flags);
+void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport);
+void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objectType, uint64_t handle, const char *name);
 
 /****************
  * VkhPresenter *
@@ -115,6 +119,7 @@ void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImag
 void vkh_image_destroy          (VkhImage img);
 void* vkh_image_map             (VkhImage img);
 void vkh_image_unmap            (VkhImage img);
+void vkh_image_set_name         (VkhImage img, const char* name);
 
 VkImage                 vkh_image_get_vkimage   (VkhImage img);
 VkImageView             vkh_image_get_view      (VkhImage img);
