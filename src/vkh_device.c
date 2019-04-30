@@ -63,6 +63,7 @@ VKAPI_ATTR VkBool32 VKAPI_CALL messageCallback(
             printf ("%sMSG: %s\n",KBLU, pMsg);
             break;
     }
+    fflush(stdout);
     return VK_FALSE;
 }
 
