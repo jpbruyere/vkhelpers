@@ -214,6 +214,8 @@ void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImag
 
 void vkh_image_destroy(VkhImage img)
 {
+    if (img==NULL)
+        return;
     if(img->view != VK_NULL_HANDLE)
         vkDestroyImageView  (img->pDev->dev,img->view,NULL);
     if(img->sampler != VK_NULL_HANDLE)
@@ -235,5 +237,7 @@ void vkh_image_unmap (VkhImage img) {
     vmaUnmapMemory(img->pDev->allocator, img->alloc);
 }
 void vkh_image_set_name (VkhImage img, const char* name){
+    if (img==NULL)
+        return;
     vkh_device_set_object_name(img->pDev, VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, (uint64_t)img->image, name);
 }
