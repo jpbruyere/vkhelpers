@@ -43,8 +43,6 @@ typedef enum VmaMemoryUsage VmaMemoryUsage;
 #define VKH_MO      0x00100000
 #define VKH_GO      0x40000000
 
-#define FB_COLOR_FORMAT VK_FORMAT_B8G8R8A8_UNORM
-
 #define VK_CHECK_RESULT(f) 																				\
 {																										\
     VkResult res = (f);																					\
