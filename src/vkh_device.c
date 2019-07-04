@@ -20,6 +20,7 @@
  * THE SOFTWARE.
  */
 #include "vkh_device.h"
+#include "string.h"
 
 #define KNRM  "\x1B[0m\x1B[40m"
 #define KRED  "\x1B[31m\x1B[40m"
@@ -31,7 +32,11 @@
 #define KWHT  "\x1B[37m\x1B[40m"
 
 static VkDebugReportCallbackEXT msgCallback;
-static PFN_vkDebugMarkerSetObjectNameEXT   DebugMarkerSetObjectNameEXT;
+static PFN_vkDebugMarkerSetObjectNameEXT    DebugMarkerSetObjectNameEXT;
+//I add debug markers here for convenience even if device is not part of the signature.
+static PFN_vkCmdDebugMarkerBeginEXT         CmdDebugMarkerBegin;
+static PFN_vkCmdDebugMarkerEndEXT           CmdDebugMarkerEnd;
+static PFN_vkCmdDebugMarkerInsertEXT        CmdDebugMarkerInsert;
 
 VKAPI_ATTR VkBool32 VKAPI_CALL messageCallback(
     VkDebugReportFlagsEXT flags,
@@ -82,6 +87,9 @@ VkhDevice vkh_device_create (VkInstance inst, VkPhysicalDevice phy, VkDevice vkD
     vmaCreateAllocator(&allocatorInfo, &dev->allocator);
 
     DebugMarkerSetObjectNameEXT = (PFN_vkDebugMarkerSetObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkDebugMarkerSetObjectNameEXT");
+    CmdDebugMarkerBegin         = (PFN_vkCmdDebugMarkerBeginEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerBeginEXT");
+    CmdDebugMarkerEnd           = (PFN_vkCmdDebugMarkerEndEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerEndEXT");
+    CmdDebugMarkerInsert        = (PFN_vkCmdDebugMarkerInsertEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerInsertEXT");
 
     return dev;
 }
@@ -111,14 +119,27 @@ void vkh_device_destroy (VkhDevice dev) {
 }
 
 void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objectType, uint64_t handle, const char* name){
-    VkDebugMarkerObjectNameInfoEXT info = {
+    const VkDebugMarkerObjectNameInfoEXT info = {
         .sType      = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
         .pNext      = 0,
         .objectType = objectType,
         .object     = handle,
         .pObjectName= name
     };
-    //DebugMarkerSetObjectNameEXT (dev->dev, &info);
+    DebugMarkerSetObjectNameEXT (dev->dev, &info);
 }
+void vkh_cmd_marker_start (VkCommandBuffer cmd, const char* name, float color[4]) {
+    const VkDebugMarkerMarkerInfoEXT info = {
+        .sType      = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT,
+        .pNext      = 0,
+        .pMarkerName= name
+    };
+    memcpy (info.color, color, 4 * sizeof(float));
+    CmdDebugMarkerBegin (cmd, &info);
+}
+void vkh_cmd_marker_end (VkCommandBuffer cmd) {
+    CmdDebugMarkerEnd (cmd);
+}
+
 
 

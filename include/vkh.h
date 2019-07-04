@@ -150,6 +150,9 @@ void vkh_cmd_submit (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
                                     VkSemaphore signalSemaphore, VkFence fence);
 
+void vkh_cmd_marker_start   (VkCommandBuffer cmd, const char* name, float color[4]);
+void vkh_cmd_marker_end     (VkCommandBuffer cmd);
+
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
 bool        vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
