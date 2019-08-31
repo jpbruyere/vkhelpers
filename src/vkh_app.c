@@ -25,7 +25,7 @@
 #define ENGINE_NAME     "vkhelpers"
 #define ENGINE_VERSION  1
 
-VkhApp vkh_app_create (const char* app_name, uint32_t ext_count, const char* extentions[]) {
+VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const char* enabledLayers[], uint32_t ext_count, const char* extentions[]) {
     VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
 
     VkApplicationInfo infos = { .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -34,13 +34,6 @@ VkhApp vkh_app_create (const char* app_name, uint32_t ext_count, const char* ext
                                 .pEngineName = ENGINE_NAME,
                                 .engineVersion = ENGINE_VERSION,
                                 .apiVersion = VK_API_VERSION_1_0};
-#if VKH_USE_VALIDATION
-    const uint32_t enabledLayersCount = 1;
-    const char* enabledLayers[] = {"VK_LAYER_KHRONOS_validation"};
-#else
-    const uint32_t enabledLayersCount = 0;
-    const char* enabledLayers[] = {NULL};
-#endif
 
     VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                        .pApplicationInfo = &infos,
@@ -69,14 +62,14 @@ VkhPhyInfo* vkh_app_get_phyinfos (VkhApp app, uint32_t* count, VkSurfaceKHR surf
     VK_CHECK_RESULT(vkEnumeratePhysicalDevices (app->inst, count, phyDevices));
     VkhPhyInfo* infos = (VkhPhyInfo*)malloc((*count) * sizeof(VkhPhyInfo));
 
-    for (int i=0; i<(*count); i++)
+    for (uint32_t i=0; i<(*count); i++)
         infos[i] = vkh_phyinfo_create (phyDevices[i], surface);
 
     return infos;
 }
 
 void vkh_app_free_phyinfos (uint32_t count, VkhPhyInfo* infos) {
-    for (int i=0; i<count; i++)
+    for (uint32_t i=0; i<count; i++)
         vkh_phyinfo_destroy (infos[i]);
     free (infos);
 }
