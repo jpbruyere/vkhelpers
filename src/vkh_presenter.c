@@ -69,18 +69,21 @@ void vkh_presenter_destroy (VkhPresenter r) {
     free (r);
 }
 
-bool vkh_presenter_draw (VkhPresenter r) {
-
+bool vkh_presenter_acquireNextImage (VkhPresenter r, VkFence fence) {
     // Get the index of the next available swapchain image:
     VkResult err = vkAcquireNextImageKHR
-            (r->dev->dev, r->swapChain, UINT64_MAX, r->semaPresentEnd, VK_NULL_HANDLE, &r->currentScBufferIndex);
+            (r->dev->dev, r->swapChain, UINT64_MAX, r->semaPresentEnd, fence, &r->currentScBufferIndex);
     if ((err == VK_ERROR_OUT_OF_DATE_KHR) || (err == VK_SUBOPTIMAL_KHR)){
         _swapchain_create (r);
         return false;
-
     }
+    return true;
+}
 
-    VK_CHECK_RESULT(err);
+
+bool vkh_presenter_draw (VkhPresenter r) {
+    if (!vkh_presenter_acquireNextImage (r, VK_NULL_HANDLE))
+        return false;
 
     VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     VkSubmitInfo submit_info = { .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,

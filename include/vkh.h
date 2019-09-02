@@ -89,12 +89,13 @@ void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objec
 /****************
  * VkhPresenter *
  ****************/
-VkhPresenter vkh_presenter_create  (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
-                                    uint32_t width, uint32_t height,
-                                    VkFormat preferedFormat, VkPresentModeKHR presentMode);
-void         vkh_presenter_destroy (VkhPresenter r);
-bool         vkh_presenter_draw    (VkhPresenter r);
-void         vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
+VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
+                                   uint32_t width, uint32_t height,
+                                   VkFormat preferedFormat, VkPresentModeKHR presentMode);
+void        vkh_presenter_destroy (VkhPresenter r);
+bool        vkh_presenter_draw    (VkhPresenter r);
+bool        vkh_presenter_acquireNextImage  (VkhPresenter r, VkFence fence);
+void        vkh_presenter_build_blit_cmd    (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
 /************
  * VkhImage *
  ************/
@@ -114,6 +115,7 @@ void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImag
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
                                     VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+void vkh_image_destroy_sampler  (VkhImage img);
 void vkh_image_destroy          (VkhImage img);
 void* vkh_image_map             (VkhImage img);
 void vkh_image_unmap            (VkhImage img);

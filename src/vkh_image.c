@@ -211,7 +211,13 @@ void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImag
     vkCmdPipelineBarrier(cmdBuff, src_stages, dest_stages, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
     image->layout = new_image_layout;
 }
-
+void vkh_image_destroy_sampler (VkhImage img) {
+    if (img==NULL)
+        return;
+    if(img->sampler != VK_NULL_HANDLE)
+        vkDestroySampler    (img->pDev->dev,img->sampler,NULL);
+    img->sampler = VK_NULL_HANDLE;
+}
 void vkh_image_destroy(VkhImage img)
 {
     if (img==NULL)
