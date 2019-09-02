@@ -74,7 +74,14 @@ VkCommandBuffer vkh_cmd_buff_create (VkhDevice dev, VkCommandPool cmdPool, VkCom
     VK_CHECK_RESULT (vkAllocateCommandBuffers (dev->dev, &cmd, &cmdBuff));
     return cmdBuff;
 }
-
+void vkh_cmd_buffs_create (VkhDevice dev, VkCommandPool cmdPool, VkCommandBufferLevel level, uint32_t count, VkCommandBuffer* cmdBuffs){
+    VkCommandBufferAllocateInfo cmd = { .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+                                        .pNext = NULL,
+                                        .commandPool = cmdPool,
+                                        .level = level,
+                                        .commandBufferCount = count };
+    VK_CHECK_RESULT (vkAllocateCommandBuffers (dev->dev, &cmd, cmdBuffs));
+}
 void vkh_cmd_begin(VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags) {
     VkCommandBufferBeginInfo cmd_buf_info = { .sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
                                               .pNext = NULL,
