@@ -96,6 +96,7 @@ void        vkh_presenter_destroy (VkhPresenter r);
 bool        vkh_presenter_draw    (VkhPresenter r);
 bool        vkh_presenter_acquireNextImage  (VkhPresenter r, VkFence fence);
 void        vkh_presenter_build_blit_cmd    (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
+void        vkh_presenter_create_swapchain  (VkhPresenter r);
 /************
  * VkhImage *
  ************/

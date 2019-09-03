@@ -31,7 +31,7 @@
 # define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
-void _swapchain_create  (VkhPresenter r);
+void vkh_presenter_create_swapchain  (VkhPresenter r);
 void _swapchain_destroy (VkhPresenter r);
 void _init_phy_surface  (VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR presentMode);
 
@@ -52,7 +52,7 @@ VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, V
 
     _init_phy_surface (r, preferedFormat, presentMode);
 
-    _swapchain_create (r);
+    vkh_presenter_create_swapchain (r);
 
     return r;
 }
@@ -73,17 +73,15 @@ bool vkh_presenter_acquireNextImage (VkhPresenter r, VkFence fence) {
     // Get the index of the next available swapchain image:
     VkResult err = vkAcquireNextImageKHR
             (r->dev->dev, r->swapChain, UINT64_MAX, r->semaPresentEnd, fence, &r->currentScBufferIndex);
-    if ((err == VK_ERROR_OUT_OF_DATE_KHR) || (err == VK_SUBOPTIMAL_KHR)){
-        _swapchain_create (r);
-        return false;
-    }
-    return true;
+    return ((err != VK_ERROR_OUT_OF_DATE_KHR) && (err != VK_SUBOPTIMAL_KHR));
 }
 
 
 bool vkh_presenter_draw (VkhPresenter r) {
-    if (!vkh_presenter_acquireNextImage (r, VK_NULL_HANDLE))
+    if (!vkh_presenter_acquireNextImage (r, VK_NULL_HANDLE)){
+        vkh_presenter_create_swapchain (r);
         return false;
+    }
 
     VkPipelineStageFlags dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
     VkSubmitInfo submit_info = { .sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
@@ -178,7 +176,7 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
     assert (r->presentMode >= 0);
 }
 
-void _swapchain_create (VkhPresenter r){
+void vkh_presenter_create_swapchain (VkhPresenter r){
     // Ensure all operations on the device have been finished before destroying resources
     vkDeviceWaitIdle(r->dev->dev);
 
