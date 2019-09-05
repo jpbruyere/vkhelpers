@@ -69,16 +69,16 @@ void vkh_presenter_destroy (VkhPresenter r) {
     free (r);
 }
 
-bool vkh_presenter_acquireNextImage (VkhPresenter r, VkFence fence) {
+bool vkh_presenter_acquireNextImage (VkhPresenter r, VkFence fence, VkSemaphore semaphore) {
     // Get the index of the next available swapchain image:
     VkResult err = vkAcquireNextImageKHR
-            (r->dev->dev, r->swapChain, UINT64_MAX, r->semaPresentEnd, fence, &r->currentScBufferIndex);
+            (r->dev->dev, r->swapChain, UINT64_MAX, semaphore, fence, &r->currentScBufferIndex);
     return ((err != VK_ERROR_OUT_OF_DATE_KHR) && (err != VK_SUBOPTIMAL_KHR));
 }
 
 
 bool vkh_presenter_draw (VkhPresenter r) {
-    if (!vkh_presenter_acquireNextImage (r, VK_NULL_HANDLE)){
+    if (!vkh_presenter_acquireNextImage (r, VK_NULL_HANDLE, r->semaPresentEnd)){
         vkh_presenter_create_swapchain (r);
         return false;
     }
