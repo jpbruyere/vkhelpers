@@ -111,7 +111,7 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
 
     uint32_t w = MIN(width, r->width), h = MIN(height, r->height);
 
-    for (int32_t i = 0; i < r->imgCount; ++i)
+    for (uint32_t i = 0; i < r->imgCount; ++i)
     {
         VkImage bltDstImage = r->ScBuffers[i]->image;
         VkCommandBuffer cb = r->cmdBuffs[i];
@@ -153,7 +153,7 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
     VkSurfaceFormatKHR formats[count];
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, formats));
 
-    for (int i=0; i<count; i++){
+    for (uint i=0; i<count; i++){
         if (formats[i].format == preferedFormat) {
             r->format = formats[i].format;
             r->colorSpace = formats[i].colorSpace;
@@ -167,7 +167,7 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
     VkPresentModeKHR presentModes[count];
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfacePresentModesKHR(r->dev->phy, r->surface, &count, presentModes));
     r->presentMode = -1;
-    for (int i=0; i<count; i++){
+    for (uint i=0; i<count; i++){
         if (presentModes[i] == presentMode) {
             r->presentMode = presentModes[i];
             break;

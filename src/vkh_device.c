@@ -20,6 +20,8 @@
  * THE SOFTWARE.
  */
 #include "vkh_device.h"
+#include "vkh_phyinfo.h"
+#include "vkh_app.h"
 #include "string.h"
 
 #define KNRM  "\x1B[0m\x1B[40m"
@@ -71,8 +73,12 @@ VKAPI_ATTR VkBool32 VKAPI_CALL messageCallback(
     fflush(stdout);
     return VK_FALSE;
 }
-
-VkhDevice vkh_device_create (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev) {
+VkhDevice vkh_device_create (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info){
+    VkDevice dev;
+    VK_CHECK_RESULT(vkCreateDevice (phyInfo->phy, pDevice_info, NULL, &dev));
+    return vkh_device_import(app->inst, phyInfo->phy, dev);
+}
+VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev) {
     VkhDevice dev = (vkh_device_t*)malloc(sizeof(vkh_device_t));
     dev->dev = vkDev;
     dev->phy = phy;

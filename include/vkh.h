@@ -28,9 +28,8 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
+enum VmaMemoryUsage;
 typedef enum VmaMemoryUsage VmaMemoryUsage;
-
-//#include "vk_mem_alloc.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -71,16 +70,24 @@ VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType prefer
 VkhPhyInfo*         vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 
-VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
-// VkhPhy
-VkhPhyInfo  vkh_phyinfo_create  (VkPhysicalDevice phy, VkSurfaceKHR surface);
-void        vkh_phyinfo_destroy (VkhPhyInfo phy);
+VkPhysicalDeviceProperties          vkh_app_get_phy_properties          (VkhApp app, uint32_t phyIndex);
+
+/*************
+ * VkhPhy    *
+ *************/
+VkhPhyInfo          vkh_phyinfo_create  (VkPhysicalDevice phy, VkSurfaceKHR surface);
+void                vkh_phyinfo_destroy (VkhPhyInfo phy);
+
+VkPhysicalDeviceProperties          vkh_phyinfo_get_properties          (VkhPhyInfo phy);
+VkPhysicalDeviceMemoryProperties    vkh_phyinfo_get_memory_properties   (VkhPhyInfo phy);
+uint32_t                            vkh_phy_info_get_graphic_queue_index(VkhPhyInfo phy);
 
 /*************
  * VkhDevice *
  *************/
-VkhDevice   vkh_device_create   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
-void        vkh_device_destroy  (VkhDevice dev);
+VkhDevice           vkh_device_create   (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info);
+VkhDevice           vkh_device_import   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
+void                vkh_device_destroy  (VkhDevice dev);
 
 VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugReportFlagsEXT flags);
 void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport);

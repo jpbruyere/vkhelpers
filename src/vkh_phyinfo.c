@@ -97,3 +97,12 @@ void vkh_phyinfo_destroy (VkhPhyInfo phy) {
 void vkh_phyinfo_select_queue (VkhPhyInfo phy, uint32_t qIndex, float* priorities) {
 
 }
+VkPhysicalDeviceProperties vkh_phyinfo_get_properties (VkhPhyInfo phy) {
+    return phy->properties;
+}
+VkPhysicalDeviceMemoryProperties vkh_phyinfo_get_memory_properties (VkhPhyInfo phy) {
+    return phy->memProps;
+}
+uint32_t vkh_phy_info_get_graphic_queue_index (VkhPhyInfo phy) {
+    return (uint32_t)phy->gQueue;
+}
