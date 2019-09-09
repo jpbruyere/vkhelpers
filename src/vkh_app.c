@@ -33,7 +33,7 @@ VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const 
                                 .applicationVersion = 1,
                                 .pEngineName = ENGINE_NAME,
                                 .engineVersion = ENGINE_VERSION,
-                                .apiVersion = VK_API_VERSION_1_0};
+                                .apiVersion = VK_API_VERSION_1_1};
 
     VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
                                        .pApplicationInfo = &infos,
