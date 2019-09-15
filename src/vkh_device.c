@@ -117,7 +117,23 @@ VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugR
 void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport){
     DestroyDebugReportCallback (dev->instance, dbgReport, VK_NULL_HANDLE);
 }
-
+void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
+    vkDestroySampler (dev->dev, sampler,NULL);
+}
+VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
+                               VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode){
+    VkSampler sampler = VK_NULL_HANDLE;
+    VkSamplerCreateInfo samplerCreateInfo = { .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+                                              .maxAnisotropy= 1.0,
+                                              .addressModeU = addressMode,
+                                              .addressModeV = addressMode,
+                                              .addressModeW = addressMode,
+                                              .magFilter    = magFilter,
+                                              .minFilter    = minFilter,
+                                              .mipmapMode   = mipmapMode};
+    VK_CHECK_RESULT(vkCreateSampler(dev->dev, &samplerCreateInfo, NULL, &sampler));
+    return sampler;
+}
 void vkh_device_destroy (VkhDevice dev) {
     vmaDestroyAllocator (dev->allocator);
     vkDestroyDevice (dev->dev, NULL);

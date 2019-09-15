@@ -93,6 +93,10 @@ VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugR
 void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport);
 void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objectType, uint64_t handle, const char *name);
 
+VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
+                               VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler);
+
 /****************
  * VkhPresenter *
  ****************/
@@ -114,6 +118,7 @@ VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountF
                                     VmaMemoryUsage memprops,	VkImageUsageFlags usage);
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
                                     VmaMemoryUsage memprops, VkImageUsageFlags usage);
+void vkh_image_set_sampler      (VkhImage img, VkSampler sampler);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
                                     VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);

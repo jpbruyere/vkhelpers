@@ -124,7 +124,9 @@ void vkh_image_create_sampler (VkhImage img, VkFilter magFilter, VkFilter minFil
                                               .mipmapMode   = mipmapMode};
     VK_CHECK_RESULT(vkCreateSampler(img->pDev->dev, &samplerCreateInfo, NULL, &img->sampler));
 }
-
+void vkh_image_set_sampler (VkhImage img, VkSampler sampler){
+    img->sampler = sampler;
+}
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter,
                                  VkFilter minFilter, VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode)
 {
