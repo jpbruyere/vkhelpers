@@ -24,15 +24,6 @@
 #include "vkh_app.h"
 #include "string.h"
 
-#define KNRM  "\x1B[0m\x1B[40m"
-#define KRED  "\x1B[31m\x1B[40m"
-#define KGRN  "\x1B[32m\x1B[40m"
-#define KYEL  "\x1B[33m\x1B[40m"
-#define KBLU  "\x1B[34m\x1B[40m"
-#define KMAG  "\x1B[35m\x1B[40m"
-#define KCYN  "\x1B[36m\x1B[40m"
-#define KWHT  "\x1B[37m\x1B[40m"
-
 static VkDebugReportCallbackEXT msgCallback;
 static PFN_vkDebugMarkerSetObjectNameEXT    DebugMarkerSetObjectNameEXT;
 //I add debug markers here for convenience even if device is not part of the signature.
@@ -40,7 +31,7 @@ static PFN_vkCmdDebugMarkerBeginEXT         CmdDebugMarkerBegin;
 static PFN_vkCmdDebugMarkerEndEXT           CmdDebugMarkerEnd;
 static PFN_vkCmdDebugMarkerInsertEXT        CmdDebugMarkerInsert;
 
-VKAPI_ATTR VkBool32 VKAPI_CALL messageCallback(
+VkBool32 VKAPI_CALL messageCallback(
     VkDebugReportFlagsEXT flags,
     VkDebugReportObjectTypeEXT objType,
     uint64_t srcObject,
@@ -52,22 +43,22 @@ VKAPI_ATTR VkBool32 VKAPI_CALL messageCallback(
 {
     switch (flags) {
         case VK_DEBUG_REPORT_ERROR_BIT_EXT:
-            printf ("%sERR: %s\n",KRED, pMsg);
+            printf ("%sERR: %s%s\n",KRED, pMsg, KNRM);
             break;
         case VK_DEBUG_REPORT_DEBUG_BIT_EXT:
-            printf ("%sDBG: %s\n",KMAG, pMsg);
+            printf ("%sDBG: %s%s\n",KNRM, pMsg, KNRM);
             break;
         case VK_DEBUG_REPORT_WARNING_BIT_EXT:
-            printf ("%sWRN: %s\n",KYEL, pMsg);
+            printf ("%sWRN: %s%s\n",KYEL, pMsg, KNRM);
             break;
         case VK_DEBUG_REPORT_INFORMATION_BIT_EXT:
-            printf ("%sNFO: %s\n",KCYN, pMsg);
+            printf ("%sNFO: %s%s\n",KGRN, pMsg, KNRM);
             break;
         case VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT:
-            printf ("%sPRF: %s\n",KWHT, pMsg);
+            printf ("%sPRF: %s%s\n",KBLU, pMsg, KNRM);
             break;
         default:
-            printf ("%sMSG: %s\n",KBLU, pMsg);
+            printf ("%sMSG: %s%s\n",KBLU, pMsg, KNRM);
             break;
     }
     fflush(stdout);

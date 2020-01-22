@@ -69,6 +69,9 @@ VkInstance          vkh_app_get_inst    (VkhApp app);
 VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
 VkhPhyInfo*         vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
+void                vkh_app_enable_debug_messenger (VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
+                                                    VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
+                                                    PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 VkPhysicalDeviceProperties          vkh_app_get_phy_properties          (VkhApp app, uint32_t phyIndex);
 

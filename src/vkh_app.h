@@ -28,9 +28,28 @@ extern "C" {
 
 #include "vkh.h"
 
+//console colors for debug output on stdout with debug utils or debug report
+#ifdef __unix__
+    #define KNRM  "\x1b[0m"
+    #define KRED  "\x1B[41m\x1B[37m"
+    #define KGRN  "\x1B[42m\x1B[30m"
+    #define KYEL  "\x1B[43m\x1B[30m"
+    #define KBLU  "\x1B[44m\x1B[30m"
+#else
+    #define KNRM  ""
+    #define KRED  ""
+    #define KGRN  ""
+    #define KYEL  ""
+    #define KBLU  ""
+    #define KMAG  ""
+    #define KCYN  ""
+    #define KWHT  ""
+#endif
+
 typedef struct _vkh_app_t{
     VkApplicationInfo   infos;
     VkInstance          inst;
+    VkDebugUtilsMessengerEXT debugMessenger;
 }vkh_app_t;
 #ifdef __cplusplus
 }
