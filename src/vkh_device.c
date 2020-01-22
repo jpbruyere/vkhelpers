@@ -24,46 +24,14 @@
 #include "vkh_app.h"
 #include "string.h"
 
-static VkDebugReportCallbackEXT msgCallback;
-static PFN_vkDebugMarkerSetObjectNameEXT    DebugMarkerSetObjectNameEXT;
-//I add debug markers here for convenience even if device is not part of the signature.
-static PFN_vkCmdDebugMarkerBeginEXT         CmdDebugMarkerBegin;
-static PFN_vkCmdDebugMarkerEndEXT           CmdDebugMarkerEnd;
-static PFN_vkCmdDebugMarkerInsertEXT        CmdDebugMarkerInsert;
 
-VkBool32 VKAPI_CALL messageCallback(
-    VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT objType,
-    uint64_t srcObject,
-    size_t location,
-    int32_t msgCode,
-    const char* pLayerPrefix,
-    const char* pMsg,
-    void* pUserData)
-{
-    switch (flags) {
-        case VK_DEBUG_REPORT_ERROR_BIT_EXT:
-            printf ("%sERR: %s%s\n",KRED, pMsg, KNRM);
-            break;
-        case VK_DEBUG_REPORT_DEBUG_BIT_EXT:
-            printf ("%sDBG: %s%s\n",KNRM, pMsg, KNRM);
-            break;
-        case VK_DEBUG_REPORT_WARNING_BIT_EXT:
-            printf ("%sWRN: %s%s\n",KYEL, pMsg, KNRM);
-            break;
-        case VK_DEBUG_REPORT_INFORMATION_BIT_EXT:
-            printf ("%sNFO: %s%s\n",KGRN, pMsg, KNRM);
-            break;
-        case VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT:
-            printf ("%sPRF: %s%s\n",KBLU, pMsg, KNRM);
-            break;
-        default:
-            printf ("%sMSG: %s%s\n",KBLU, pMsg, KNRM);
-            break;
-    }
-    fflush(stdout);
-    return VK_FALSE;
-}
+static PFN_vkSetDebugUtilsObjectNameEXT     SetDebugUtilsObjectNameEXT;
+static PFN_vkQueueBeginDebugUtilsLabelEXT   QueueBeginDebugUtilsLabelEXT;
+static PFN_vkQueueEndDebugUtilsLabelEXT     QueueEndDebugUtilsLabelEXT;
+static PFN_vkCmdBeginDebugUtilsLabelEXT     CmdBeginDebugUtilsLabelEXT;
+static PFN_vkCmdEndDebugUtilsLabelEXT       CmdEndDebugUtilsLabelEXT;
+static PFN_vkCmdInsertDebugUtilsLabelEXT    CmdInsertDebugUtilsLabelEXT;
+
 VkhDevice vkh_device_create (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info){
     VkDevice dev;
     VK_CHECK_RESULT(vkCreateDevice (phyInfo->phy, pDevice_info, NULL, &dev));
@@ -83,31 +51,16 @@ VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkD
     };
     vmaCreateAllocator(&allocatorInfo, &dev->allocator);
 
-    DebugMarkerSetObjectNameEXT = (PFN_vkDebugMarkerSetObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkDebugMarkerSetObjectNameEXT");
-    CmdDebugMarkerBegin         = (PFN_vkCmdDebugMarkerBeginEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerBeginEXT");
-    CmdDebugMarkerEnd           = (PFN_vkCmdDebugMarkerEndEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerEndEXT");
-    CmdDebugMarkerInsert        = (PFN_vkCmdDebugMarkerInsertEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdDebugMarkerInsertEXT");
+    SetDebugUtilsObjectNameEXT  = (PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkSetDebugUtilsObjectNameEXT");
+    QueueBeginDebugUtilsLabelEXT  = (PFN_vkQueueBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueBeginDebugUtilsLabelEXT");
+    QueueEndDebugUtilsLabelEXT  = (PFN_vkQueueEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueEndDebugUtilsLabelEXT");
+    CmdBeginDebugUtilsLabelEXT  = (PFN_vkCmdBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdBeginDebugUtilsLabelEXT");
+    CmdEndDebugUtilsLabelEXT  = (PFN_vkCmdEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdEndDebugUtilsLabelEXT");
+    CmdInsertDebugUtilsLabelEXT  = (PFN_vkCmdInsertDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdInsertDebugUtilsLabelEXT");
 
     return dev;
 }
 
-VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugReportFlagsEXT flags)  {
-
-    CreateDebugReportCallback   = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(dev->instance, "vkCreateDebugReportCallbackEXT");
-    DestroyDebugReportCallback  = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(dev->instance, "vkDestroyDebugReportCallbackEXT");
-
-    VkDebugReportCallbackCreateInfoEXT dbgCreateInfo = {
-        .sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CREATE_INFO_EXT,
-        .flags = flags,
-        .pfnCallback = (PFN_vkDebugReportCallbackEXT)messageCallback
-    };
-
-    CreateDebugReportCallback (dev->instance, &dbgCreateInfo, VK_NULL_HANDLE, &msgCallback);
-    return msgCallback;
-}
-void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport){
-    DestroyDebugReportCallback (dev->instance, dbgReport, VK_NULL_HANDLE);
-}
 void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
     vkDestroySampler (dev->dev, sampler,NULL);
 }
@@ -131,27 +84,36 @@ void vkh_device_destroy (VkhDevice dev) {
     free (dev);
 }
 
-void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objectType, uint64_t handle, const char* name){
-    const VkDebugMarkerObjectNameInfoEXT info = {
-        .sType      = VK_STRUCTURE_TYPE_DEBUG_MARKER_OBJECT_NAME_INFO_EXT,
-        .pNext      = 0,
-        .objectType = objectType,
-        .object     = handle,
-        .pObjectName= name
+void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char* name){
+    const VkDebugUtilsObjectNameInfoEXT info = {
+        .sType       = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
+        .pNext       = 0,
+        .objectType  = objectType,
+        .objectHandle= handle,
+        .pObjectName = name
     };
-    DebugMarkerSetObjectNameEXT (dev->dev, &info);
+    SetDebugUtilsObjectNameEXT (dev->dev, &info);
 }
-void vkh_cmd_marker_start (VkCommandBuffer cmd, const char* name, float color[4]) {
-    const VkDebugMarkerMarkerInfoEXT info = {
-        .sType      = VK_STRUCTURE_TYPE_DEBUG_MARKER_MARKER_INFO_EXT,
+void vkh_cmd_label_start (VkCommandBuffer cmd, const char* name, const float color[4]) {
+    const VkDebugUtilsLabelEXT info = {
+        .sType      = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
         .pNext      = 0,
-        .pMarkerName= name
+        .pLabelName= name
     };
-    memcpy (info.color, color, 4 * sizeof(float));
-    CmdDebugMarkerBegin (cmd, &info);
+    memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
+    CmdBeginDebugUtilsLabelEXT (cmd, &info);
 }
-void vkh_cmd_marker_end (VkCommandBuffer cmd) {
-    CmdDebugMarkerEnd (cmd);
+void vkh_cmd_label_insert (VkCommandBuffer cmd, const char* name, const float color[4]) {
+    const VkDebugUtilsLabelEXT info = {
+        .sType      = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+        .pNext      = 0,
+        .pLabelName= name
+    };
+    memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
+    CmdInsertDebugUtilsLabelEXT (cmd, &info);
+}
+void vkh_cmd_label_end (VkCommandBuffer cmd) {
+    CmdEndDebugUtilsLabelEXT (cmd);
 }
 
 

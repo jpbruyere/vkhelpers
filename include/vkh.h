@@ -92,9 +92,7 @@ VkhDevice           vkh_device_create   (VkhApp app, VkhPhyInfo phyInfo, VkDevic
 VkhDevice           vkh_device_import   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
 void                vkh_device_destroy  (VkhDevice dev);
 
-VkDebugReportCallbackEXT vkh_device_create_debug_report (VkhDevice dev, VkDebugReportFlagsEXT flags);
-void vkh_device_destroy_debug_report (VkhDevice dev, VkDebugReportCallbackEXT dbgReport);
-void vkh_device_set_object_name (VkhDevice dev, VkDebugReportObjectTypeEXT objectType, uint64_t handle, const char *name);
+void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char *name);
 
 VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
                                VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
@@ -169,8 +167,9 @@ void vkh_cmd_submit (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
                                     VkSemaphore signalSemaphore, VkFence fence);
 
-void vkh_cmd_marker_start   (VkCommandBuffer cmd, const char* name, float color[4]);
-void vkh_cmd_marker_end     (VkCommandBuffer cmd);
+void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[]);
+void vkh_cmd_label_end     (VkCommandBuffer cmd);
+void vkh_cmd_label_insert  (VkCommandBuffer cmd, const char* name, const float color[4]);
 
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 

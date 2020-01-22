@@ -247,5 +247,5 @@ void vkh_image_unmap (VkhImage img) {
 void vkh_image_set_name (VkhImage img, const char* name){
     if (img==NULL)
         return;
-    vkh_device_set_object_name(img->pDev, VK_DEBUG_REPORT_OBJECT_TYPE_IMAGE_EXT, (uint64_t)img->image, name);
+    vkh_device_set_object_name(img->pDev, VK_OBJECT_TYPE_IMAGE, (uint64_t)img->image, name);
 }
