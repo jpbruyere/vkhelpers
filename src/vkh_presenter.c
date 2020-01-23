@@ -150,10 +150,10 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
     uint32_t count;
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, NULL));
     assert (count>0);
-    VkSurfaceFormatKHR formats[count];
+    VkSurfaceFormatKHR* formats = (VkSurfaceFormatKHR*)malloc(count * sizeof(VkSurfaceFormatKHR));
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, formats));
 
-    for (uint i=0; i<count; i++){
+    for (uint32_t i=0; i<count; i++){
         if (formats[i].format == preferedFormat) {
             r->format = formats[i].format;
             r->colorSpace = formats[i].colorSpace;
@@ -164,16 +164,18 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
 
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfacePresentModesKHR(r->dev->phy, r->surface, &count, NULL));
     assert (count>0);
-    VkPresentModeKHR presentModes[count];
+    VkPresentModeKHR* presentModes = (VkPresentModeKHR*)malloc(count * sizeof(VkPresentModeKHR));
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfacePresentModesKHR(r->dev->phy, r->surface, &count, presentModes));
     r->presentMode = -1;
-    for (uint i=0; i<count; i++){
+    for (uint32_t i=0; i<count; i++){
         if (presentModes[i] == presentMode) {
             r->presentMode = presentModes[i];
             break;
         }
     }
     assert (r->presentMode >= 0);
+    free(formats);
+    free(presentModes);
 }
 
 void vkh_presenter_create_swapchain (VkhPresenter r){
