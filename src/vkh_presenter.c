@@ -150,10 +150,10 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
     uint32_t count;
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, NULL));
     assert (count>0);
-    VkSurfaceFormatKHR formats[count];
+    VkSurfaceFormatKHR* formats = (VkSurfaceFormatKHR*)malloc(count * sizeof(VkSurfaceFormatKHR));
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, formats));
 
-    for (uint i=0; i<count; i++){
+    for (uint32_t i=0; i<count; i++){
         if (formats[i].format == preferedFormat) {
             r->format = formats[i].format;
             r->colorSpace = formats[i].colorSpace;
@@ -164,16 +164,18 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
 
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfacePresentModesKHR(r->dev->phy, r->surface, &count, NULL));
     assert (count>0);
-    VkPresentModeKHR presentModes[count];
+    VkPresentModeKHR* presentModes = (VkPresentModeKHR*)malloc(count * sizeof(VkPresentModeKHR));
     VK_CHECK_RESULT(vkGetPhysicalDeviceSurfacePresentModesKHR(r->dev->phy, r->surface, &count, presentModes));
     r->presentMode = -1;
-    for (uint i=0; i<count; i++){
+    for (uint32_t i=0; i<count; i++){
         if (presentModes[i] == presentMode) {
             r->presentMode = presentModes[i];
             break;
         }
     }
     assert (r->presentMode >= 0);
+    free(formats);
+    free(presentModes);
 }
 
 void vkh_presenter_create_swapchain (VkhPresenter r){
@@ -226,13 +228,13 @@ void vkh_presenter_create_swapchain (VkhPresenter r){
     VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount, NULL));
     assert (r->imgCount>0);
 
-    VkImage images[r->imgCount];
-    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount,images));
+    VkImage* images = (VkImage*)malloc(r->imgCount * sizeof(VkImage));
+    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount, images));
 
     r->ScBuffers = (VkhImage*)      malloc (r->imgCount * sizeof(VkhImage));
     r->cmdBuffs = (VkCommandBuffer*)malloc (r->imgCount * sizeof(VkCommandBuffer));
 
-    for (int i=0; i<r->imgCount; i++) {
+    for (uint32_t i=0; i<r->imgCount; i++) {
 
         VkhImage sci = vkh_image_import(r->dev, images[i], r->format, r->width, r->height);
         vkh_image_create_view(sci, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT);
@@ -241,6 +243,7 @@ void vkh_presenter_create_swapchain (VkhPresenter r){
         r->cmdBuffs [i] = vkh_cmd_buff_create(r->dev, r->cmdPool,VK_COMMAND_BUFFER_LEVEL_PRIMARY);
     }
     r->currentScBufferIndex = 0;
+    free (images);
 }
 void _swapchain_destroy (VkhPresenter r){
     for (uint32_t i = 0; i < r->imgCount; i++)
