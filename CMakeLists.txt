@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.7)
 
 PROJECT(vkh VERSION 0.1.0 DESCRIPTION "Vulkan helpers library")
 
-#SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 IF (UNIX)
     SET(CMAKE_CXX_FLAGS "-Wall -Wno-extra")
@@ -38,7 +38,6 @@ if (NOT VULKAN_SDK)
 				SET(vulkanSdkLayerPath "${VULKAN_SDK}/etc/explicit_layer.d")
 			endif ()
 			SET(ENV{VK_LAYER_PATH} "${vulkanSdkLayerPath}")
-			link_directories("${VULKAN_SDK}/lib")
 	endif ()
 endif ()
 
