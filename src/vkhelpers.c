@@ -277,7 +277,7 @@ void dumpLayerExts () {
     assert (vkEnumerateInstanceLayerProperties(&instance_layer_count, NULL)==VK_SUCCESS);
     if (instance_layer_count == 0)
         return;
-    VkLayerProperties vk_props[instance_layer_count];
+    VkLayerProperties* vk_props = (VkLayerProperties*)malloc(instance_layer_count * sizeof(VkLayerProperties));
     assert (vkEnumerateInstanceLayerProperties(&instance_layer_count, vk_props)==VK_SUCCESS);
 
     for (uint32_t i = 0; i < instance_layer_count; i++) {
@@ -286,4 +286,5 @@ void dumpLayerExts () {
         if (res) return res;
         info.instance_layer_properties.push_back(layer_props);*/
     }
+    free (vk_props);
 }

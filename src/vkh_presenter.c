@@ -228,13 +228,13 @@ void vkh_presenter_create_swapchain (VkhPresenter r){
     VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount, NULL));
     assert (r->imgCount>0);
 
-    VkImage images[r->imgCount];
-    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount,images));
+    VkImage* images = (VkImage*)malloc(r->imgCount * sizeof(VkImage));
+    VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount, images));
 
     r->ScBuffers = (VkhImage*)      malloc (r->imgCount * sizeof(VkhImage));
     r->cmdBuffs = (VkCommandBuffer*)malloc (r->imgCount * sizeof(VkCommandBuffer));
 
-    for (int i=0; i<r->imgCount; i++) {
+    for (uint32_t i=0; i<r->imgCount; i++) {
 
         VkhImage sci = vkh_image_import(r->dev, images[i], r->format, r->width, r->height);
         vkh_image_create_view(sci, VK_IMAGE_VIEW_TYPE_2D, VK_IMAGE_ASPECT_COLOR_BIT);
@@ -243,6 +243,7 @@ void vkh_presenter_create_swapchain (VkhPresenter r){
         r->cmdBuffs [i] = vkh_cmd_buff_create(r->dev, r->cmdPool,VK_COMMAND_BUFFER_LEVEL_PRIMARY);
     }
     r->currentScBufferIndex = 0;
+    free (images);
 }
 void _swapchain_destroy (VkhPresenter r){
     for (uint32_t i = 0; i < r->imgCount; i++)
