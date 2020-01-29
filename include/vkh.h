@@ -36,6 +36,8 @@ typedef enum VmaMemoryUsage VmaMemoryUsage;
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+
+#define _USE_MATH_DEFINES   //to have M_PI* defined with MSVC
 #include <math.h>
 
 #define VKH_KO      0x00000400
