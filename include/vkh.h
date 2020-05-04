@@ -49,7 +49,7 @@ typedef enum VmaMemoryUsage VmaMemoryUsage;
     VkResult res = (f);																					\
     if (res != VK_SUCCESS)																				\
     {																									\
-        printf("Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
+        fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
         assert(res == VK_SUCCESS);																		\
     }																									\
 }
