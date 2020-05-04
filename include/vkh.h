@@ -93,6 +93,7 @@ uint32_t                            vkh_phy_info_get_graphic_queue_index(VkhPhyI
 VkhDevice           vkh_device_create   (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info);
 VkhDevice           vkh_device_import   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
 void                vkh_device_destroy  (VkhDevice dev);
+void                vkh_device_init_debug_utils (VkhDevice dev);
 
 void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char *name);
 

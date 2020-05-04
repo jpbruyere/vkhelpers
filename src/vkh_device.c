@@ -51,18 +51,19 @@ VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkD
     };
     vmaCreateAllocator(&allocatorInfo, &dev->allocator);
 
+    return dev;
+}
+/**
+ * @brief get instance proc addresses for debug utils (name, label,...)
+ * @param vkh device
+ */
+void vkh_device_init_debug_utils (VkhDevice dev) {
     SetDebugUtilsObjectNameEXT  = (PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkSetDebugUtilsObjectNameEXT");
     QueueBeginDebugUtilsLabelEXT  = (PFN_vkQueueBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueBeginDebugUtilsLabelEXT");
     QueueEndDebugUtilsLabelEXT  = (PFN_vkQueueEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueEndDebugUtilsLabelEXT");
     CmdBeginDebugUtilsLabelEXT  = (PFN_vkCmdBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdBeginDebugUtilsLabelEXT");
     CmdEndDebugUtilsLabelEXT  = (PFN_vkCmdEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdEndDebugUtilsLabelEXT");
     CmdInsertDebugUtilsLabelEXT  = (PFN_vkCmdInsertDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdInsertDebugUtilsLabelEXT");
-
-    return dev;
-}
-
-void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
-    vkDestroySampler (dev->dev, sampler,NULL);
 }
 VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
                                VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode){
@@ -77,6 +78,9 @@ VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter
                                               .mipmapMode   = mipmapMode};
     VK_CHECK_RESULT(vkCreateSampler(dev->dev, &samplerCreateInfo, NULL, &sampler));
     return sampler;
+}
+void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
+    vkDestroySampler (dev->dev, sampler, NULL);
 }
 void vkh_device_destroy (VkhDevice dev) {
     vmaDestroyAllocator (dev->allocator);
