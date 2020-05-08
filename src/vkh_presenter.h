@@ -29,30 +29,31 @@ extern "C" {
 #include "vkh.h"
 
 typedef struct _vkh_presenter_t {
-    VkQueue         queue;
-    VkCommandPool   cmdPool;
-    uint32_t        qFam;
-    VkhDevice       dev;
+	VkQueue         queue;
+	VkCommandPool   cmdPool;
+	uint32_t        qFam;
+	VkhDevice       dev;
 
-    VkSurfaceKHR    surface;
+	VkSurfaceKHR    surface;
 
-    VkSemaphore     semaPresentEnd;
-    VkSemaphore     semaDrawEnd;
+	VkSemaphore     semaPresentEnd;
+	VkSemaphore     semaDrawEnd;
+	VkFence			fenceDraw;
 
-    VkFormat        format;
-    VkColorSpaceKHR colorSpace;
-    VkPresentModeKHR presentMode;
-    uint32_t        width;
-    uint32_t        height;
+	VkFormat        format;
+	VkColorSpaceKHR colorSpace;
+	VkPresentModeKHR presentMode;
+	uint32_t        width;
+	uint32_t        height;
 
-    uint32_t        imgCount;
-    uint32_t        currentScBufferIndex;
+	uint32_t        imgCount;
+	uint32_t        currentScBufferIndex;
 
-    VkRenderPass    renderPass;
-    VkSwapchainKHR  swapChain;
-    VkhImage*       ScBuffers;
-    VkCommandBuffer* cmdBuffs;
-    VkFramebuffer*  frameBuffs;
+	VkRenderPass    renderPass;
+	VkSwapchainKHR  swapChain;
+	VkhImage*       ScBuffers;
+	VkCommandBuffer* cmdBuffs;
+	VkFramebuffer*  frameBuffs;
 }vkh_presenter_t;
 
 #ifdef __cplusplus
