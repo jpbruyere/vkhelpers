@@ -24,85 +24,163 @@
 
 
 VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
-    VkhPhyInfo pi = (vkh_phy_t*)calloc(1, sizeof(vkh_phy_t));
-    pi->phy = phy;
+	VkhPhyInfo pi = (vkh_phy_t*)calloc(1, sizeof(vkh_phy_t));
+	pi->phy = phy;
 
-    vkGetPhysicalDeviceProperties (phy, &pi->properties);
-    vkGetPhysicalDeviceMemoryProperties (phy, &pi->memProps);
+	vkGetPhysicalDeviceProperties (phy, &pi->properties);
+	vkGetPhysicalDeviceMemoryProperties (phy, &pi->memProps);
 
-    vkGetPhysicalDeviceQueueFamilyProperties (phy, &pi->queueCount, NULL);
-    pi->queues = (VkQueueFamilyProperties*)malloc(pi->queueCount * sizeof(VkQueueFamilyProperties));
-    vkGetPhysicalDeviceQueueFamilyProperties (phy, &pi->queueCount, pi->queues);
+	vkGetPhysicalDeviceQueueFamilyProperties (phy, &pi->queueCount, NULL);
+	pi->queues = (VkQueueFamilyProperties*)malloc(pi->queueCount * sizeof(VkQueueFamilyProperties));
+	vkGetPhysicalDeviceQueueFamilyProperties (phy, &pi->queueCount, pi->queues);
 
-    //identify dedicated queues
+	//identify dedicated queues
 
-    pi->cQueue = -1;
-    pi->gQueue = -1;
-    pi->tQueue = -1;
-    pi->pQueue = -1;
+	pi->cQueue = -1;
+	pi->gQueue = -1;
+	pi->tQueue = -1;
+	pi->pQueue = -1;
 
-    //try to find dedicated queues first
-    for (int j=0; j<pi->queueCount; j++){
-        VkBool32 present = VK_FALSE;
-        switch (pi->queues[j].queueFlags) {
-        case VK_QUEUE_GRAPHICS_BIT:
-            if (surface)
-                vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
-            if (present){
-                if (pi->pQueue<0)
-                    pi->pQueue = j;
-            }else if (pi->gQueue<0)
-                pi->gQueue = j;
-            break;
-        case VK_QUEUE_COMPUTE_BIT:
-            if (pi->cQueue<0)
-                pi->cQueue = j;
-            break;
-        case VK_QUEUE_TRANSFER_BIT:
-            if (pi->tQueue<0)
-                pi->tQueue = j;
-            break;
-        }
-    }
-    //try to find suitable queue if no dedicated one found
-    for (int j=0; j<pi->queueCount; j++){
-        if (pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            VkBool32 present;
-            if (surface)
-                vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
-            //printf ("surf=%d, q=%d, present=%d\n",surface,j,present);
-            if (present){
-                if (pi->pQueue<0)
-                    pi->pQueue = j;
-            }else if (pi->gQueue<0)
-                pi->gQueue = j;
-        }
-        if ((pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (pi->gQueue < 0))
-            pi->gQueue = j;
-        if ((pi->queues[j].queueFlags & VK_QUEUE_COMPUTE_BIT) && (pi->cQueue < 0))
-            pi->cQueue = j;
-        if ((pi->queues[j].queueFlags & VK_QUEUE_TRANSFER_BIT) && (pi->tQueue < 0))
-            pi->tQueue = j;
-    }
+	//try to find dedicated queues first
+	for (int j=0; j<pi->queueCount; j++){
+		VkBool32 present = VK_FALSE;
+		switch (pi->queues[j].queueFlags) {
+		case VK_QUEUE_GRAPHICS_BIT:
+			if (surface)
+				vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
+			if (present){
+				if (pi->pQueue<0)
+					pi->pQueue = j;
+			}else if (pi->gQueue<0)
+				pi->gQueue = j;
+			break;
+		case VK_QUEUE_COMPUTE_BIT:
+			if (pi->cQueue<0)
+				pi->cQueue = j;
+			break;
+		case VK_QUEUE_TRANSFER_BIT:
+			if (pi->tQueue<0)
+				pi->tQueue = j;
+			break;
+		}
+	}
+	//try to find suitable queue if no dedicated one found
+	for (uint j=0; j<pi->queueCount; j++){
+		if (pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+			VkBool32 present;
+			if (surface)
+				vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
+			//printf ("surf=%d, q=%d, present=%d\n",surface,j,present);
+			if (present){
+				if (pi->pQueue<0)
+					pi->pQueue = j;
+			}else if (pi->gQueue<0)
+				pi->gQueue = j;
+		}
+		if ((pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) && (pi->gQueue < 0))
+			pi->gQueue = j;
+		if ((pi->queues[j].queueFlags & VK_QUEUE_COMPUTE_BIT) && (pi->cQueue < 0))
+			pi->cQueue = j;
+		if ((pi->queues[j].queueFlags & VK_QUEUE_TRANSFER_BIT) && (pi->tQueue < 0))
+			pi->tQueue = j;
+	}
 
-    return pi;
+	return pi;
 }
 
 void vkh_phyinfo_destroy (VkhPhyInfo phy) {
 
-    free(phy->queues);
-    free(phy);
+	free(phy->queues);
+	free(phy);
 }
 
-void vkh_phyinfo_select_queue (VkhPhyInfo phy, uint32_t qIndex, float* priorities) {
-
-}
 VkPhysicalDeviceProperties vkh_phyinfo_get_properties (VkhPhyInfo phy) {
-    return phy->properties;
+	return phy->properties;
 }
 VkPhysicalDeviceMemoryProperties vkh_phyinfo_get_memory_properties (VkhPhyInfo phy) {
-    return phy->memProps;
+	return phy->memProps;
 }
-uint32_t vkh_phy_info_get_graphic_queue_index (VkhPhyInfo phy) {
-    return (uint32_t)phy->gQueue;
+
+void vkh_phyinfo_get_queue_fam_indices (VkhPhyInfo phy, int* pQueue, int* gQueue, int* tQueue, int* cQueue) {
+	*pQueue = phy->pQueue;
+	*gQueue = phy->gQueue;
+	*tQueue = phy->tQueue;
+	*cQueue = phy->cQueue;
+}
+VkQueueFamilyProperties* vkh_phyinfo_get_queues_props(VkhPhyInfo phy, uint32_t* qCount) {
+	*qCount = phy->queueCount;
+	return phy->queues;
+}
+bool vkh_phyinfo_create_queues (VkhPhyInfo phy, int qFam, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo) {
+	qInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	if (phy->queues[qFam].queueCount < queueCount)
+		fprintf(stderr, "Request %d queues of family %d, but only %d available\n", queueCount, qFam, phy->queues[qFam].queueCount);
+	else {
+		qInfo->queueCount = queueCount,
+		qInfo->queueFamilyIndex = qFam,
+		qInfo->pQueuePriorities = queue_priorities;
+		phy->queues[qFam].queueCount -= queueCount;
+		return true;
+	}
+	return false;
+}
+bool vkh_phyinfo_create_presentable_queues (VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo) {
+	qInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	if (phy->pQueue < 0)
+		perror("No queue with presentable support found");
+	else if (phy->queues[phy->pQueue].queueCount < queueCount)
+		fprintf(stderr, "Request %d queues of family %d, but only %d available\n", queueCount, phy->pQueue, phy->queues[phy->pQueue].queueCount);
+	else {
+		qInfo->queueCount = queueCount,
+		qInfo->queueFamilyIndex = phy->pQueue,
+		qInfo->pQueuePriorities = queue_priorities;
+		phy->queues[phy->pQueue].queueCount -= queueCount;
+		return true;
+	}
+	return false;
+}
+bool vkh_phyinfo_create_transfer_queues (VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo) {
+	qInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	if (phy->tQueue < 0)
+		perror("No transfer queue found");
+	else if (phy->queues[phy->tQueue].queueCount < queueCount)
+		fprintf(stderr, "Request %d transfer queues of family %d, but only %d available\n", queueCount, phy->tQueue, phy->queues[phy->tQueue].queueCount);
+	else {
+		qInfo->queueCount = queueCount;
+		qInfo->queueFamilyIndex = phy->tQueue;
+		qInfo->pQueuePriorities = queue_priorities;
+		phy->queues[phy->tQueue].queueCount -= queueCount;
+		return true;
+	}
+	return false;
+}
+bool vkh_phyinfo_create_compute_queues(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo) {
+	qInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	if (phy->cQueue < 0)
+		perror("No compute queue found");
+	else if (phy->queues[phy->cQueue].queueCount < queueCount)
+		fprintf(stderr, "Request %d compute queues of family %d, but only %d available\n", queueCount, phy->cQueue, phy->queues[phy->cQueue].queueCount);
+	else {
+		qInfo->queueCount = queueCount,
+		qInfo->queueFamilyIndex = phy->cQueue,
+		qInfo->pQueuePriorities = queue_priorities;
+		phy->queues[phy->cQueue].queueCount -= queueCount;
+		return true;
+	}
+	return false;
+}
+bool vkh_phy_info_create_graphic_queues (VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo) {
+	qInfo->sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+	if (phy->gQueue < 0)
+		perror("No graphic queue found");
+	else if (phy->queues[phy->gQueue].queueCount < queueCount)
+		fprintf(stderr, "Request %d graphic queues of family %d, but only %d available\n", queueCount, phy->gQueue, phy->queues[phy->gQueue].queueCount);
+	else {
+		qInfo->queueCount = queueCount,
+		qInfo->queueFamilyIndex = phy->gQueue,
+		qInfo->pQueuePriorities = queue_priorities;
+		phy->queues[phy->gQueue].queueCount -= queueCount;
+		return true;
+	}
+	return false;
 }

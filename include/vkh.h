@@ -46,12 +46,12 @@ typedef enum VmaMemoryUsage VmaMemoryUsage;
 
 #define VK_CHECK_RESULT(f) 																				\
 {																										\
-    VkResult res = (f);																					\
-    if (res != VK_SUCCESS)																				\
-    {																									\
-        fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
-        assert(res == VK_SUCCESS);																		\
-    }																									\
+	VkResult res = (f);																					\
+	if (res != VK_SUCCESS)																				\
+	{																									\
+		fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
+		assert(res == VK_SUCCESS);																		\
+	}																									\
 }
 
 typedef struct _vkh_app_t*		VkhApp;
@@ -72,20 +72,28 @@ VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType prefer
 VkhPhyInfo*         vkh_app_get_phyinfos    (VkhApp app, uint32_t* count, VkSurfaceKHR surface);
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 void                vkh_app_enable_debug_messenger (VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
-                                                    VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
-                                                    PFN_vkDebugUtilsMessengerCallbackEXT callback);
+													VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
+													PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
-VkPhysicalDeviceProperties          vkh_app_get_phy_properties          (VkhApp app, uint32_t phyIndex);
+VkPhysicalDeviceProperties          vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
 
 /*************
  * VkhPhy    *
  *************/
-VkhPhyInfo          vkh_phyinfo_create  (VkPhysicalDevice phy, VkSurfaceKHR surface);
-void                vkh_phyinfo_destroy (VkhPhyInfo phy);
+VkhPhyInfo          vkh_phyinfo_create		(VkPhysicalDevice phy, VkSurfaceKHR surface);
+void                vkh_phyinfo_destroy		(VkhPhyInfo phy);
 
 VkPhysicalDeviceProperties          vkh_phyinfo_get_properties          (VkhPhyInfo phy);
 VkPhysicalDeviceMemoryProperties    vkh_phyinfo_get_memory_properties   (VkhPhyInfo phy);
-uint32_t                            vkh_phy_info_get_graphic_queue_index(VkhPhyInfo phy);
+
+void vkh_phyinfo_get_queue_fam_indices		(VkhPhyInfo phy, int* pQueue, int* gQueue, int* tQueue, int* cQueue);
+VkQueueFamilyProperties* vkh_phyinfo_get_queues_props(VkhPhyInfo phy, uint32_t* qCount);
+
+bool vkh_phyinfo_create_queues	  (VkhPhyInfo phy, int qFam, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool vkh_phyinfo_create_presentable_queues	(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool phy_info_create_graphic_queues			(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool vkh_phyinfo_create_transfer_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool vkh_phyinfo_create_compute_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 
 /*************
  * VkhDevice *
@@ -98,15 +106,15 @@ void                vkh_device_init_debug_utils (VkhDevice dev);
 void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char *name);
 
 VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
-                               VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+							   VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler);
 
 /****************
  * VkhPresenter *
  ****************/
 VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
-                                   uint32_t width, uint32_t height,
-                                   VkFormat preferedFormat, VkPresentModeKHR presentMode);
+								   uint32_t width, uint32_t height,
+								   VkFormat preferedFormat, VkPresentModeKHR presentMode);
 void        vkh_presenter_destroy (VkhPresenter r);
 bool        vkh_presenter_draw    (VkhPresenter r);
 bool        vkh_presenter_acquireNextImage  (VkhPresenter r, VkFence fence, VkSemaphore semaphore);
@@ -117,21 +125,21 @@ void        vkh_presenter_create_swapchain  (VkhPresenter r);
  ************/
 VkhImage vkh_image_import       (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height);
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
-                                    VmaMemoryUsage memprops,	VkImageUsageFlags usage);
+									VmaMemoryUsage memprops,	VkImageUsageFlags usage);
 VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
-                                    VmaMemoryUsage memprops,	VkImageUsageFlags usage);
+									VmaMemoryUsage memprops,	VkImageUsageFlags usage);
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-                                    VmaMemoryUsage memprops, VkImageUsageFlags usage);
+									VmaMemoryUsage memprops, VkImageUsageFlags usage);
 void vkh_image_set_sampler      (VkhImage img, VkSampler sampler);
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
-                                    VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+									VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);
 void vkh_image_create_sampler   (VkhImage img, VkFilter magFilter, VkFilter minFilter,
-                                    VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+									VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
-                                    VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+									VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
-                                    VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+									VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void vkh_image_destroy_sampler  (VkhImage img);
 void vkh_image_destroy          (VkhImage img);
 void* vkh_image_map             (VkhImage img);
@@ -148,7 +156,7 @@ VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout ima
  * VkhBuffer *
  *************/
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
-                                    VmaMemoryUsage memprops, VkDeviceSize size);
+									VmaMemoryUsage memprops, VkDeviceSize size);
 void        vkh_buffer_destroy  (VkhBuffer buff);
 VkResult    vkh_buffer_map      (VkhBuffer buff);
 void        vkh_buffer_unmap    (VkhBuffer buff);
@@ -168,7 +176,7 @@ void vkh_cmd_begin  (VkCommandBuffer cmdBuff, VkCommandBufferUsageFlags flags);
 void vkh_cmd_end    (VkCommandBuffer cmdBuff);
 void vkh_cmd_submit (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
-                                    VkSemaphore signalSemaphore, VkFence fence);
+									VkSemaphore signalSemaphore, VkFence fence);
 
 void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[]);
 void vkh_cmd_label_end     (VkCommandBuffer cmd);
@@ -177,16 +185,16 @@ void vkh_cmd_label_insert  (VkCommandBuffer cmd, const char* name, const float c
 VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
 bool        vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
-                                        VkFlags requirements_mask, uint32_t *typeIndex);
+										VkFlags requirements_mask, uint32_t *typeIndex);
 char *      read_spv(const char *filename, size_t *psize);
 uint32_t*   readFile(uint32_t* length, const char* filename);
 
 void dumpLayerExts ();
 
 void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
-                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+					  VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
-                      VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+					  VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 /////////////////////
 VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex, VkQueueFlags flags);
 void        vkh_queue_destroy   (VkhQueue queue);
