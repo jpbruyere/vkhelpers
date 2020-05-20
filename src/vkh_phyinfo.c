@@ -67,7 +67,7 @@ VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
 	//try to find suitable queue if no dedicated one found
 	for (uint32_t j=0; j<pi->queueCount; j++){
 		if (pi->queues[j].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-			VkBool32 present;
+			VkBool32 present = 0;
 			if (surface)
 				vkGetPhysicalDeviceSurfaceSupportKHR(phy, j, surface, &present);
 			//printf ("surf=%d, q=%d, present=%d\n",surface,j,present);
