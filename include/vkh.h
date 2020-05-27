@@ -196,7 +196,7 @@ void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspe
 void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
 					  VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 /////////////////////
-VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex, VkQueueFlags flags);
+VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex);
 void        vkh_queue_destroy   (VkhQueue queue);
 //VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
 /////////////////////
