@@ -26,6 +26,8 @@
 extern "C" {
 #endif
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <vulkan/vulkan.h>
 
 enum VmaMemoryUsage;
