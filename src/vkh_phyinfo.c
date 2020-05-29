@@ -42,7 +42,7 @@ VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
 	pi->pQueue = -1;
 
 	//try to find dedicated queues first
-	for (int j=0; j<pi->queueCount; j++){
+	for (uint32_t j=0; j<pi->queueCount; j++){
 		VkBool32 present = VK_FALSE;
 		switch (pi->queues[j].queueFlags) {
 		case VK_QUEUE_GRAPHICS_BIT:

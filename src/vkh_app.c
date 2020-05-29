@@ -25,9 +25,6 @@
 #define ENGINE_NAME     "vkhelpers"
 #define ENGINE_VERSION  1
 
-
-static PFN_vkDestroyDebugUtilsMessengerEXT DestroyDebugUtilsMessenger;
-
 VkBool32 debugUtilsMessengerCallback (
     VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
     VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
@@ -150,8 +147,8 @@ void vkh_app_enable_debug_messenger (VkhApp app,
     CreateDebugUtilsMessenger(app->inst, &info, VK_NULL_HANDLE, &app->debugMessenger);
 }
 
-VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
-    /*if (app->phyCount == 1)
+/*VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPhyType) {
+    if (app->phyCount == 1)
         return app->phyDevices[0];
 
     for (int i=0; i<app->phyCount; i++){
@@ -167,5 +164,5 @@ VkPhysicalDevice vkh_app_select_phy (VkhApp app, VkPhysicalDeviceType preferedPh
         }
     }
     fprintf (stderr, "No suitable GPU found\n");
-    exit (-1);*/
-}
+    exit (-1);
+}*/
