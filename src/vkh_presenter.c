@@ -184,7 +184,9 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
 			break;
 		}
 	}
-	assert (r->presentMode >= 0);
+	if (r->presentMode < 0)
+		r->presentMode = presentModes[0];//take first as fallback
+
 	free(formats);
 	free(presentModes);
 }
