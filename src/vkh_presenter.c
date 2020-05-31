@@ -111,7 +111,7 @@ bool vkh_presenter_draw (VkhPresenter r) {
 								 .pImageIndices = &r->currentScBufferIndex };
 
 	/* Make sure command buffer is finished before presenting */
-	VK_CHECK_RESULT(vkQueuePresentKHR(r->queue, &present));
+	vkQueuePresentKHR(r->queue, &present);
 	return true;
 }
 
@@ -153,7 +153,10 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
 		vkh_cmd_end(cb);
 	}
 }
-
+void vkh_presenter_get_size (VkhPresenter r, uint32_t* pWidth, uint32_t* pHeight){
+	*pWidth = r->width;
+	*pHeight = r->height;
+}
 void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR presentMode){
 	uint32_t count;
 	VK_CHECK_RESULT(vkGetPhysicalDeviceSurfaceFormatsKHR (r->dev->phy, r->surface, &count, NULL));
@@ -260,6 +263,7 @@ void _swapchain_destroy (VkhPresenter r){
 		vkFreeCommandBuffers (r->dev->dev, r->cmdPool, 1, &r->cmdBuffs[i]);
 	}
 	vkDestroySwapchainKHR (r->dev->dev, r->swapChain, NULL);
+	r->swapChain = VK_NULL_HANDLE;
 	free(r->ScBuffers);
 	free(r->cmdBuffs);
 }

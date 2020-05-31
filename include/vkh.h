@@ -122,6 +122,7 @@ bool        vkh_presenter_draw    (VkhPresenter r);
 bool        vkh_presenter_acquireNextImage  (VkhPresenter r, VkFence fence, VkSemaphore semaphore);
 void        vkh_presenter_build_blit_cmd    (VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
 void        vkh_presenter_create_swapchain  (VkhPresenter r);
+void		vkh_presenter_get_size			(VkhPresenter r, uint32_t* pWidth, uint32_t* pHeight);
 /************
  * VkhImage *
  ************/
