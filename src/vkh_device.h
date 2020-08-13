@@ -29,16 +29,12 @@ extern "C" {
 #include "vkh.h"
 #include "vk_mem_alloc.h"
 
-PFN_vkCreateDebugReportCallbackEXT  CreateDebugReportCallback;
-PFN_vkDestroyDebugReportCallbackEXT DestroyDebugReportCallback;
-PFN_vkDebugReportMessageEXT         dbgBreakCallback;
-
 typedef struct _vkh_device_t{
-    VkDevice				dev;
-    VkPhysicalDeviceMemoryProperties phyMemProps;
-    VkPhysicalDevice        phy;
-    VmaAllocator            allocator;
-    VkInstance              instance;
+	VkDevice				dev;
+	VkPhysicalDeviceMemoryProperties phyMemProps;
+	VkPhysicalDevice        phy;
+	VmaAllocator            allocator;
+	VkInstance              instance;
 }vkh_device_t;
 
 #ifdef __cplusplus
