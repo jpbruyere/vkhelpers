@@ -184,10 +184,8 @@ void _init_phy_surface(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR
 			break;
 		}
 	}
-	if (r->presentMode < 0) {
+	if ((int32_t)r->presentMode < 0)
 		r->presentMode = presentModes[0];//take first as fallback
-		printf ("Fallback present mode => %d\n", presentModes[0]);
-	}
 
 	free(formats);
 	free(presentModes);
