@@ -38,6 +38,7 @@ typedef enum VmaMemoryUsage VmaMemoryUsage;
 #include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #define _USE_MATH_DEFINES   //to have M_PI* defined with MSVC
 #include <math.h>
@@ -97,6 +98,7 @@ bool phy_info_create_graphic_queues			(VkhPhyInfo phy, uint32_t queueCount, cons
 bool vkh_phyinfo_create_transfer_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 bool vkh_phyinfo_create_compute_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 
+bool vkh_phyinfo_try_get_extension_properties (VkhPhyInfo phy, const char* name, const VkExtensionProperties* properties);
 /*************
  * VkhDevice *
  *************/

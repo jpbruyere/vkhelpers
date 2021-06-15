@@ -89,7 +89,8 @@ VkhPhyInfo vkh_phyinfo_create (VkPhysicalDevice phy, VkSurfaceKHR surface) {
 }
 
 void vkh_phyinfo_destroy (VkhPhyInfo phy) {
-
+	if (phy->pExtensionProperties != NULL)
+		free(phy->pExtensionProperties);
 	free(phy->queues);
 	free(phy);
 }
@@ -182,5 +183,21 @@ bool vkh_phy_info_create_graphic_queues (VkhPhyInfo phy, uint32_t queueCount, co
 		phy->queues[phy->gQueue].queueCount -= queueCount;
 		return true;
 	}
+	return false;
+}
+bool vkh_phyinfo_try_get_extension_properties (VkhPhyInfo phy, const char* name, const VkExtensionProperties* properties) {
+	if (phy->pExtensionProperties == NULL) {
+		VK_CHECK_RESULT(vkEnumerateDeviceExtensionProperties(phy->phy, NULL, &phy->extensionCount, NULL));
+		phy->pExtensionProperties = (VkExtensionProperties*)malloc(phy->extensionCount * sizeof(VkExtensionProperties));
+		VK_CHECK_RESULT(vkEnumerateDeviceExtensionProperties(phy->phy, NULL, &phy->extensionCount, phy->pExtensionProperties));
+	}
+	for (uint32_t i=0; i<phy->extensionCount; i++) {
+		if (strcmp(name, phy->pExtensionProperties[i].extensionName)==0) {
+			if (properties != NULL)
+				properties = &phy->pExtensionProperties[i];
+			return true;
+		}
+	}
+	properties = NULL;
 	return false;
 }

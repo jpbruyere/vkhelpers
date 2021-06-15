@@ -41,6 +41,9 @@ typedef struct _vkh_phy_t{
 
 	uint32_t                            qCreateInfosCount;
 	VkDeviceQueueCreateInfo*            qCreateInfos;
+
+	VkExtensionProperties*				pExtensionProperties;
+	uint32_t							extensionCount;
 }vkh_phy_t;
 #ifdef __cplusplus
 }
