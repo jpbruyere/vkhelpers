@@ -33,9 +33,9 @@
 
 #define FENCE_TIMEOUT UINT16_MAX
 
-void vkh_presenter_create_swapchain  (VkhPresenter r);
+void vkh_presenter_create_swapchain	 (VkhPresenter r);
 void _swapchain_destroy (VkhPresenter r);
-void _init_phy_surface  (VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR presentMode);
+void _init_phy_surface	(VkhPresenter r, VkFormat preferedFormat, VkPresentModeKHR presentMode);
 
 VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface, uint32_t width, uint32_t height,
 						   VkFormat preferedFormat, VkPresentModeKHR presentMode) {
@@ -48,9 +48,9 @@ VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, V
 	r->height = height;
 	vkGetDeviceQueue(r->dev->dev, r->qFam, 0, &r->queue);
 
-	r->cmdPool          = vkh_cmd_pool_create  (r->dev, presentQueueFamIdx, 0);
-	r->semaPresentEnd   = vkh_semaphore_create (r->dev);
-	r->semaDrawEnd      = vkh_semaphore_create (r->dev);
+	r->cmdPool			= vkh_cmd_pool_create  (r->dev, presentQueueFamIdx, 0);
+	r->semaPresentEnd	= vkh_semaphore_create (r->dev);
+	r->semaDrawEnd		= vkh_semaphore_create (r->dev);
 	r->fenceDraw		= vkh_fence_create_signaled(r->dev);
 
 	_init_phy_surface (r, preferedFormat, presentMode);
@@ -65,8 +65,8 @@ void vkh_presenter_destroy (VkhPresenter r) {
 
 	_swapchain_destroy (r);
 
-	vkDestroySemaphore  (r->dev->dev, r->semaDrawEnd, NULL);
-	vkDestroySemaphore  (r->dev->dev, r->semaPresentEnd, NULL);
+	vkDestroySemaphore	(r->dev->dev, r->semaDrawEnd, NULL);
+	vkDestroySemaphore	(r->dev->dev, r->semaPresentEnd, NULL);
 	vkDestroyFence		(r->dev->dev, r->fenceDraw, NULL);
 	vkDestroyCommandPool(r->dev->dev, r->cmdPool, NULL);
 
@@ -244,7 +244,7 @@ void vkh_presenter_create_swapchain (VkhPresenter r){
 	VkImage* images = (VkImage*)malloc(r->imgCount * sizeof(VkImage));
 	VK_CHECK_RESULT(vkGetSwapchainImagesKHR(r->dev->dev, r->swapChain, &r->imgCount, images));
 
-	r->ScBuffers = (VkhImage*)      malloc (r->imgCount * sizeof(VkhImage));
+	r->ScBuffers = (VkhImage*)		malloc (r->imgCount * sizeof(VkhImage));
 	r->cmdBuffs = (VkCommandBuffer*)malloc (r->imgCount * sizeof(VkCommandBuffer));
 
 	for (uint32_t i=0; i<r->imgCount; i++) {

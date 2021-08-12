@@ -25,100 +25,97 @@
 #include "string.h"
 
 
-static PFN_vkSetDebugUtilsObjectNameEXT     SetDebugUtilsObjectNameEXT;
-static PFN_vkQueueBeginDebugUtilsLabelEXT   QueueBeginDebugUtilsLabelEXT;
-static PFN_vkQueueEndDebugUtilsLabelEXT     QueueEndDebugUtilsLabelEXT;
-static PFN_vkCmdBeginDebugUtilsLabelEXT     CmdBeginDebugUtilsLabelEXT;
-static PFN_vkCmdEndDebugUtilsLabelEXT       CmdEndDebugUtilsLabelEXT;
-static PFN_vkCmdInsertDebugUtilsLabelEXT    CmdInsertDebugUtilsLabelEXT;
+static PFN_vkSetDebugUtilsObjectNameEXT		SetDebugUtilsObjectNameEXT;
+static PFN_vkQueueBeginDebugUtilsLabelEXT	QueueBeginDebugUtilsLabelEXT;
+static PFN_vkQueueEndDebugUtilsLabelEXT		QueueEndDebugUtilsLabelEXT;
+static PFN_vkCmdBeginDebugUtilsLabelEXT		CmdBeginDebugUtilsLabelEXT;
+static PFN_vkCmdEndDebugUtilsLabelEXT		CmdEndDebugUtilsLabelEXT;
+static PFN_vkCmdInsertDebugUtilsLabelEXT	CmdInsertDebugUtilsLabelEXT;
 
 VkhDevice vkh_device_create (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info){
-    VkDevice dev;
-    VK_CHECK_RESULT(vkCreateDevice (phyInfo->phy, pDevice_info, NULL, &dev));
-    return vkh_device_import(app->inst, phyInfo->phy, dev);
+	VkDevice dev;
+	VK_CHECK_RESULT(vkCreateDevice (phyInfo->phy, pDevice_info, NULL, &dev));
+	return vkh_device_import(app->inst, phyInfo->phy, dev);
 }
 VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev) {
-    VkhDevice dev = (vkh_device_t*)malloc(sizeof(vkh_device_t));
-    dev->dev = vkDev;
-    dev->phy = phy;
-    dev->instance = inst;
+	VkhDevice dev = (vkh_device_t*)malloc(sizeof(vkh_device_t));
+	dev->dev = vkDev;
+	dev->phy = phy;
+	dev->instance = inst;
 
-    vkGetPhysicalDeviceMemoryProperties (phy, &dev->phyMemProps);
+	vkGetPhysicalDeviceMemoryProperties (phy, &dev->phyMemProps);
 
-    VmaAllocatorCreateInfo allocatorInfo = {
-        .physicalDevice = phy,
-        .device = vkDev
-    };
-    vmaCreateAllocator(&allocatorInfo, &dev->allocator);
+	VmaAllocatorCreateInfo allocatorInfo = {
+		.physicalDevice = phy,
+		.device = vkDev
+	};
+	vmaCreateAllocator(&allocatorInfo, &dev->allocator);
 
-    return dev;
+	return dev;
 }
 /**
  * @brief get instance proc addresses for debug utils (name, label,...)
  * @param vkh device
  */
 void vkh_device_init_debug_utils (VkhDevice dev) {
-    SetDebugUtilsObjectNameEXT  = (PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkSetDebugUtilsObjectNameEXT");
-    QueueBeginDebugUtilsLabelEXT  = (PFN_vkQueueBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueBeginDebugUtilsLabelEXT");
-    QueueEndDebugUtilsLabelEXT  = (PFN_vkQueueEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueEndDebugUtilsLabelEXT");
-    CmdBeginDebugUtilsLabelEXT  = (PFN_vkCmdBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdBeginDebugUtilsLabelEXT");
-    CmdEndDebugUtilsLabelEXT  = (PFN_vkCmdEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdEndDebugUtilsLabelEXT");
-    CmdInsertDebugUtilsLabelEXT  = (PFN_vkCmdInsertDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdInsertDebugUtilsLabelEXT");
+	SetDebugUtilsObjectNameEXT	= (PFN_vkSetDebugUtilsObjectNameEXT)vkGetInstanceProcAddr(dev->instance, "vkSetDebugUtilsObjectNameEXT");
+	QueueBeginDebugUtilsLabelEXT  = (PFN_vkQueueBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueBeginDebugUtilsLabelEXT");
+	QueueEndDebugUtilsLabelEXT	= (PFN_vkQueueEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkQueueEndDebugUtilsLabelEXT");
+	CmdBeginDebugUtilsLabelEXT	= (PFN_vkCmdBeginDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdBeginDebugUtilsLabelEXT");
+	CmdEndDebugUtilsLabelEXT  = (PFN_vkCmdEndDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdEndDebugUtilsLabelEXT");
+	CmdInsertDebugUtilsLabelEXT	 = (PFN_vkCmdInsertDebugUtilsLabelEXT)vkGetInstanceProcAddr(dev->instance, "vkCmdInsertDebugUtilsLabelEXT");
 }
 VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
-                               VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode){
-    VkSampler sampler = VK_NULL_HANDLE;
-    VkSamplerCreateInfo samplerCreateInfo = { .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
-                                              .maxAnisotropy= 1.0,
-                                              .addressModeU = addressMode,
-                                              .addressModeV = addressMode,
-                                              .addressModeW = addressMode,
-                                              .magFilter    = magFilter,
-                                              .minFilter    = minFilter,
-                                              .mipmapMode   = mipmapMode};
-    VK_CHECK_RESULT(vkCreateSampler(dev->dev, &samplerCreateInfo, NULL, &sampler));
-    return sampler;
+							   VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode){
+	VkSampler sampler = VK_NULL_HANDLE;
+	VkSamplerCreateInfo samplerCreateInfo = { .sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+											  .maxAnisotropy= 1.0,
+											  .addressModeU = addressMode,
+											  .addressModeV = addressMode,
+											  .addressModeW = addressMode,
+											  .magFilter	= magFilter,
+											  .minFilter	= minFilter,
+											  .mipmapMode	= mipmapMode};
+	VK_CHECK_RESULT(vkCreateSampler(dev->dev, &samplerCreateInfo, NULL, &sampler));
+	return sampler;
 }
 void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
-    vkDestroySampler (dev->dev, sampler, NULL);
+	vkDestroySampler (dev->dev, sampler, NULL);
 }
 void vkh_device_destroy (VkhDevice dev) {
-    vmaDestroyAllocator (dev->allocator);
-    vkDestroyDevice (dev->dev, NULL);
-    free (dev);
+	vmaDestroyAllocator (dev->allocator);
+	vkDestroyDevice (dev->dev, NULL);
+	free (dev);
 }
 
 void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char* name){
-    const VkDebugUtilsObjectNameInfoEXT info = {
-        .sType       = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
-        .pNext       = 0,
-        .objectType  = objectType,
-        .objectHandle= handle,
-        .pObjectName = name
-    };
-    SetDebugUtilsObjectNameEXT (dev->dev, &info);
+	const VkDebugUtilsObjectNameInfoEXT info = {
+		.sType		 = VK_STRUCTURE_TYPE_DEBUG_UTILS_OBJECT_NAME_INFO_EXT,
+		.pNext		 = 0,
+		.objectType	 = objectType,
+		.objectHandle= handle,
+		.pObjectName = name
+	};
+	SetDebugUtilsObjectNameEXT (dev->dev, &info);
 }
 void vkh_cmd_label_start (VkCommandBuffer cmd, const char* name, const float color[4]) {
-    const VkDebugUtilsLabelEXT info = {
-        .sType      = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
-        .pNext      = 0,
-        .pLabelName= name
-    };
-    memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
-    CmdBeginDebugUtilsLabelEXT (cmd, &info);
+	const VkDebugUtilsLabelEXT info = {
+		.sType		= VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+		.pNext		= 0,
+		.pLabelName= name
+	};
+	memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
+	CmdBeginDebugUtilsLabelEXT (cmd, &info);
 }
 void vkh_cmd_label_insert (VkCommandBuffer cmd, const char* name, const float color[4]) {
-    const VkDebugUtilsLabelEXT info = {
-        .sType      = VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
-        .pNext      = 0,
-        .pLabelName= name
-    };
-    memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
-    CmdInsertDebugUtilsLabelEXT (cmd, &info);
+	const VkDebugUtilsLabelEXT info = {
+		.sType		= VK_STRUCTURE_TYPE_DEBUG_UTILS_LABEL_EXT,
+		.pNext		= 0,
+		.pLabelName= name
+	};
+	memcpy ((void*)info.color, (void*)color, 4 * sizeof(float));
+	CmdInsertDebugUtilsLabelEXT (cmd, &info);
 }
 void vkh_cmd_label_end (VkCommandBuffer cmd) {
-    CmdEndDebugUtilsLabelEXT (cmd);
+	CmdEndDebugUtilsLabelEXT (cmd);
 }
-
-
-

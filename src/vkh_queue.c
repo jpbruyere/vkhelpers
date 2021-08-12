@@ -24,24 +24,24 @@
 #include "vkh_phyinfo.h"
 
 VkhQueue _init_queue (VkhDevice dev) {
-    VkhQueue q  = (vkh_queue_t*)calloc(1, sizeof(vkh_queue_t));
-    q->dev = dev;
-    return q;
+	VkhQueue q	= (vkh_queue_t*)calloc(1, sizeof(vkh_queue_t));
+	q->dev = dev;
+	return q;
 }
 
 
 VkhQueue vkh_queue_create (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex) {
-    VkhQueue q  = _init_queue (dev);
-    q->familyIndex  = familyIndex;
-    vkGetDeviceQueue (dev->dev, familyIndex, qIndex, &q->queue);
-    return q;
+	VkhQueue q	= _init_queue (dev);
+	q->familyIndex	= familyIndex;
+	vkGetDeviceQueue (dev->dev, familyIndex, qIndex, &q->queue);
+	return q;
 }
 
 //VkhQueue vkh_queue_find (VkhDevice dev, VkQueueFlags flags) {
 
-//    return q;
+//	  return q;
 //}
 
 void vkh_queue_destroy (VkhQueue queue){
-    free (queue);
+	free (queue);
 }

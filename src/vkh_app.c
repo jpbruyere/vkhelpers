@@ -22,14 +22,14 @@
 #include "vkh_app.h"
 #include "vk_mem_alloc.h"
 
-#define ENGINE_NAME     "vkhelpers"
-#define ENGINE_VERSION  1
+#define ENGINE_NAME		"vkhelpers"
+#define ENGINE_VERSION	1
 
 VkBool32 debugUtilsMessengerCallback (
-	VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
-	VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
-	const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
-	void*                                            pUserData) {
+	VkDebugUtilsMessageSeverityFlagBitsEXT			 messageSeverity,
+	VkDebugUtilsMessageTypeFlagsEXT					 messageTypes,
+	const VkDebugUtilsMessengerCallbackDataEXT*		 pCallbackData,
+	void*											 pUserData) {
 
 	switch (messageSeverity) {
 	case VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT:
@@ -88,7 +88,7 @@ VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const 
 
 void vkh_app_destroy (VkhApp app){
 	if (app->debugMessenger != VK_NULL_HANDLE) {
-		PFN_vkDestroyDebugUtilsMessengerEXT  DestroyDebugUtilsMessenger = (PFN_vkDestroyDebugUtilsMessengerEXT)
+		PFN_vkDestroyDebugUtilsMessengerEXT	 DestroyDebugUtilsMessenger = (PFN_vkDestroyDebugUtilsMessengerEXT)
 				vkGetInstanceProcAddr(app->inst, "vkDestroyDebugUtilsMessengerEXT");
 
 		DestroyDebugUtilsMessenger (app->inst, app->debugMessenger, VK_NULL_HANDLE);
@@ -142,7 +142,7 @@ void vkh_app_enable_debug_messenger (VkhApp app,
 	else
 		info.pfnUserCallback = callback;
 
-	PFN_vkCreateDebugUtilsMessengerEXT  CreateDebugUtilsMessenger = (PFN_vkCreateDebugUtilsMessengerEXT)
+	PFN_vkCreateDebugUtilsMessengerEXT	CreateDebugUtilsMessenger = (PFN_vkCreateDebugUtilsMessengerEXT)
 			vkGetInstanceProcAddr(app->inst, "vkCreateDebugUtilsMessengerEXT");
 
 	CreateDebugUtilsMessenger(app->inst, &info, VK_NULL_HANDLE, &app->debugMessenger);

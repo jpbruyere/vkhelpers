@@ -30,15 +30,15 @@ extern "C" {
 #include "vk_mem_alloc.h"
 
 typedef struct _vkh_buffer_t {
-    VkhDevice               pDev;
-    VkBufferCreateInfo      infos;
-    VmaMemoryUsage          memprops;
-    VkBuffer                buffer;
-    VmaAllocation           alloc;
-    VmaAllocationInfo       allocInfo;
-    VkDescriptorBufferInfo  descriptor;
-    VkDeviceSize            alignment;
-    void*                   mapped;
+	VkhDevice				pDev;
+	VkBufferCreateInfo		infos;
+	VmaMemoryUsage			memprops;
+	VkBuffer				buffer;
+	VmaAllocation			alloc;
+	VmaAllocationInfo		allocInfo;
+	VkDescriptorBufferInfo	descriptor;
+	VkDeviceSize			alignment;
+	void*					mapped;
 }vkh_buffer_t;
 #ifdef __cplusplus
 }

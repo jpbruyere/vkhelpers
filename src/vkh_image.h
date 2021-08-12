@@ -30,15 +30,15 @@ extern "C" {
 #include "vk_mem_alloc.h"
 
 typedef struct _vkh_image_t {
-    VkhDevice				pDev;
-    VkImageCreateInfo       infos;
-    VkImage					image;
-    VmaAllocation           alloc;
-    VmaAllocationInfo       allocInfo;
-    VkSampler               sampler;
-    VkImageView             view;
-    VkImageLayout           layout; //current layout
-    bool                    imported;//dont destroy vkimage at end
+	VkhDevice				pDev;
+	VkImageCreateInfo		infos;
+	VkImage					image;
+	VmaAllocation			alloc;
+	VmaAllocationInfo		allocInfo;
+	VkSampler				sampler;
+	VkImageView				view;
+	VkImageLayout			layout; //current layout
+	bool					imported;//dont destroy vkimage at end
 }vkh_image_t;
 
 #ifdef __cplusplus

@@ -150,6 +150,7 @@ void vkh_image_destroy          (VkhImage img);
 void* vkh_image_map             (VkhImage img);
 void vkh_image_unmap            (VkhImage img);
 void vkh_image_set_name         (VkhImage img, const char* name);
+uint64_t vkh_image_get_stride	(VkhImage img);
 
 VkImage                 vkh_image_get_vkimage   (VkhImage img);
 VkImageView             vkh_image_get_view      (VkhImage img);

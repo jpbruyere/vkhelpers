@@ -23,49 +23,49 @@
 #include "vkh_device.h"
 
 VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VmaMemoryUsage memprops, VkDeviceSize size){
-    VkhBuffer buff = (VkhBuffer)malloc(sizeof(vkh_buffer_t));
-    buff->pDev = pDev;
-    VkBufferCreateInfo* pInfo = &buff->infos;
-    pInfo->sType         = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    pInfo->usage         = usage;
-    pInfo->size          = size;
-    pInfo->sharingMode   = VK_SHARING_MODE_EXCLUSIVE;
+	VkhBuffer buff = (VkhBuffer)malloc(sizeof(vkh_buffer_t));
+	buff->pDev = pDev;
+	VkBufferCreateInfo* pInfo = &buff->infos;
+	pInfo->sType		 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	pInfo->usage		 = usage;
+	pInfo->size			 = size;
+	pInfo->sharingMode	 = VK_SHARING_MODE_EXCLUSIVE;
 
-    buff->memprops = memprops;
+	buff->memprops = memprops;
 
-    VmaAllocationCreateInfo allocInfo = { .usage = memprops };
-    VK_CHECK_RESULT(vmaCreateBuffer(pDev->allocator, pInfo, &allocInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
-    return buff;
+	VmaAllocationCreateInfo allocInfo = { .usage = memprops };
+	VK_CHECK_RESULT(vmaCreateBuffer(pDev->allocator, pInfo, &allocInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
+	return buff;
 }
 
 void vkh_buffer_destroy(VkhBuffer buff){
-    if (buff->buffer)
-        vmaDestroyBuffer(buff->pDev->allocator, buff->buffer, buff->alloc);
-    free(buff);
-    buff = NULL;
+	if (buff->buffer)
+		vmaDestroyBuffer(buff->pDev->allocator, buff->buffer, buff->alloc);
+	free(buff);
+	buff = NULL;
 }
 
 VkDescriptorBufferInfo vkh_buffer_get_descriptor (VkhBuffer buff){
-    VkDescriptorBufferInfo desc = {
-        .buffer = buff->buffer,
-        .offset = 0,
-        .range  = VK_WHOLE_SIZE};
-    return desc;
+	VkDescriptorBufferInfo desc = {
+		.buffer = buff->buffer,
+		.offset = 0,
+		.range	= VK_WHOLE_SIZE};
+	return desc;
 }
 
 
 VkResult vkh_buffer_map(VkhBuffer buff){
-    return vmaMapMemory(buff->pDev->allocator, buff->alloc, &buff->mapped);
+	return vmaMapMemory(buff->pDev->allocator, buff->alloc, &buff->mapped);
 }
 void vkh_buffer_unmap(VkhBuffer buff){
-    if (!buff->mapped)
-        return;
-    vmaUnmapMemory(buff->pDev->allocator, buff->alloc);
-    buff->mapped = NULL;
+	if (!buff->mapped)
+		return;
+	vmaUnmapMemory(buff->pDev->allocator, buff->alloc);
+	buff->mapped = NULL;
 }
 VkBuffer vkh_buffer_get_vkbuffer (VkhBuffer buff){
-    return buff->buffer;
+	return buff->buffer;
 }
 void* vkh_buffer_get_mapped_pointer (VkhBuffer buff){
-    return buff->mapped;
+	return buff->mapped;
 }
