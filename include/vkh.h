@@ -68,7 +68,7 @@ typedef struct _vkh_presenter_t* VkhPresenter;
 /*************
  * VkhApp    *
  *************/
-VkhApp              vkh_app_create      (const char* app_name, uint32_t enabledLayersCount, const char *enabledLayers[], uint32_t ext_count, const char* extentions[]);
+VkhApp              vkh_app_create      (const char* app_name, uint32_t enabledLayersCount, const char **enabledLayers, uint32_t ext_count, const char* extentions[]);
 void                vkh_app_destroy     (VkhApp app);
 VkInstance          vkh_app_get_inst    (VkhApp app);
 //VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);

@@ -63,7 +63,7 @@ VkBool32 debugUtilsMessengerCallback (
 	return VK_FALSE;
 }
 
-VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const char* enabledLayers[], uint32_t ext_count, const char* extentions[]) {
+VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const char** enabledLayers, uint32_t ext_count, const char* extentions[]) {
 	VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
 
 	VkApplicationInfo infos = { .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
