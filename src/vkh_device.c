@@ -53,6 +53,12 @@ VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkD
 
 	return dev;
 }
+VkDevice vkh_device_get_vkdev (VkhDevice dev) {
+	return dev->dev;
+}
+VkPhysicalDevice vkh_device_get_phy (VkhDevice dev) {
+	return dev->phy;
+}
 /**
  * @brief get instance proc addresses for debug utils (name, label,...)
  * @param vkh device

@@ -103,10 +103,10 @@ VkPhysicalDeviceMemoryProperties vkh_phyinfo_get_memory_properties (VkhPhyInfo p
 }
 
 void vkh_phyinfo_get_queue_fam_indices (VkhPhyInfo phy, int* pQueue, int* gQueue, int* tQueue, int* cQueue) {
-	*pQueue = phy->pQueue;
-	*gQueue = phy->gQueue;
-	*tQueue = phy->tQueue;
-	*cQueue = phy->cQueue;
+	if (pQueue)	*pQueue = phy->pQueue;
+	if (gQueue)	*gQueue = phy->gQueue;
+	if (tQueue)	*tQueue = phy->tQueue;
+	if (cQueue)	*cQueue = phy->cQueue;
 }
 VkQueueFamilyProperties* vkh_phyinfo_get_queues_props(VkhPhyInfo phy, uint32_t* qCount) {
 	*qCount = phy->queueCount;

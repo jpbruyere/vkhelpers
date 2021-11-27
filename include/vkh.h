@@ -106,6 +106,8 @@ VkhDevice           vkh_device_create   (VkhApp app, VkhPhyInfo phyInfo, VkDevic
 VkhDevice           vkh_device_import   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
 void                vkh_device_destroy  (VkhDevice dev);
 void                vkh_device_init_debug_utils (VkhDevice dev);
+VkDevice			vkh_device_get_vkdev(VkhDevice dev);
+VkPhysicalDevice	vkh_device_get_phy	(VkhDevice dev);
 
 void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char *name);
 
