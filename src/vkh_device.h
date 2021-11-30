@@ -35,6 +35,7 @@ typedef struct _vkh_device_t{
 	VkPhysicalDevice		phy;
 	VmaAllocator			allocator;
 	VkInstance				instance;
+	VkhApp					vkhApplication;
 }vkh_device_t;
 
 #ifdef __cplusplus

@@ -108,6 +108,12 @@ void                vkh_device_destroy  (VkhDevice dev);
 void                vkh_device_init_debug_utils (VkhDevice dev);
 VkDevice			vkh_device_get_vkdev(VkhDevice dev);
 VkPhysicalDevice	vkh_device_get_phy	(VkhDevice dev);
+/**
+ * @brief Retrieve @ref VkhApp instance used to create this VkhDevice.
+ * @param dev
+ * @return the VkhApp instace used to create the VkhDevice.
+ */
+VkhApp	vkh_device_get_app	(VkhDevice dev);
 
 void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_t handle, const char *name);
 
