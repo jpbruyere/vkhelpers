@@ -30,7 +30,6 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
-enum VmaMemoryUsage;
 typedef enum VmaMemoryUsage VmaMemoryUsage;
 
 #include <stdlib.h>
