@@ -134,14 +134,23 @@ void vkh_presenter_build_blit_cmd (VkhPresenter r, VkImage blitSource, uint32_t 
 				VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
 				VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, VK_PIPELINE_STAGE_TRANSFER_BIT);
 
-		VkImageCopy cregion = { .srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
+		/*VkImageCopy cregion = { .srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
 								.dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
 								.srcOffset = {0},
 								.dstOffset = {0,0,0},
-								.extent = {MIN(w,r->width), MIN(h,r->height),1}};
+								.extent = {MIN(w,r->width), MIN(h,r->height),1}};*/
+		VkImageBlit bregion = { .srcSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
+								.dstSubresource = {VK_IMAGE_ASPECT_COLOR_BIT, 0, 0, 1},
+								.srcOffsets[0] = {0},
+								.srcOffsets[1] = {w, h, 1},
+								.dstOffsets[0] = {0},
+								.dstOffsets[1] = {width, height, 1}
+							  };
 
-		vkCmdCopyImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-					   1, &cregion);
+		vkCmdBlitImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &bregion, VK_FILTER_NEAREST);
+
+		/*vkCmdCopyImage(cb, blitSource, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, bltDstImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+					   1, &cregion);*/
 
 		set_image_layout(cb, bltDstImage, VK_IMAGE_ASPECT_COLOR_BIT,
 						 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
