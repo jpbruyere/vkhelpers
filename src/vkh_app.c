@@ -63,7 +63,7 @@ VkBool32 debugUtilsMessengerCallback (
 	return VK_FALSE;
 }
 
-VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const char** enabledLayers, uint32_t ext_count, const char* extentions[]) {
+VkhApp vkh_app_create (uint32_t version_major, uint32_t version_minor, const char* app_name, uint32_t enabledLayersCount, const char** enabledLayers, uint32_t ext_count, const char* extentions[]) {
 	VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
 
 	VkApplicationInfo infos = { .sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -71,7 +71,7 @@ VkhApp vkh_app_create (const char* app_name, uint32_t enabledLayersCount, const 
 								.applicationVersion = 1,
 								.pEngineName = ENGINE_NAME,
 								.engineVersion = ENGINE_VERSION,
-								.apiVersion = VK_API_VERSION_1_1};
+								.apiVersion = VK_MAKE_API_VERSION (0, version_major, version_minor, 0)};
 
 	VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 									   .pApplicationInfo = &infos,
