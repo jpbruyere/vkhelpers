@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.7)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 
 OPTION(VKH_ENABLE_VMA "enable Vulkan Memory Allocator" ON)
 if (VKH_ENABLE_VMA)
@@ -6,6 +6,7 @@ if (VKH_ENABLE_VMA)
 ELSE()
 	SET(LANG "C")
 ENDIF()
+SET(CMAKE_CXX_STANDARD 11)
 
 PROJECT(vkh VERSION 0.1.0 DESCRIPTION "Vulkan helpers library" LANGUAGES ${LANG})
 
@@ -45,21 +46,6 @@ ENDIF ()
 IF (ENABLE_VALIDATION)
 	ADD_DEFINITIONS (-DVKH_USE_VALIDATION)
 ENDIF ()
-
-if (NOT VULKAN_SDK)
-	set(VULKAN_SDK "$ENV{VULKAN_SDK}" CACHE STRING "LunarG Vulkan SDK path")
-	if (VULKAN_SDK)
-			set(ENV{VULKAN_SDK} ${VULKAN_SDK})
-			SET(vulkanSdkLayerPath "${VULKAN_SDK}/etc/vulkan/explicit_layer.d")
-			IF (NOT EXISTS "${vulkanSdkLayerPath}")
-				SET(vulkanSdkLayerPath "${VULKAN_SDK}/etc/explicit_layer.d")
-			endif ()
-			SET(ENV{VK_LAYER_PATH} "${vulkanSdkLayerPath}")
-	endif ()
-endif ()
-
-MESSAGE(STATUS "VULKAN_SDK = $ENV{VULKAN_SDK}")
-MESSAGE(STATUS "VK_LAYER_PATH = $ENV{VK_LAYER_PATH}")
 
 FIND_PACKAGE(Vulkan REQUIRED)
 
