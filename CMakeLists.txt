@@ -1,6 +1,8 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.21)
 
+OPTION (BUILD_SHARED_LIBS "Build using shared libraries" ON)
 OPTION(VKH_ENABLE_VMA "enable Vulkan Memory Allocator" ON)
+
 if (VKH_ENABLE_VMA)
 	SET(LANG "CXX")
 ELSE()
