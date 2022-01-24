@@ -312,6 +312,18 @@ void        vkh_queue_destroy   (VkhQueue queue);
 //VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
 /////////////////////
 
+vkh_public
+bool vkh_instance_extension_supported (const char* instanceName);
+vkh_public
+void vkh_instance_extensions_check_init ();
+vkh_public
+void vkh_instance_extensions_check_release ();
+vkh_public
+bool vkh_layer_is_present (const char* layerName);
+vkh_public
+void vkh_layers_check_init ();
+vkh_public
+void vkh_layers_check_release ();
 #ifdef __cplusplus
 }
 #endif
