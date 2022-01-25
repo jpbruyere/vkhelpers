@@ -95,6 +95,11 @@ GET_DIRECTORY_PROPERTY (vkh_has_root_project PARENT_DIRECTORY)
 if (VKH_ENABLE_VMA)
 	ADD_LIBRARY(libVMA OBJECT src/VmaUsage.cpp)
 	SET_PROPERTY(TARGET libVMA PROPERTY POSITION_INDEPENDENT_CODE ON)
+        TARGET_INCLUDE_DIRECTORIES(libVMA
+                PUBLIC
+                        ${CMAKE_CURRENT_SOURCE_DIR}/include
+                        ${Vulkan_INCLUDE_DIRS}
+        )
 ENDIF()
 
 ADD_LIBRARY(vkh_obj OBJECT ${VKH_SRC})
