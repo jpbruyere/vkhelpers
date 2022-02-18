@@ -30,6 +30,8 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
+#include "deps/tinycthread.h"
+
 typedef enum VmaMemoryUsage VmaMemoryUsage;
 
 #include <stdlib.h>
@@ -214,6 +216,8 @@ vkh_public
 void vkh_image_destroy_sampler  (VkhImage img);
 vkh_public
 void vkh_image_destroy          (VkhImage img);
+vkh_public
+void vkh_image_reference		(VkhImage img);
 vkh_public
 void* vkh_image_map             (VkhImage img);
 vkh_public

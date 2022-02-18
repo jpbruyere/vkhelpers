@@ -39,6 +39,9 @@ typedef struct _vkh_image_t {
 	VkImageView				view;
 	VkImageLayout			layout; //current layout
 	bool					imported;//dont destroy vkimage at end
+
+	uint32_t				references;
+	mtx_t					mutex;
 }vkh_image_t;
 
 #ifdef __cplusplus
