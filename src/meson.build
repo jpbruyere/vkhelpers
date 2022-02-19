@@ -6,8 +6,9 @@ vkhelpers_sources = [
     'VmaUsage.cpp'
 ]
 
-vk_helper_lib = library(meson.project_name(),
+vk_helper_lib = build_target(meson.project_name(),
     vkhelpers_sources,
+    target_type : meson.is_subproject() ? 'static_library' : 'library',
     include_directories : [vk_helpers_inc],
     dependencies : vulkan_dep,
     version : meson.project_version(),
