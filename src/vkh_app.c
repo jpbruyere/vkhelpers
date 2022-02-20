@@ -25,6 +25,10 @@
 #define ENGINE_NAME		"vkhelpers"
 #define ENGINE_VERSION	1
 
+#ifndef VK_MAKE_API_VERSION
+	#define VK_MAKE_API_VERSION VK_MAKE_VERSION
+#endif
+
 VkBool32 debugUtilsMessengerCallback (
 	VkDebugUtilsMessageSeverityFlagBitsEXT			 messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT					 messageTypes,
