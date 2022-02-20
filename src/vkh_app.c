@@ -25,10 +25,6 @@
 #define ENGINE_NAME		"vkhelpers"
 #define ENGINE_VERSION	1
 
-#ifndef VK_MAKE_API_VERSION
-	#define VK_MAKE_API_VERSION VK_MAKE_VERSION
-#endif
-
 VkBool32 debugUtilsMessengerCallback (
 	VkDebugUtilsMessageSeverityFlagBitsEXT			 messageSeverity,
 	VkDebugUtilsMessageTypeFlagsEXT					 messageTypes,
@@ -75,7 +71,11 @@ VkhApp vkh_app_create (uint32_t version_major, uint32_t version_minor, const cha
 								.applicationVersion = 1,
 								.pEngineName = ENGINE_NAME,
 								.engineVersion = ENGINE_VERSION,
+#ifdef VK_MAKE_API_VERSION
 								.apiVersion = VK_MAKE_API_VERSION (0, version_major, version_minor, 0)};
+#else
+								.apiVersion = VK_MAKE_VERSION (version_major, version_minor, 0)};
+#endif
 
 	VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 									   .pApplicationInfo = &infos,
