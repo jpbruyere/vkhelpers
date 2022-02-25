@@ -278,7 +278,7 @@ void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, V
 									VkSemaphore signalSemaphore, VkFence fence);
 
 vkh_public
-void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[]);
+void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[4]);
 vkh_public
 void vkh_cmd_label_end     (VkCommandBuffer cmd);
 vkh_public
