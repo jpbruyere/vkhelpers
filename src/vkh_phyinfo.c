@@ -193,7 +193,7 @@ bool vkh_phyinfo_try_get_extension_properties (VkhPhyInfo phy, const char* name,
 	}
 	for (uint32_t i=0; i<phy->extensionCount; i++) {
 		if (strcmp(name, phy->pExtensionProperties[i].extensionName)==0) {
-			if (properties != NULL)
+			if (properties)
 				properties = &phy->pExtensionProperties[i];
 			return true;
 		}
