@@ -27,6 +27,7 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 				  VmaMemoryUsage memprops, VkImageUsageFlags usage,
 				  VkSampleCountFlagBits samples, VkImageTiling tiling,
 				  uint32_t mipLevels, uint32_t arrayLayers){
+
 	VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
 
 	img->pDev = pDev;
@@ -46,12 +47,12 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 	pInfo->arrayLayers		= arrayLayers;
 	pInfo->samples			= samples;
 
+	/*
 	img->imported = false;
-
 	img->alloc	= VK_NULL_HANDLE;
 	img->image	= VK_NULL_HANDLE;
 	img->sampler= VK_NULL_HANDLE;
-	img->view	= VK_NULL_HANDLE;
+	img->view	= VK_NULL_HANDLE;*/
 
 	VmaAllocationCreateInfo allocInfo = { .usage = memprops };
 	VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));

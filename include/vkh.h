@@ -252,9 +252,9 @@ vkh_public
 void        vkh_buffer_unmap    (VkhBuffer buff);
 
 vkh_public
-VkBuffer    vkh_buffer_get_vkbuffer         (VkhBuffer buff);
+VkBuffer    vkh_buffer_get_vkbuffer			(VkhBuffer buff);
 vkh_public
-void*       vkh_buffer_get_mapped_pointer   (VkhBuffer buff);
+void*       vkh_buffer_get_mapped_pointer	(VkhBuffer buff);
 
 vkh_public
 VkFence         vkh_fence_create			(VkhDevice dev);
@@ -263,7 +263,14 @@ VkFence         vkh_fence_create_signaled	(VkhDevice dev);
 vkh_public
 VkSemaphore     vkh_semaphore_create		(VkhDevice dev);
 vkh_public
-VkEvent         vkh_event_create            (VkhDevice dev);
+VkSemaphore		vkh_timeline_create			(VkhDevice dev, uint64_t initialValue);
+vkh_public
+VkResult		vkh_timeline_wait			(VkhDevice dev, VkSemaphore timeline, const uint64_t wait);
+vkh_public
+void			vkh_cmd_submit_timelined	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timeline,
+												 const uint64_t wait, const uint64_t signal);
+vkh_public
+VkEvent         vkh_event_create				(VkhDevice dev);
 
 vkh_public
 VkCommandPool   vkh_cmd_pool_create (VkhDevice dev, uint32_t qFamIndex, VkCommandPoolCreateFlags flags);

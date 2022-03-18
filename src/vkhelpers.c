@@ -48,6 +48,54 @@ VkSemaphore vkh_semaphore_create (VkhDevice dev) {
 	VK_CHECK_RESULT(vkCreateSemaphore(dev->dev, &info, NULL, &semaphore));
 	return semaphore;
 }
+VkSemaphore vkh_timeline_create (VkhDevice dev, uint64_t initialValue) {
+	VkSemaphore semaphore;
+	VkSemaphoreTypeCreateInfo timelineInfo = {
+		.sType = VK_STRUCTURE_TYPE_SEMAPHORE_TYPE_CREATE_INFO, .pNext = NULL,
+		.semaphoreType = VK_SEMAPHORE_TYPE_TIMELINE,
+		.initialValue = initialValue};
+	VkSemaphoreCreateInfo info = { .sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO,
+								   .pNext = &timelineInfo,
+								   .flags = 0};
+	VK_CHECK_RESULT(vkCreateSemaphore(dev->dev, &info, NULL, &semaphore));
+	return semaphore;
+}
+
+VkResult vkh_timeline_wait (VkhDevice dev, VkSemaphore timeline, const uint64_t wait) {
+	VkSemaphoreWaitInfo waitInfo;
+	waitInfo.sType			= VK_STRUCTURE_TYPE_SEMAPHORE_WAIT_INFO;
+	waitInfo.pNext			= NULL;
+	waitInfo.flags			= 0;
+	waitInfo.semaphoreCount = 1;
+	waitInfo.pSemaphores	= &timeline;
+	waitInfo.pValues		= &wait;
+
+	return vkWaitSemaphores(dev->dev, &waitInfo, UINT64_MAX);
+}
+void vkh_cmd_submit_timelined (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timeline, const uint64_t wait, const uint64_t signal) {
+	static VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+	VkTimelineSemaphoreSubmitInfo timelineInfo;
+	timelineInfo.sType = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO;
+	timelineInfo.pNext = NULL;
+	timelineInfo.waitSemaphoreValueCount = 1;
+	timelineInfo.pWaitSemaphoreValues = &wait;
+	timelineInfo.signalSemaphoreValueCount = 1;
+	timelineInfo.pSignalSemaphoreValues = &signal;
+
+	VkSubmitInfo submitInfo;
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.pNext = &timelineInfo;
+	submitInfo.waitSemaphoreCount = 1;
+	submitInfo.pWaitSemaphores = &timeline;
+	submitInfo.signalSemaphoreCount  = 1;
+	submitInfo.pSignalSemaphores = &timeline;
+	submitInfo.pWaitDstStageMask = &stageFlags,
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = pCmdBuff;
+
+	VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submitInfo, VK_NULL_HANDLE));
+}
+
 VkEvent vkh_event_create (VkhDevice dev) {
 	VkEvent evt;
 	VkEventCreateInfo evtInfo = {.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO};
@@ -273,11 +321,11 @@ uint32_t* readFile(uint32_t* length, const char* filename) {
 void dumpLayerExts () {
 	printf ("Layers:\n");
 	uint32_t instance_layer_count;
-	assert (vkEnumerateInstanceLayerProperties(&instance_layer_count, NULL)==VK_SUCCESS);
+	VK_CHECK_RESULT (vkEnumerateInstanceLayerProperties(&instance_layer_count, NULL));
 	if (instance_layer_count == 0)
 		return;
 	VkLayerProperties* vk_props = (VkLayerProperties*)malloc (instance_layer_count * sizeof(VkLayerProperties));
-	assert (vkEnumerateInstanceLayerProperties(&instance_layer_count, vk_props)==VK_SUCCESS);
+	VK_CHECK_RESULT (vkEnumerateInstanceLayerProperties(&instance_layer_count, vk_props));
 
 	for (uint32_t i = 0; i < instance_layer_count; i++) {
 		printf ("\t%s, %s\n", vk_props[i].layerName, vk_props[i].description);
