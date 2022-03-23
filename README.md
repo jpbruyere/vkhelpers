@@ -49,7 +49,7 @@ void init_vulkan () {
 ```
 ##### Select physical device
 
-**VkhPhyInfo** is an helper structure that will store common usefull physical device informations, queues flags, memory properties in a single call for all the device present on the machine.
+**VkhPhyInfo** is an helper structure that will store common usefull physical device informations, queues flags, memory properties in a single call for all the devices present on the machine.
 ```c
    VkhPhyInfo* phys = vkh_app_get_phyinfos (e->app, &phyCount, surf);
 ```
@@ -62,12 +62,13 @@ for (uint i=0; i<phyCount; i++) {
   VkPhysicalDeviceMemoryProperties mp = vkh_phyinfo_get_memory_properties (phys[i]);
   //get queue properties
   VkQueueFamilyProperties* vkh_phyinfo_get_queues_props(phys[i], &qCount);
+}
 ```
-VkhPhyInfo structure has the array of **VkQueueFamilyProperties** that has already be parsed two times to detect available queues types. First vkh will try to find a dedicated queue for each queue types (Graphic, Transfer, Compute) and if a type has no dedicated candidate, it will try to find a queue with the requested flag among others. Also if you submit a valid **VkSurfaceKHR** to `vkh_app_get_phyinfos`, presentation support will be queried for all graphic queues. The result of this search may be fetched with:
+VkhPhyInfo structure has the array of **VkQueueFamilyProperties** that has already been parsed two times to detect available queues types. First vkh will try to find a dedicated queue for each queue type (Graphics, Transfer, Compute) and if a type has no dedicated candidate, it will try to find a queue with the requested flag among others. Also, if you submit a valid **VkSurfaceKHR** to `vkh_app_get_phyinfos`, presentation support will be queried for all graphics queues. The result of this search may be fetched with:
 ```c
 vkh_phyinfo_get_queue_fam_indices (phy, &presentQ, &graphQ, &transQ, &compQ);
 ```
-vkh has one function per queue type that use the result of this search. They may be safely called for checking queue availability, it will return false on failure. On success, the queue count of the `VkQueueFamilyProperties` of phyinfo will be decreased.
+vkh has one function per queue type that uses the result of this search. They may be safely called for checking queue availability, they will return false on failure. On success, the queue count of the `VkQueueFamilyProperties` of PhyInfo will be decreased.
 ```c
 	if (vkh_phyinfo_create_presentable_queues (pi, 1, qPriorities, &pQueueInfos[qCount]))
 		qCount++;
@@ -78,7 +79,7 @@ vkh has one function per queue type that use the result of this search. They may
 ```
 To override the vkh default queue selection, create queues with your own family index:
 ```c
-vkh_phyinfo_create_queues (phy, qFam, queueCount, priorities, &qInfo) {
+vkh_phyinfo_create_queues (phy, qFam, queueCount, priorities, &qInfo);
 ```
 Be aware that the queue count of the vkhinfo structure is decreased to keep track of remaining queues.
 PhyInfo pointer has to be freed when no longuer in use. Usualy at the end of the vulkan initialization.
