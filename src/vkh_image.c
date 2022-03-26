@@ -56,7 +56,41 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 	VmaAllocationCreateInfo allocInfo = { .usage = memprops };
 	VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
 
+	mtx_init(&img->mutex, mtx_plain);
+	img->references = 1;
+
 	return img;
+}
+void vkh_image_destroy(VkhImage img)
+{
+	if (img==NULL)
+		return;
+
+	mtx_lock (&img->mutex);
+	img->references--;
+	if (img->references > 0) {
+		mtx_unlock (&img->mutex);
+		return;
+	}
+
+	mtx_unlock (&img->mutex);
+	mtx_destroy (&img->mutex);
+
+	if(img->view != VK_NULL_HANDLE)
+		vkDestroyImageView (img->pDev->dev,img->view, NULL);
+	if(img->sampler != VK_NULL_HANDLE)
+		vkDestroySampler (img->pDev->dev,img->sampler, NULL);
+
+	if (!img->imported)
+		vmaDestroyImage	(img->pDev->allocator, img->image, img->alloc);
+
+	free(img);
+	img = NULL;
+}
+void vkh_image_reference (VkhImage img) {
+	mtx_lock	(&img->mutex);
+	img->references++;
+	mtx_unlock	(&img->mutex);
 }
 VkhImage vkh_tex2d_array_create (VkhDevice pDev,
 							 VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
@@ -75,9 +109,9 @@ VkhImage vkh_image_create (VkhDevice pDev,
 //create vkhImage from existing VkImage
 VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height) {
 	VkhImage img = (VkhImage)calloc(1,sizeof(vkh_image_t));
-	img->pDev = pDev;
-	img->image = vkImg;
-	img->imported = true;
+	img->pDev		= pDev;
+	img->image		= vkImg;
+	img->imported	= true;
 
 	VkImageCreateInfo* pInfo = &img->infos;
 	pInfo->imageType		= VK_IMAGE_TYPE_2D;
@@ -87,7 +121,10 @@ VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint3
 	pInfo->extent.depth		= 1;
 	pInfo->mipLevels		= 1;
 	pInfo->arrayLayers		= 1;
-	//pInfo->samples		  = samples;
+	//pInfo->samples		= samples;
+	img->references			= 1;
+
+	mtx_init (&img->mutex, mtx_plain);
 
 	return img;
 }
@@ -219,21 +256,6 @@ void vkh_image_destroy_sampler (VkhImage img) {
 	if(img->sampler != VK_NULL_HANDLE)
 		vkDestroySampler	(img->pDev->dev,img->sampler,NULL);
 	img->sampler = VK_NULL_HANDLE;
-}
-void vkh_image_destroy(VkhImage img)
-{
-	if (img==NULL)
-		return;
-	if(img->view != VK_NULL_HANDLE)
-		vkDestroyImageView	(img->pDev->dev,img->view,NULL);
-	if(img->sampler != VK_NULL_HANDLE)
-		vkDestroySampler	(img->pDev->dev,img->sampler,NULL);
-
-	if (!img->imported)
-		vmaDestroyImage		(img->pDev->allocator, img->image, img->alloc);
-
-	free(img);
-	img = NULL;
 }
 
 void* vkh_image_map (VkhImage img) {

@@ -30,6 +30,8 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
+#include "deps/tinycthread.h"
+
 typedef enum VmaMemoryUsage VmaMemoryUsage;
 
 #include <stdlib.h>
@@ -215,6 +217,8 @@ void vkh_image_destroy_sampler  (VkhImage img);
 vkh_public
 void vkh_image_destroy          (VkhImage img);
 vkh_public
+void vkh_image_reference		(VkhImage img);
+vkh_public
 void* vkh_image_map             (VkhImage img);
 vkh_public
 void vkh_image_unmap            (VkhImage img);
@@ -278,7 +282,7 @@ void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, V
 									VkSemaphore signalSemaphore, VkFence fence);
 
 vkh_public
-void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[]);
+void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[4]);
 vkh_public
 void vkh_cmd_label_end     (VkCommandBuffer cmd);
 vkh_public
@@ -312,6 +316,18 @@ void        vkh_queue_destroy   (VkhQueue queue);
 //VkhQueue    vkh_queue_find      (VkhDevice dev, VkQueueFlags flags);
 /////////////////////
 
+vkh_public
+bool vkh_instance_extension_supported (const char* instanceName);
+vkh_public
+void vkh_instance_extensions_check_init ();
+vkh_public
+void vkh_instance_extensions_check_release ();
+vkh_public
+bool vkh_layer_is_present (const char* layerName);
+vkh_public
+void vkh_layers_check_init ();
+vkh_public
+void vkh_layers_check_release ();
 #ifdef __cplusplus
 }
 #endif

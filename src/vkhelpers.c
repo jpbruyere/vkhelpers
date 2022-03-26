@@ -287,3 +287,39 @@ void dumpLayerExts () {
 	}
 	free(vk_props);
 }
+
+static VkExtensionProperties* instExtProps;
+static uint32_t instExtCount;
+bool vkh_instance_extension_supported (const char* instanceName) {
+    for (uint32_t i=0; i<instExtCount; i++) {
+        if (!strcmp(instExtProps[i].extensionName, instanceName))
+            return true;
+    }
+    return false;
+}
+void vkh_instance_extensions_check_init () {
+    VK_CHECK_RESULT(vkEnumerateInstanceExtensionProperties(NULL, &instExtCount, NULL));
+    instExtProps =(VkExtensionProperties*)malloc(instExtCount * sizeof(VkExtensionProperties));
+    VK_CHECK_RESULT(vkEnumerateInstanceExtensionProperties(NULL, &instExtCount, instExtProps));
+}
+void vkh_instance_extensions_check_release () {
+    free (instExtProps);
+}
+
+static VkLayerProperties* instLayerProps;
+static uint32_t instance_layer_count;
+bool vkh_layer_is_present (const char* layerName) {
+    for (uint32_t i=0; i<instance_layer_count; i++) {
+        if (!strcmp(instLayerProps[i].layerName, layerName))
+            return true;
+    }
+    return false;
+}
+void vkh_layers_check_init () {
+    VK_CHECK_RESULT(vkEnumerateInstanceLayerProperties(&instance_layer_count, NULL));
+    instLayerProps =(VkLayerProperties*)malloc(instance_layer_count * sizeof(VkLayerProperties));
+    VK_CHECK_RESULT(vkEnumerateInstanceLayerProperties(&instance_layer_count, instLayerProps));
+}
+void vkh_layers_check_release () {
+    free (instLayerProps);
+}

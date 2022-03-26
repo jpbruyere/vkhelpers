@@ -71,7 +71,11 @@ VkhApp vkh_app_create (uint32_t version_major, uint32_t version_minor, const cha
 								.applicationVersion = 1,
 								.pEngineName = ENGINE_NAME,
 								.engineVersion = ENGINE_VERSION,
+#ifdef VK_MAKE_API_VERSION
 								.apiVersion = VK_MAKE_API_VERSION (0, version_major, version_minor, 0)};
+#else
+								.apiVersion = VK_MAKE_VERSION (version_major, version_minor, 0)};
+#endif
 
 	VkInstanceCreateInfo inst_info = { .sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
 									   .pApplicationInfo = &infos,
