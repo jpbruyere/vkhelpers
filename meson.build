@@ -13,59 +13,65 @@ project(
     ]
 )
 
-ENABLE_VALIDATION_OPT = false
 lib_so_version = '1'
+
+# Enable Vulkan Validation Layer
+ENABLE_VALIDATION_OPT = get_option('ENABLE_VALIDATION_OPT')
+
+# Enable Vulkan Memory Allocator - For more information: https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator
+# Currently the only option
+VKH_ENABLE_VMA = get_option('VKH_ENABLE_VMA')
 
 # VMA Options
 
 # Enable VMA memory recording for debugging
-VMA_RECORDING_ENABLD = false
+VMA_RECORDING_ENABLED = get_option('VMA_RECORDING_ENABLED')
 
 # Use C++ STL containers instead of VMA's containers
-VMA_USE_STL_CONTAINERS = false
+VMA_USE_STL_CONTAINERS = get_option('VMA_USE_STL_CONTAINERS')
 
 # Link statically with Vulkan API
-VMA_STATIC_VULKAN_FUNCTIONS = false
+VMA_STATIC_VULKAN_FUNCTIONS = get_option('VMA_STATIC_VULKAN_FUNCTIONS')
 
 # Fetch pointers to Vulkan functions internally (no static linking)
-VMA_DYNAMIC_VULKAN_FUNCTIONS = true
+VMA_DYNAMIC_VULKAN_FUNCTIONS = get_option('VMA_DYNAMIC_VULKAN_FUNCTIONS')
 
 # Every allocation will have its own memory block
-VMA_DEBUG_ALWAYS_DEDICATED_MEMORY = false
+VMA_DEBUG_ALWAYS_DEDICATED_MEMORY = get_option('VMA_DEBUG_ALWAYS_DEDICATED_MEMORY')
 
 # Automatically fill new allocations and destroyed allocations with some bit pattern
-VMA_DEBUG_INITIALIZE_ALLOCATIONS = false
+VMA_DEBUG_INITIALIZE_ALLOCATIONS = get_option('VMA_DEBUG_INITIALIZE_ALLOCATIONS')
 
 # Enable single mutex protecting all entry calls to the library
-VMA_DEBUG_GLOBAL_MUTEX = false
+VMA_DEBUG_GLOBAL_MUTEX = get_option('VMA_DEBUG_GLOBAL_MUTEX')
 
 # Never exceed VkPhysicalDeviceLimits::maxMemoryAllocationCount and return error
-VMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT = false
+VMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT = get_option('VMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT')
 
 # Minimum alignment of all allocations, in bytes.
 # Set to more than 1 for debugging purposes only. Must be power of two.
-VMA_DEBUG_ALIGNMENT = 1
+VMA_DEBUG_ALIGNMENT = get_option('VMA_DEBUG_ALIGNMENT')
 
 # Minimum margin before and after every allocation, in bytes.
 # Set nonzero for debugging purposes only.
-VMA_DEBUG_MARGIN = 0
+VMA_DEBUG_MARGIN = get_option('VMA_DEBUG_MARGIN')
 
 # Minimum value for VkPhysicalDeviceLimits::bufferImageGranularity.
 # Set to more than 1 for debugging purposes only. Must be power of two.
-VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY = 1
+VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY = get_option('VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY')
 
 # Maximum size of a memory heap in Vulkan to consider it "small".
-VMA_SMALL_HEAP_MAX_SIZE = 1073741824 # 1 Gigabyte
+VMA_SMALL_HEAP_MAX_SIZE = get_option('VMA_SMALL_HEAP_MAX_SIZE') # 1 Gigabyte default
 
 # Default size of a block allocated as single VkDeviceMemory from a "large" heap.
-VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE = 268435456 # 256 Megabytes
+VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE = get_option('VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE') # 256 Megabytes default
 
 # Configuration for Debug/Release builds
 vkh_compile_options = []
 
 if (get_option('buildtype').startswith('debug'))
     vkh_compile_options = ['-DDEBUG']
-    ENABLE_VALIDATION = true
+    ENABLE_VALIDATION_OPT = true
     if (build_machine.system() == 'linux')
         vkh_compile_options += ['-Wall', '-Wno-extra', '-Wno-unknown-pragmas']
     elif (build_machine.system() == 'windows')
@@ -85,41 +91,41 @@ if (get_option('VKH_ENABLE_VMA'))
     vkh_compile_options += '-DUSE_VMA'
 endif
 
-if (ENABLE_VALIDATION_OPT == true)
+if (ENABLE_VALIDATION_OPT)
     vkh_compile_options += '-DVKH_USE_VALIDATION'
 endif
 
 
 # VMA Options Define Flags
-if (VMA_RECORDING_ENABLD == true)
+if (VMA_RECORDING_ENABLED)
     vkh_compile_options += '-DVMA_RECORDING_ENABLED=1'
 endif
 
-if (VMA_USE_STL_CONTAINERS == true)
+if (VMA_USE_STL_CONTAINERS)
     vkh_compile_options += '-DVMA_USE_STL_CONTAINERS=1'
 endif
 
-if (VMA_STATIC_VULKAN_FUNCTIONS == true)
+if (VMA_STATIC_VULKAN_FUNCTIONS)
     vkh_compile_options += '-DVMA_STATIC_VULKAN_FUNCTIONS=1'
 endif
 
-if (VMA_DYNAMIC_VULKAN_FUNCTIONS == true)
+if (VMA_DYNAMIC_VULKAN_FUNCTIONS)
     vkh_compile_options += '-DVMA_DYNAMIC_VULKAN_FUNCTIONS=1'
 endif
 
-if (VMA_DEBUG_ALWAYS_DEDICATED_MEMORY == true)
+if (VMA_DEBUG_ALWAYS_DEDICATED_MEMORY)
     vkh_compile_options += '-DVMA_DEBUG_ALWAYS_DEDICATED_MEMORY=1'
 endif
 
-if (VMA_DEBUG_INITIALIZE_ALLOCATIONS == true)
+if (VMA_DEBUG_INITIALIZE_ALLOCATIONS)
     vkh_compile_options += '-DVMA_DEBUG_INITIALIZE_ALLOCATIONS=1'
 endif
 
-if (VMA_DEBUG_GLOBAL_MUTEX == true)
+if (VMA_DEBUG_GLOBAL_MUTEX)
     vkh_compile_options += '-DVMA_DEBUG_GLOBAL_MUTEX=1'
 endif
 
-if (VMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT == true)
+if (VMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT)
     vkh_compile_options += '-DVMA_DEBUG_DONT_EXCEED_MAX_MEMORY_ALLOCATION_COUNT=1'
 endif
 
