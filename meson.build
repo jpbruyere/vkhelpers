@@ -6,7 +6,7 @@ project(
     'vkh',
     'c', 'cpp',
     version : '0.3.0',
-    meson_version : '>=0.56.2',
+    meson_version : '>=0.62.0',
     default_options : [
         'c_std=c11',
         'cpp_std=c++11'
