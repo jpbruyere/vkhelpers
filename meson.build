@@ -166,9 +166,12 @@ vkh_src = [
     'src/vkh_presenter.c',
     'src/vkh_queue.c',
     'src/vkhelpers.c',
-    'src/deps/tinycthread.c',
     'src/VmaUsage.cpp'
 ]
+
+if (host_machine.system() == 'windows')
+    vkh_src += 'src/deps/tinycthread.c'
+endif
 
 vkh_include = [
     'include',
