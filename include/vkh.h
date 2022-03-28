@@ -30,7 +30,7 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
-#if defined(_WIN32) || defined(WIN32) || defined(__WIN32__) || defined(_WIN64) || defined(WIN64) || defined(__WIN64__)
+#if defined(STDC_NO_THREADS)
 #include "deps/tinycthread.h"
 #else
 // For platforms outside of Windows, Threads.h is provided for by compiler that supports C11 standard.
