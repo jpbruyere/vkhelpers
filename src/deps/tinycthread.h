@@ -23,7 +23,6 @@ freely, subject to the following restrictions:
 
 #ifndef _TINYCTHREAD_H_
 #define _TINYCTHREAD_H_
-#if defined(STDC_NO_THREADS)
 /**
 * @file
 * @mainpage TinyCThread API Reference
@@ -437,8 +436,4 @@ void *tss_get(tss_t key);
 * not be honored.
 */
 int tss_set(tss_t key, void *val);
-
-#else
-#include <threads.h>
-#endif
 #endif /* _TINYTHREAD_H_ */
