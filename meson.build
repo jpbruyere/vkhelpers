@@ -156,7 +156,6 @@ vkh_dependencies = [vulkan_dep, threads_dep]
 
 pkg_conf = import('pkgconfig')
 
-
 vkh_src = [
     'src/vkh_app.c',
     'src/vkh_buffer.c',
@@ -169,7 +168,7 @@ vkh_src = [
     'src/VmaUsage.cpp'
 ]
 
-if (host_machine.system() == 'windows')
+if (has_c11_threads_support == false)
     vkh_src += 'src/deps/tinycthread.c'
 endif
 
@@ -180,8 +179,8 @@ vkh_include = [
 ]
 
 vkh_shared_library = shared_library('vkh', 
-    c_args: [vkh_compile_options, '-DVKH_SHARED_BUILD'],
-    cpp_args: [vkh_compile_options, '-DVKH_SHARED_BUILD'],
+    c_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_SHARED_BUILD'],
+    cpp_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_SHARED_BUILD'],
     build_by_default: true,
     install: true,
     soversion: lib_so_version,
@@ -191,8 +190,8 @@ vkh_shared_library = shared_library('vkh',
 )
 
 vkh_static_library = static_library('vkh', 
-    c_args: [vkh_compile_options, '-DVKH_STATIC_BUILD'],
-    cpp_args: [vkh_compile_options, '-DVKH_STATIC_BUILD'],
+    c_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_STATIC_BUILD'],
+    cpp_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_STATIC_BUILD'],
     build_by_default: true,
     install: true,
     sources: vkh_src,
