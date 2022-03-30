@@ -21,7 +21,7 @@ freely, subject to the following restrictions:
     distribution.
 */
 
-#if defined(STDC_VERSION) && (STDC_VERSION >= 201102L) && !defined(STDC_NO_THREADS)
+#if defined(STDC_NO_THREADS)
 /* 2013-01-06 Camilla Löwy <elmindreda@glfw.org>
  *
  * Added casts from time_t to DWORD to avoid warnings on VC++.

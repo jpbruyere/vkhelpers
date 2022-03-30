@@ -165,12 +165,9 @@ vkh_src = [
     'src/vkh_presenter.c',
     'src/vkh_queue.c',
     'src/vkhelpers.c',
-    'src/VmaUsage.cpp'
+    'src/VmaUsage.cpp',
+    'src/deps/tinycthread.c'
 ]
-
-if (has_c11_threads_support == false)
-    vkh_src += 'src/deps/tinycthread.c'
-endif
 
 vkh_include = [
     'include',
@@ -179,8 +176,8 @@ vkh_include = [
 ]
 
 vkh_shared_library = shared_library('vkh', 
-    c_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_SHARED_BUILD'],
-    cpp_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_SHARED_BUILD'],
+    c_args: [vkh_compile_options, '-DVKH_SHARED_BUILD'],
+    cpp_args: [vkh_compile_options, '-DVKH_SHARED_BUILD'],
     build_by_default: true,
     install: true,
     soversion: lib_so_version,
@@ -190,8 +187,8 @@ vkh_shared_library = shared_library('vkh',
 )
 
 vkh_static_library = static_library('vkh', 
-    c_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_STATIC_BUILD'],
-    cpp_args: [vkh_compile_options, has_c11_threads_support_defines, '-DVKH_STATIC_BUILD'],
+    c_args: [vkh_compile_options, '-DVKH_STATIC_BUILD'],
+    cpp_args: [vkh_compile_options, '-DVKH_STATIC_BUILD'],
     build_by_default: true,
     install: true,
     sources: vkh_src,
