@@ -95,7 +95,29 @@ void vkh_cmd_submit_timelined (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSema
 
 	VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submitInfo, VK_NULL_HANDLE));
 }
+void vkh_cmd_submit_timelined2 (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[static 2], const uint64_t waits[static 2], const uint64_t signals[static 2]) {
+	static VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
+	VkTimelineSemaphoreSubmitInfo timelineInfo;
+	timelineInfo.sType = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO;
+	timelineInfo.pNext = NULL;
+	timelineInfo.waitSemaphoreValueCount = 2;
+	timelineInfo.pWaitSemaphoreValues = waits;
+	timelineInfo.signalSemaphoreValueCount = 2;
+	timelineInfo.pSignalSemaphoreValues = signals;
 
+	VkSubmitInfo submitInfo;
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.pNext = &timelineInfo;
+	submitInfo.waitSemaphoreCount = 2;
+	submitInfo.pWaitSemaphores = timelines;
+	submitInfo.signalSemaphoreCount  = 2;
+	submitInfo.pSignalSemaphores = timelines;
+	submitInfo.pWaitDstStageMask = &stageFlags,
+	submitInfo.commandBufferCount = 1;
+	submitInfo.pCommandBuffers = pCmdBuff;
+
+	VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submitInfo, VK_NULL_HANDLE));
+}
 VkEvent vkh_event_create (VkhDevice dev) {
 	VkEvent evt;
 	VkEventCreateInfo evtInfo = {.sType = VK_STRUCTURE_TYPE_EVENT_CREATE_INFO};
