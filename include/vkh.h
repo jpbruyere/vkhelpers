@@ -270,8 +270,8 @@ vkh_public
 void			vkh_cmd_submit_timelined	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timeline,
 												 const uint64_t wait, const uint64_t signal);
 vkh_public
-void			vkh_cmd_submit_timelined2	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[static 2],
-												const uint64_t waits[static 2], const uint64_t signals[static 2]);
+void			vkh_cmd_submit_timelined2	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[2],
+												const uint64_t waits[2], const uint64_t signals[2]);
 vkh_public
 VkEvent			vkh_event_create				(VkhDevice dev);
 

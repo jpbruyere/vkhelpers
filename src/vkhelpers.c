@@ -95,7 +95,7 @@ void vkh_cmd_submit_timelined (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSema
 
 	VK_CHECK_RESULT(vkQueueSubmit(queue->queue, 1, &submitInfo, VK_NULL_HANDLE));
 }
-void vkh_cmd_submit_timelined2 (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[static 2], const uint64_t waits[static 2], const uint64_t signals[static 2]) {
+void vkh_cmd_submit_timelined2 (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[2], const uint64_t waits[2], const uint64_t signals[2]) {
 	static VkPipelineStageFlags stageFlags = VK_PIPELINE_STAGE_ALL_COMMANDS_BIT;
 	VkTimelineSemaphoreSubmitInfo timelineInfo;
 	timelineInfo.sType = VK_STRUCTURE_TYPE_TIMELINE_SEMAPHORE_SUBMIT_INFO;
