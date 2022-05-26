@@ -22,27 +22,76 @@
 #include "vkh_buffer.h"
 #include "vkh_device.h"
 
-VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VmaMemoryUsage memprops, VkDeviceSize size){
-	VkhBuffer buff = (VkhBuffer)malloc(sizeof(vkh_buffer_t));
-	buff->pDev = pDev;
+#ifndef VKH_USE_VMA
+void _set_size_and_map(VkhDevice pDev, VkBufferUsageFlags usage, VkMemoryPropertyFlags memoryPropertyFlags, VkDeviceSize size, VkhBuffer buff){
+	VkMemoryRequirements memReq;
+	vkGetBufferMemoryRequirements(pDev->dev, buff->buffer, &memReq);
+	VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+										  .allocationSize = memReq.size };
+	assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits,memoryPropertyFlags, &memAllocInfo.memoryTypeIndex));
+	VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &buff->memory));
+
+	buff->alignment = memReq.alignment;
+	buff->size = memAllocInfo.allocationSize;
+	buff->usageFlags = usage;
+	buff->memprops = memoryPropertyFlags;
+
+	VK_CHECK_RESULT(vkBindBufferMemory(buff->pDev->dev, buff->buffer, buff->memory, 0));
+	VK_CHECK_RESULT(vkMapMemory(buff->pDev->dev, buff->memory, 0, VK_WHOLE_SIZE, 0, &buff->mapped));
+}
+#endif
+
+void vkh_buffer_init(VkhDevice pDev, VkBufferUsageFlags usage, VkhMemoryUsage memprops, VkDeviceSize size, VkhBuffer buff, bool mapped){
+	buff->pDev			= pDev;
 	VkBufferCreateInfo* pInfo = &buff->infos;
-	pInfo->sType		 = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-	pInfo->usage		 = usage;
-	pInfo->size			 = size;
-	pInfo->sharingMode	 = VK_SHARING_MODE_EXCLUSIVE;
-
+	pInfo->sType		= VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+	pInfo->usage		= usage;
+	pInfo->size			= size;
+	pInfo->sharingMode	= VK_SHARING_MODE_EXCLUSIVE;
+#ifdef VKH_USE_VMA	
+	buff->allocCreateInfo.usage	= (VmaMemoryUsage)memprops;
+	if (mapped)
+		buff->allocCreateInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
+	VK_CHECK_RESULT(vmaCreateBuffer(pDev->allocator, pInfo, &buff->allocCreateInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
+#else
 	buff->memprops = memprops;
+#endif
+}
 
-	VmaAllocationCreateInfo allocInfo = { .usage = memprops };
-	VK_CHECK_RESULT(vmaCreateBuffer(pDev->allocator, pInfo, &allocInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
+VkhBuffer vkh_buffer_create(VkhDevice pDev, VkBufferUsageFlags usage, VkhMemoryUsage memprops, VkDeviceSize size){
+	VkhBuffer buff = (VkhBuffer)calloc(1, sizeof(vkh_buffer_t));
+	vkh_buffer_init(pDev, usage, memprops, size, buff, false);
 	return buff;
 }
 
+void vkh_buffer_reset(VkhBuffer buff){
+	if (buff->buffer)
+#ifdef VKH_USE_VMA
+		vmaDestroyBuffer(buff->pDev->allocator, buff->buffer, buff->alloc);
+#else
+#endif
+}
 void vkh_buffer_destroy(VkhBuffer buff){
 	if (buff->buffer)
+#ifdef VKH_USE_VMA
 		vmaDestroyBuffer(buff->pDev->allocator, buff->buffer, buff->alloc);
+#else
+#endif
 	free(buff);
 	buff = NULL;
+}
+void vkh_buffer_resize(VkhBuffer buff, VkDeviceSize newSize){
+	if (buff->buffer)
+#ifdef VKH_USE_VMA
+		vmaDestroyBuffer(buff->pDev->allocator, buff->buffer, buff->alloc);
+	VK_CHECK_RESULT(vmaCreateBuffer(buff->pDev->allocator, &buff->infos, &buff->allocCreateInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
+#else
+#endif
+#ifdef VKH_USE_VMA
+#else
+	buff->memprops = memprops;
+#endif
+
 }
 
 VkDescriptorBufferInfo vkh_buffer_get_descriptor (VkhBuffer buff){
@@ -55,17 +104,34 @@ VkDescriptorBufferInfo vkh_buffer_get_descriptor (VkhBuffer buff){
 
 
 VkResult vkh_buffer_map(VkhBuffer buff){
+#ifdef VKH_USE_VMA
 	return vmaMapMemory(buff->pDev->allocator, buff->alloc, &buff->mapped);
+#else
+#endif
 }
 void vkh_buffer_unmap(VkhBuffer buff){
+#ifdef VKH_USE_VMA
+	vmaUnmapMemory(buff->pDev->allocator, buff->alloc);
+#else
 	if (!buff->mapped)
 		return;
-	vmaUnmapMemory(buff->pDev->allocator, buff->alloc);
 	buff->mapped = NULL;
+#endif
 }
 VkBuffer vkh_buffer_get_vkbuffer (VkhBuffer buff){
 	return buff->buffer;
 }
 void* vkh_buffer_get_mapped_pointer (VkhBuffer buff){
+#ifdef VKH_USE_VMA
+	//vmaFlushAllocation (buff->pDev->allocator, buff->alloc, buff->allocInfo.offset, buff->allocInfo.size);
+	return buff->allocInfo.pMappedData;
+#else
 	return buff->mapped;
+#endif
+}
+void vkh_buffer_flush (VkhBuffer buff){
+#ifdef VKH_USE_VMA
+	vmaFlushAllocation (buff->pDev->allocator, buff->alloc, buff->allocInfo.offset, buff->allocInfo.size);
+#else
+#endif
 }
