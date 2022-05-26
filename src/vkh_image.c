@@ -24,7 +24,7 @@
 
 VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 				  VkFormat format, uint32_t width, uint32_t height,
-				  VmaMemoryUsage memprops, VkImageUsageFlags usage,
+				  VkhMemoryUsage memprops, VkImageUsageFlags usage,
 				  VkSampleCountFlagBits samples, VkImageTiling tiling,
 				  uint32_t mipLevels, uint32_t arrayLayers){
 
@@ -53,9 +53,18 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 	img->image	= VK_NULL_HANDLE;
 	img->sampler= VK_NULL_HANDLE;
 	img->view	= VK_NULL_HANDLE;*/
-
-	VmaAllocationCreateInfo allocInfo = { .usage = memprops };
+#ifdef VKH_USE_VMA
+	VmaAllocationCreateInfo allocInfo = { .usage = (VmaMemoryUsage)memprops };
 	VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
+#else
+	VkMemoryRequirements memReq;
+	vkGetImageMemoryRequirements(pDev->dev, img->image, &memReq);
+	VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+										  .allocationSize = memReq.size };
+	assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex));
+	VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &img->memory));
+	VK_CHECK_RESULT(vkBindImageMemory(pDev->dev, img->image, img->memory, 0));
+#endif
 
 	mtx_init(&img->mutex, mtx_plain);
 	img->references = 1;
@@ -83,7 +92,11 @@ void vkh_image_destroy(VkhImage img)
 		vkDestroySampler (img->pDev->dev,img->sampler, NULL);
 
 	if (!img->imported)
+#ifdef VKH_USE_VMA
 		vmaDestroyImage	(img->pDev->allocator, img->image, img->alloc);
+#else
+#endif
+
 
 	free(img);
 	img = NULL;
@@ -95,13 +108,13 @@ void vkh_image_reference (VkhImage img) {
 }
 VkhImage vkh_tex2d_array_create (VkhDevice pDev,
 							 VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-							 VmaMemoryUsage memprops, VkImageUsageFlags usage){
+							 VkhMemoryUsage memprops, VkImageUsageFlags usage){
 	return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
 		VK_SAMPLE_COUNT_1_BIT, VK_IMAGE_TILING_OPTIMAL, 1, layers);
 }
 VkhImage vkh_image_create (VkhDevice pDev,
 						   VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
-						   VmaMemoryUsage memprops,
+						   VkhMemoryUsage memprops,
 						   VkImageUsageFlags usage)
 {
 	return _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
@@ -131,7 +144,7 @@ VkhImage vkh_image_import (VkhDevice pDev, VkImage vkImg, VkFormat format, uint3
 }
 VkhImage vkh_image_ms_create(VkhDevice pDev,
 						   VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
-						   VmaMemoryUsage memprops,
+						   VkhMemoryUsage memprops,
 						   VkImageUsageFlags usage){
    return  _vkh_image_create (pDev, VK_IMAGE_TYPE_2D, format, width, height, memprops,usage,
 					  num_samples, VK_IMAGE_TILING_OPTIMAL, 1, 1);
@@ -261,11 +274,17 @@ void vkh_image_destroy_sampler (VkhImage img) {
 
 void* vkh_image_map (VkhImage img) {
 	void* data;
+#ifdef VKH_USE_VMA
 	vmaMapMemory(img->pDev->allocator, img->alloc, &data);
+#else
+#endif
 	return data;
 }
 void vkh_image_unmap (VkhImage img) {
+#ifdef VKH_USE_VMA
 	vmaUnmapMemory(img->pDev->allocator, img->alloc);
+#else
+#endif
 }
 void vkh_image_set_name (VkhImage img, const char* name){
 	if (img==NULL)

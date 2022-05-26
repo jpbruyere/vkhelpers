@@ -27,15 +27,25 @@ extern "C" {
 #endif
 
 #include "vkh.h"
+
+#ifdef VKH_USE_VMA
 #include "vk_mem_alloc.h"
+#endif
 
 typedef struct _vkh_buffer_t {
 	VkhDevice				pDev;
 	VkBufferCreateInfo		infos;
-	VmaMemoryUsage			memprops;
 	VkBuffer				buffer;
+#ifdef VKH_USE_VMA
 	VmaAllocation			alloc;
 	VmaAllocationInfo		allocInfo;
+	VmaAllocationCreateInfo allocCreateInfo;
+#else
+	VkDeviceMemory			memory;
+	VkDeviceSize			size;
+	VkBufferUsageFlags		usageFlags;
+	VkMemoryPropertyFlags	memprops;
+#endif
 	VkDescriptorBufferInfo	descriptor;
 	VkDeviceSize			alignment;
 	void*					mapped;

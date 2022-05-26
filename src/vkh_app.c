@@ -20,7 +20,7 @@
  * THE SOFTWARE.
  */
 #include "vkh_app.h"
-#include "vk_mem_alloc.h"
+//#include "vk_mem_alloc.h"
 
 #define ENGINE_NAME		"vkhelpers"
 #define ENGINE_VERSION	1

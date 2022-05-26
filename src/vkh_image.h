@@ -33,8 +33,12 @@ typedef struct _vkh_image_t {
 	VkhDevice				pDev;
 	VkImageCreateInfo		infos;
 	VkImage					image;
+#ifdef VKH_USE_VMA
 	VmaAllocation			alloc;
 	VmaAllocationInfo		allocInfo;
+#else
+	VkDeviceMemory			memory;
+#endif
 	VkSampler				sampler;
 	VkImageView				view;
 	VkImageLayout			layout; //current layout
