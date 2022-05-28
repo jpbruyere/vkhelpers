@@ -254,12 +254,34 @@ void set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubr
 	vkCmdPipelineBarrier(cmdBuff, src_stages, dest_stages, 0, 0, NULL, 0, NULL, 1, &image_memory_barrier);
 }
 
-bool vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits, VkFlags requirements_mask, uint32_t *typeIndex) {
+bool vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits, VkhMemoryUsage memUsage, uint32_t *typeIndex) {
+	VkMemoryPropertyFlagBits memFlags = 0;
+	switch(memUsage) {
+	case VKH_MEMORY_USAGE_GPU_ONLY:
+		memFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+		break;
+	case VKH_MEMORY_USAGE_CPU_ONLY:
+		memFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		break;
+	case VKH_MEMORY_USAGE_CPU_TO_GPU:
+		memFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		break;
+	case VKH_MEMORY_USAGE_GPU_TO_CPU:
+		memFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_CACHED_BIT;
+		break;
+	case VKH_MEMORY_USAGE_CPU_COPY:
+		memFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+		break;
+	case VKH_MEMORY_USAGE_GPU_LAZILY_ALLOCATED:
+		memFlags = VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT;
+		break;
+	}
+
 	// Search memtypes to find first index with those properties
 	for (uint32_t i = 0; i < memory_properties->memoryTypeCount; i++) {
 		if (CHECK_BIT(typeBits, i)) {
 			// Type is available, does it match user properties?
-			if ((memory_properties->memoryTypes[i].propertyFlags & requirements_mask) == requirements_mask) {
+			if ((memory_properties->memoryTypes[i].propertyFlags & memFlags) == memFlags) {
 				*typeIndex = i;
 				return true;
 			}

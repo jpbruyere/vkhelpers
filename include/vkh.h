@@ -34,69 +34,69 @@ extern "C" {
 
 typedef enum VkhMemoryUsage
 {
-	/** No intended memory usage specified.
-	Use other members of VmaAllocationCreateInfo to specify your requirements.
-	*/
-	VKH_MEMORY_USAGE_UNKNOWN = 0,
-	/** Memory will be used on device only, so fast access from the device is preferred.
-	It usually means device-local GPU (video) memory.
-	No need to be mappable on host.
-	It is roughly equivalent of `D3D12_HEAP_TYPE_DEFAULT`.
+        /** No intended memory usage specified.
+        Use other members of VmaAllocationCreateInfo to specify your requirements.
+        */
+        VKH_MEMORY_USAGE_UNKNOWN = 0,
+        /** Memory will be used on device only, so fast access from the device is preferred.
+        It usually means device-local GPU (video) memory.
+        No need to be mappable on host.
+        It is roughly equivalent of `D3D12_HEAP_TYPE_DEFAULT`.
 
-	Usage:
+        Usage:
 
-	- Resources written and read by device, e.g. images used as attachments.
-	- Resources transferred from host once (immutable) or infrequently and read by
-	  device multiple times, e.g. textures to be sampled, vertex buffers, uniform
-	  (constant) buffers, and majority of other types of resources used on GPU.
+        - Resources written and read by device, e.g. images used as attachments.
+        - Resources transferred from host once (immutable) or infrequently and read by
+          device multiple times, e.g. textures to be sampled, vertex buffers, uniform
+          (constant) buffers, and majority of other types of resources used on GPU.
 
-	Allocation may still end up in `HOST_VISIBLE` memory on some implementations.
-	In such case, you are free to map it.
-	You can use #VMA_ALLOCATION_CREATE_MAPPED_BIT with this usage type.
-	*/
-	VKH_MEMORY_USAGE_GPU_ONLY = 1,
-	/** Memory will be mappable on host.
-	It usually means CPU (system) memory.
-	Guarantees to be `HOST_VISIBLE` and `HOST_COHERENT`.
-	CPU access is typically uncached. Writes may be write-combined.
-	Resources created in this pool may still be accessible to the device, but access to them can be slow.
-	It is roughly equivalent of `D3D12_HEAP_TYPE_UPLOAD`.
+        Allocation may still end up in `HOST_VISIBLE` memory on some implementations.
+        In such case, you are free to map it.
+        You can use #VMA_ALLOCATION_CREATE_MAPPED_BIT with this usage type.
+        */
+        VKH_MEMORY_USAGE_GPU_ONLY = 1,
+        /** Memory will be mappable on host.
+        It usually means CPU (system) memory.
+        Guarantees to be `HOST_VISIBLE` and `HOST_COHERENT`.
+        CPU access is typically uncached. Writes may be write-combined.
+        Resources created in this pool may still be accessible to the device, but access to them can be slow.
+        It is roughly equivalent of `D3D12_HEAP_TYPE_UPLOAD`.
 
-	Usage: Staging copy of resources used as transfer source.
-	*/
-	VKH_MEMORY_USAGE_CPU_ONLY = 2,
-	/**
-	Memory that is both mappable on host (guarantees to be `HOST_VISIBLE`) and preferably fast to access by GPU.
-	CPU access is typically uncached. Writes may be write-combined.
+        Usage: Staging copy of resources used as transfer source.
+        */
+        VKH_MEMORY_USAGE_CPU_ONLY = 2,
+        /**
+        Memory that is both mappable on host (guarantees to be `HOST_VISIBLE`) and preferably fast to access by GPU.
+        CPU access is typically uncached. Writes may be write-combined.
 
-	Usage: Resources written frequently by host (dynamic), read by device. E.g. textures, vertex buffers, uniform buffers updated every frame or every draw call.
-	*/
-	VKH_MEMORY_USAGE_CPU_TO_GPU = 3,
-	/** Memory mappable on host (guarantees to be `HOST_VISIBLE`) and cached.
-	It is roughly equivalent of `D3D12_HEAP_TYPE_READBACK`.
+        Usage: Resources written frequently by host (dynamic), read by device. E.g. textures, vertex buffers, uniform buffers updated every frame or every draw call.
+        */
+        VKH_MEMORY_USAGE_CPU_TO_GPU = 3,
+        /** Memory mappable on host (guarantees to be `HOST_VISIBLE`) and cached.
+        It is roughly equivalent of `D3D12_HEAP_TYPE_READBACK`.
 
-	Usage:
+        Usage:
 
-	- Resources written by device, read by host - results of some computations, e.g. screen capture, average scene luminance for HDR tone mapping.
-	- Any resources read or accessed randomly on host, e.g. CPU-side copy of vertex buffer used as source of transfer, but also used for collision detection.
-	*/
-	VKH_MEMORY_USAGE_GPU_TO_CPU = 4,
-	/** CPU memory - memory that is preferably not `DEVICE_LOCAL`, but also not guaranteed to be `HOST_VISIBLE`.
+        - Resources written by device, read by host - results of some computations, e.g. screen capture, average scene luminance for HDR tone mapping.
+        - Any resources read or accessed randomly on host, e.g. CPU-side copy of vertex buffer used as source of transfer, but also used for collision detection.
+        */
+        VKH_MEMORY_USAGE_GPU_TO_CPU = 4,
+        /** CPU memory - memory that is preferably not `DEVICE_LOCAL`, but also not guaranteed to be `HOST_VISIBLE`.
 
-	Usage: Staging copy of resources moved from GPU memory to CPU memory as part
-	of custom paging/residency mechanism, to be moved back to GPU memory when needed.
-	*/
-	VKH_MEMORY_USAGE_CPU_COPY = 5,
-	/** Lazily allocated GPU memory having `VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT`.
-	Exists mostly on mobile platforms. Using it on desktop PC or other GPUs with no such memory type present will fail the allocation.
+        Usage: Staging copy of resources moved from GPU memory to CPU memory as part
+        of custom paging/residency mechanism, to be moved back to GPU memory when needed.
+        */
+        VKH_MEMORY_USAGE_CPU_COPY = 5,
+        /** Lazily allocated GPU memory having `VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT`.
+        Exists mostly on mobile platforms. Using it on desktop PC or other GPUs with no such memory type present will fail the allocation.
 
-	Usage: Memory for transient attachment images (color attachments, depth attachments etc.), created with `VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT`.
+        Usage: Memory for transient attachment images (color attachments, depth attachments etc.), created with `VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT`.
 
-	Allocations with this usage are always created as dedicated - it implies #VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT.
-	*/
-	VKH_MEMORY_USAGE_GPU_LAZILY_ALLOCATED = 6,
+        Allocations with this usage are always created as dedicated - it implies #VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT.
+        */
+        VKH_MEMORY_USAGE_GPU_LAZILY_ALLOCATED = 6,
 
-	VKH_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
+        VKH_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
 } VkhMemoryUsage;
 
 #include <stdlib.h>
@@ -113,25 +113,25 @@ typedef enum VkhMemoryUsage
 #define VKH_MO      0x00100000
 #define VKH_GO      0x40000000
 
-#define VK_CHECK_RESULT(f) 																				\
-{																										\
-	VkResult res = (f);																					\
-	if (res != VK_SUCCESS)																				\
-	{																									\
-		fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
-		assert(res == VK_SUCCESS);																		\
-	}																									\
+#define VK_CHECK_RESULT(f) 										\
+{													\
+        VkResult res = (f);										\
+        if (res != VK_SUCCESS)										\
+        {												\
+                fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
+                assert(res == VK_SUCCESS);								\
+        }												\
 }
 #ifndef vkh_public
-	#ifdef VKH_SHARED_BUILD
-		#if (defined(_WIN32) || defined(_WIN64))
-			#define vkh_public __declspec(dllimport)
-		#else
-			#define vkh_public __attribute__((visibility("default")))
-		#endif
-	#else
-		#define vkh_public 
-	#endif
+        #ifdef VKH_SHARED_BUILD
+                #if (defined(_WIN32) || defined(_WIN64))
+                        #define vkh_public __declspec(dllimport)
+                #else
+                        #define vkh_public __attribute__((visibility("default")))
+                #endif
+        #else
+                #define vkh_public
+        #endif
 #endif
 
 typedef struct _vkh_app_t*		VkhApp;
@@ -147,7 +147,7 @@ typedef struct _vkh_presenter_t* VkhPresenter;
  *************/
 vkh_public
 VkhApp              vkh_app_create      (uint32_t version_major, uint32_t version_minor,
-										 const char* app_name, uint32_t enabledLayersCount, const char **enabledLayers, uint32_t ext_count, const char* extentions[]);
+                                                                                 const char* app_name, uint32_t enabledLayersCount, const char **enabledLayers, uint32_t ext_count, const char* extentions[]);
 vkh_public
 void                vkh_app_destroy     (VkhApp app);
 vkh_public
@@ -159,8 +159,8 @@ vkh_public
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 vkh_public
 void                vkh_app_enable_debug_messenger (VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
-													VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
-													PFN_vkDebugUtilsMessengerCallbackEXT callback);
+                                                                                                        VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
+                                                                                                        PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 vkh_public
 VkPhysicalDeviceProperties          vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
@@ -184,11 +184,11 @@ vkh_public
 VkQueueFamilyProperties* vkh_phyinfo_get_queues_props(VkhPhyInfo phy, uint32_t* qCount);
 
 vkh_public
-bool vkh_phyinfo_create_queues	  (VkhPhyInfo phy, int qFam, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool vkh_phyinfo_create_queues  (VkhPhyInfo phy, int qFam, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
 bool vkh_phyinfo_create_presentable_queues	(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
-bool phy_info_create_graphic_queues			(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
+bool phy_info_create_graphic_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
 bool vkh_phyinfo_create_transfer_queues		(VkhPhyInfo phy, uint32_t queueCount, const float* queue_priorities, VkDeviceQueueCreateInfo* const qInfo);
 vkh_public
@@ -200,17 +200,17 @@ bool vkh_phyinfo_try_get_extension_properties (VkhPhyInfo phy, const char* name,
  * VkhDevice *
  *************/
 vkh_public
-VkhDevice           vkh_device_create   (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info);
+VkhDevice           vkh_device_create           (VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo* pDevice_info);
 vkh_public
-VkhDevice           vkh_device_import   (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
+VkhDevice           vkh_device_import           (VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev);
 vkh_public
-void                vkh_device_destroy  (VkhDevice dev);
+void                vkh_device_destroy          (VkhDevice dev);
 vkh_public
 void                vkh_device_init_debug_utils (VkhDevice dev);
 vkh_public
-VkDevice			vkh_device_get_vkdev(VkhDevice dev);
+VkDevice            vkh_device_get_vkdev        (VkhDevice dev);
 vkh_public
-VkPhysicalDevice	vkh_device_get_phy	(VkhDevice dev);
+VkPhysicalDevice    vkh_device_get_phy          (VkhDevice dev);
 /**
  * @brief Retrieve @ref VkhApp instance used to create this VkhDevice.
  * @param dev
@@ -224,7 +224,7 @@ void vkh_device_set_object_name (VkhDevice dev, VkObjectType objectType, uint64_
 
 vkh_public
 VkSampler vkh_device_create_sampler (VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
-							   VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+                                                           VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 vkh_public
 void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler);
 
@@ -233,8 +233,8 @@ void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler);
  ****************/
 vkh_public
 VkhPresenter vkh_presenter_create (VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
-								   uint32_t width, uint32_t height,
-								   VkFormat preferedFormat, VkPresentModeKHR presentMode);
+                                                                   uint32_t width, uint32_t height,
+                                                                   VkFormat preferedFormat, VkPresentModeKHR presentMode);
 vkh_public
 void        vkh_presenter_destroy (VkhPresenter r);
 vkh_public
@@ -254,29 +254,29 @@ vkh_public
 VkhImage vkh_image_import       (VkhDevice pDev, VkImage vkImg, VkFormat format, uint32_t width, uint32_t height);
 vkh_public
 VkhImage vkh_image_create       (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, VkImageTiling tiling,
-									VkhMemoryUsage memprops, VkImageUsageFlags usage);
+                                                                        VkhMemoryUsage memprops, VkImageUsageFlags usage);
 vkh_public
 VkhImage vkh_image_ms_create    (VkhDevice pDev, VkFormat format, VkSampleCountFlagBits num_samples, uint32_t width, uint32_t height,
-									VkhMemoryUsage memprops, VkImageUsageFlags usage);
+                                                                        VkhMemoryUsage memprops, VkImageUsageFlags usage);
 vkh_public
 VkhImage vkh_tex2d_array_create (VkhDevice pDev, VkFormat format, uint32_t width, uint32_t height, uint32_t layers,
-									VkhMemoryUsage memprops, VkImageUsageFlags usage);
+                                                                        VkhMemoryUsage memprops, VkImageUsageFlags usage);
 vkh_public
 void vkh_image_set_sampler      (VkhImage img, VkSampler sampler);
 vkh_public
 void vkh_image_create_descriptor(VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags, VkFilter magFilter, VkFilter minFilter,
-									VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+                                                                        VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 vkh_public
 void vkh_image_create_view      (VkhImage img, VkImageViewType viewType, VkImageAspectFlags aspectFlags);
 vkh_public
 void vkh_image_create_sampler   (VkhImage img, VkFilter magFilter, VkFilter minFilter,
-									VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
+                                                                        VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
 vkh_public
 void vkh_image_set_layout       (VkCommandBuffer cmdBuff, VkhImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
-									VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+                                                                        VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 vkh_public
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
-									VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+                                                                        VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 vkh_public
 void vkh_image_destroy_sampler  (VkhImage img);
 vkh_public
@@ -308,14 +308,14 @@ VkDescriptorImageInfo   vkh_image_get_descriptor(VkhImage img, VkImageLayout ima
  *************/
 vkh_public
 void		vkh_buffer_init		(VkhDevice pDev, VkBufferUsageFlags usage,
-									VkhMemoryUsage memprops, VkDeviceSize size, VkhBuffer buff, bool mapped);
+                                                                        VkhMemoryUsage memprops, VkDeviceSize size, VkhBuffer buff, bool mapped);
 vkh_public
 VkhBuffer   vkh_buffer_create   (VkhDevice pDev, VkBufferUsageFlags usage,
-									VkhMemoryUsage memprops, VkDeviceSize size);
+                                                                        VkhMemoryUsage memprops, VkDeviceSize size);
 vkh_public
 void        vkh_buffer_destroy  (VkhBuffer buff);
 vkh_public
-void		vkh_buffer_resize	(VkhBuffer buff, VkDeviceSize newSize);
+void		vkh_buffer_resize	(VkhBuffer buff, VkDeviceSize newSize, bool mapped);
 vkh_public
 void		vkh_buffer_reset	(VkhBuffer buff);
 vkh_public
@@ -342,10 +342,10 @@ vkh_public
 VkResult		vkh_timeline_wait			(VkhDevice dev, VkSemaphore timeline, const uint64_t wait);
 vkh_public
 void			vkh_cmd_submit_timelined	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timeline,
-												 const uint64_t wait, const uint64_t signal);
+                                                                                                 const uint64_t wait, const uint64_t signal);
 vkh_public
 void			vkh_cmd_submit_timelined2	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[2],
-												const uint64_t waits[2], const uint64_t signals[2]);
+                                                                                                const uint64_t waits[2], const uint64_t signals[2]);
 vkh_public
 VkEvent			vkh_event_create				(VkhDevice dev);
 
@@ -363,7 +363,7 @@ vkh_public
 void vkh_cmd_submit (VkhQueue queue, VkCommandBuffer *pCmdBuff, VkFence fence);
 vkh_public
 void vkh_cmd_submit_with_semaphores(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore waitSemaphore,
-									VkSemaphore signalSemaphore, VkFence fence);
+                                                                        VkSemaphore signalSemaphore, VkFence fence);
 
 vkh_public
 void vkh_cmd_label_start   (VkCommandBuffer cmd, const char* name, const float color[4]);
@@ -377,7 +377,7 @@ VkShaderModule vkh_load_module(VkDevice dev, const char* path);
 
 vkh_public
 bool        vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_properties, uint32_t typeBits,
-										VkFlags requirements_mask, uint32_t *typeIndex);
+                                                                                VkhMemoryUsage requirements_mask, uint32_t *typeIndex);
 vkh_public
 char *      read_spv(const char *filename, size_t *psize);
 vkh_public
@@ -388,10 +388,10 @@ void dumpLayerExts ();
 
 vkh_public
 void        set_image_layout(VkCommandBuffer cmdBuff, VkImage image, VkImageAspectFlags aspectMask, VkImageLayout old_image_layout,
-					  VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+                                          VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 vkh_public
 void        set_image_layout_subres(VkCommandBuffer cmdBuff, VkImage image, VkImageSubresourceRange subresourceRange, VkImageLayout old_image_layout,
-					  VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
+                                          VkImageLayout new_image_layout, VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages);
 /////////////////////
 vkh_public
 VkhQueue    vkh_queue_create    (VkhDevice dev, uint32_t familyIndex, uint32_t qIndex);

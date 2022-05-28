@@ -57,11 +57,12 @@ VkhImage _vkh_image_create (VkhDevice pDev, VkImageType imageType,
 	VmaAllocationCreateInfo allocInfo = { .usage = (VmaMemoryUsage)memprops };
 	VK_CHECK_RESULT(vmaCreateImage (pDev->allocator, pInfo, &allocInfo, &img->image, &img->alloc, &img->allocInfo));
 #else
+	VK_CHECK_RESULT(vkCreateImage(pDev->dev, pInfo, NULL, &img->image));
 	VkMemoryRequirements memReq;
 	vkGetImageMemoryRequirements(pDev->dev, img->image, &memReq);
 	VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 										  .allocationSize = memReq.size };
-	assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex));
+	vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memprops,&memAllocInfo.memoryTypeIndex);
 	VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &img->memory));
 	VK_CHECK_RESULT(vkBindImageMemory(pDev->dev, img->image, img->memory, 0));
 #endif
@@ -91,11 +92,15 @@ void vkh_image_destroy(VkhImage img)
 	if(img->sampler != VK_NULL_HANDLE)
 		vkDestroySampler (img->pDev->dev,img->sampler, NULL);
 
-	if (!img->imported)
+	if (!img->imported) {
 #ifdef VKH_USE_VMA
 		vmaDestroyImage	(img->pDev->allocator, img->image, img->alloc);
 #else
+		vkDestroyImage	(img->pDev->dev, img->image, NULL);
+		vkFreeMemory	(img->pDev->dev, img->memory, NULL);
+
 #endif
+	}
 
 
 	free(img);
