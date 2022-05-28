@@ -46,12 +46,14 @@ VkhDevice vkh_device_import (VkInstance inst, VkPhysicalDevice phy, VkDevice vkD
 	dev->instance = inst;
 
 	vkGetPhysicalDeviceMemoryProperties (phy, &dev->phyMemProps);
-
+#ifdef VKH_USE_VMA
 	VmaAllocatorCreateInfo allocatorInfo = {
 		.physicalDevice = phy,
 		.device = vkDev
 	};
 	vmaCreateAllocator(&allocatorInfo, &dev->allocator);
+#else
+#endif
 
 	return dev;
 }
@@ -94,7 +96,10 @@ void vkh_device_destroy_sampler (VkhDevice dev, VkSampler sampler) {
 	vkDestroySampler (dev->dev, sampler, NULL);
 }
 void vkh_device_destroy (VkhDevice dev) {
+#ifdef VKH_USE_VMA
 	vmaDestroyAllocator (dev->allocator);
+#else
+#endif
 	vkDestroyDevice (dev->dev, NULL);
 	free (dev);
 }

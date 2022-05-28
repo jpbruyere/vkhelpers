@@ -44,7 +44,7 @@ typedef struct _vkh_buffer_t {
 	VkDeviceMemory			memory;
 	VkDeviceSize			size;
 	VkBufferUsageFlags		usageFlags;
-	VkMemoryPropertyFlags	memprops;
+	VkhMemoryUsage			memprops;
 #endif
 	VkDescriptorBufferInfo	descriptor;
 	VkDeviceSize			alignment;
