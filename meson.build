@@ -156,7 +156,6 @@ vkh_dependencies = [vulkan_dep, threads_dep]
 
 pkg_conf = import('pkgconfig')
 
-
 vkh_src = [
     'src/vkh_app.c',
     'src/vkh_buffer.c',
@@ -166,8 +165,8 @@ vkh_src = [
     'src/vkh_presenter.c',
     'src/vkh_queue.c',
     'src/vkhelpers.c',
-    'src/deps/tinycthread.c',
-    'src/VmaUsage.cpp'
+    'src/VmaUsage.cpp',
+    'src/deps/tinycthread.c'
 ]
 
 vkh_include = [

@@ -30,7 +30,12 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
+#if __STDC_VERSION__ >= 201112L && !defined(__STDC_NO_THREADS__)
+// For platforms outside of Windows, Threads.h is provided for by compiler that supports C11 standard.
+#include <threads.h>
+#else
 #include "deps/tinycthread.h"
+#endif
 
 typedef enum VkhMemoryUsage
 {

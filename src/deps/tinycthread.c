@@ -20,7 +20,6 @@ freely, subject to the following restrictions:
     3. This notice may not be removed or altered from any source
     distribution.
 */
-
 /* 2013-01-06 Camilla Löwy <elmindreda@glfw.org>
  *
  * Added casts from time_t to DWORD to avoid warnings on VC++.
@@ -591,4 +590,3 @@ int _tthread_clock_gettime(clockid_t clk_id, struct timespec *ts)
   return 0;
 }
 #endif // _TTHREAD_EMULATE_CLOCK_GETTIME_
-
