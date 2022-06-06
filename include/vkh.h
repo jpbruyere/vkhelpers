@@ -34,69 +34,69 @@ extern "C" {
 
 typedef enum VkhMemoryUsage
 {
-        /** No intended memory usage specified.
-        Use other members of VmaAllocationCreateInfo to specify your requirements.
-        */
-        VKH_MEMORY_USAGE_UNKNOWN = 0,
-        /** Memory will be used on device only, so fast access from the device is preferred.
-        It usually means device-local GPU (video) memory.
-        No need to be mappable on host.
-        It is roughly equivalent of `D3D12_HEAP_TYPE_DEFAULT`.
+    /** No intended memory usage specified.
+    Use other members of VmaAllocationCreateInfo to specify your requirements.
+    */
+    VKH_MEMORY_USAGE_UNKNOWN = 0,
+    /** Memory will be used on device only, so fast access from the device is preferred.
+    It usually means device-local GPU (video) memory.
+    No need to be mappable on host.
+    It is roughly equivalent of `D3D12_HEAP_TYPE_DEFAULT`.
 
-        Usage:
+    Usage:
 
-        - Resources written and read by device, e.g. images used as attachments.
-        - Resources transferred from host once (immutable) or infrequently and read by
-          device multiple times, e.g. textures to be sampled, vertex buffers, uniform
-          (constant) buffers, and majority of other types of resources used on GPU.
+    - Resources written and read by device, e.g. images used as attachments.
+    - Resources transferred from host once (immutable) or infrequently and read by
+            device multiple times, e.g. textures to be sampled, vertex buffers, uniform
+            (constant) buffers, and majority of other types of resources used on GPU.
 
-        Allocation may still end up in `HOST_VISIBLE` memory on some implementations.
-        In such case, you are free to map it.
-        You can use #VMA_ALLOCATION_CREATE_MAPPED_BIT with this usage type.
-        */
-        VKH_MEMORY_USAGE_GPU_ONLY = 1,
-        /** Memory will be mappable on host.
-        It usually means CPU (system) memory.
-        Guarantees to be `HOST_VISIBLE` and `HOST_COHERENT`.
-        CPU access is typically uncached. Writes may be write-combined.
-        Resources created in this pool may still be accessible to the device, but access to them can be slow.
-        It is roughly equivalent of `D3D12_HEAP_TYPE_UPLOAD`.
+    Allocation may still end up in `HOST_VISIBLE` memory on some implementations.
+    In such case, you are free to map it.
+    You can use #VMA_ALLOCATION_CREATE_MAPPED_BIT with this usage type.
+    */
+    VKH_MEMORY_USAGE_GPU_ONLY = 1,
+    /** Memory will be mappable on host.
+    It usually means CPU (system) memory.
+    Guarantees to be `HOST_VISIBLE` and `HOST_COHERENT`.
+    CPU access is typically uncached. Writes may be write-combined.
+    Resources created in this pool may still be accessible to the device, but access to them can be slow.
+    It is roughly equivalent of `D3D12_HEAP_TYPE_UPLOAD`.
 
-        Usage: Staging copy of resources used as transfer source.
-        */
-        VKH_MEMORY_USAGE_CPU_ONLY = 2,
-        /**
-        Memory that is both mappable on host (guarantees to be `HOST_VISIBLE`) and preferably fast to access by GPU.
-        CPU access is typically uncached. Writes may be write-combined.
+    Usage: Staging copy of resources used as transfer source.
+    */
+    VKH_MEMORY_USAGE_CPU_ONLY = 2,
+    /**
+    Memory that is both mappable on host (guarantees to be `HOST_VISIBLE`) and preferably fast to access by GPU.
+    CPU access is typically uncached. Writes may be write-combined.
 
-        Usage: Resources written frequently by host (dynamic), read by device. E.g. textures, vertex buffers, uniform buffers updated every frame or every draw call.
-        */
-        VKH_MEMORY_USAGE_CPU_TO_GPU = 3,
-        /** Memory mappable on host (guarantees to be `HOST_VISIBLE`) and cached.
-        It is roughly equivalent of `D3D12_HEAP_TYPE_READBACK`.
+    Usage: Resources written frequently by host (dynamic), read by device. E.g. textures, vertex buffers, uniform buffers updated every frame or every draw call.
+    */
+    VKH_MEMORY_USAGE_CPU_TO_GPU = 3,
+    /** Memory mappable on host (guarantees to be `HOST_VISIBLE`) and cached.
+    It is roughly equivalent of `D3D12_HEAP_TYPE_READBACK`.
 
-        Usage:
+    Usage:
 
-        - Resources written by device, read by host - results of some computations, e.g. screen capture, average scene luminance for HDR tone mapping.
-        - Any resources read or accessed randomly on host, e.g. CPU-side copy of vertex buffer used as source of transfer, but also used for collision detection.
-        */
-        VKH_MEMORY_USAGE_GPU_TO_CPU = 4,
-        /** CPU memory - memory that is preferably not `DEVICE_LOCAL`, but also not guaranteed to be `HOST_VISIBLE`.
+    - Resources written by device, read by host - results of some computations, e.g. screen capture, average scene luminance for HDR tone mapping.
+    - Any resources read or accessed randomly on host, e.g. CPU-side copy of vertex buffer used as source of transfer, but also used for collision detection.
+    */
+    VKH_MEMORY_USAGE_GPU_TO_CPU = 4,
+    /** CPU memory - memory that is preferably not `DEVICE_LOCAL`, but also not guaranteed to be `HOST_VISIBLE`.
 
-        Usage: Staging copy of resources moved from GPU memory to CPU memory as part
-        of custom paging/residency mechanism, to be moved back to GPU memory when needed.
-        */
-        VKH_MEMORY_USAGE_CPU_COPY = 5,
-        /** Lazily allocated GPU memory having `VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT`.
-        Exists mostly on mobile platforms. Using it on desktop PC or other GPUs with no such memory type present will fail the allocation.
+    Usage: Staging copy of resources moved from GPU memory to CPU memory as part
+    of custom paging/residency mechanism, to be moved back to GPU memory when needed.
+    */
+    VKH_MEMORY_USAGE_CPU_COPY = 5,
+    /** Lazily allocated GPU memory having `VK_MEMORY_PROPERTY_LAZILY_ALLOCATED_BIT`.
+    Exists mostly on mobile platforms. Using it on desktop PC or other GPUs with no such memory type present will fail the allocation.
 
-        Usage: Memory for transient attachment images (color attachments, depth attachments etc.), created with `VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT`.
+    Usage: Memory for transient attachment images (color attachments, depth attachments etc.), created with `VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT`.
 
-        Allocations with this usage are always created as dedicated - it implies #VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT.
-        */
-        VKH_MEMORY_USAGE_GPU_LAZILY_ALLOCATED = 6,
+    Allocations with this usage are always created as dedicated - it implies #VMA_ALLOCATION_CREATE_DEDICATED_MEMORY_BIT.
+    */
+    VKH_MEMORY_USAGE_GPU_LAZILY_ALLOCATED = 6,
 
-        VKH_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
+    VKH_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
 } VkhMemoryUsage;
 
 #include <stdlib.h>
@@ -113,29 +113,31 @@ typedef enum VkhMemoryUsage
 #define VKH_MO      0x00100000
 #define VKH_GO      0x40000000
 
-#define VK_CHECK_RESULT(f) 										\
-{													\
-        VkResult res = (f);										\
-        if (res != VK_SUCCESS)										\
-        {												\
-                fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
-                assert(res == VK_SUCCESS);								\
-        }												\
+#define VK_CHECK_RESULT(f)                                                                      \
+{                                                                                               \
+    VkResult res = (f);                                                                         \
+    if (res != VK_SUCCESS)                                                                      \
+    {                                                                                           \
+        fprintf(stderr, "Fatal : VkResult is %d in %s at line %d\n", res,  __FILE__, __LINE__); \
+        assert(res == VK_SUCCESS);                                                              \
+    }                                                                                           \
 }
 #ifndef vkh_public
-        #ifdef VKH_SHARED_BUILD
-                #if (defined(_WIN32) || defined(_WIN64))
-                        #define vkh_public __declspec(dllimport)
-                #else
-                        #define vkh_public __attribute__((visibility("default")))
-                #endif
+    #ifdef VKH_SHARED_BUILD
+        #if (defined(_WIN32) || defined(_WIN64))
+            #define vkh_public __declspec(dllexport)
         #else
-                #define vkh_public
+            #define vkh_public __attribute__((visibility("default")))
         #endif
+    #elif (VKH_SHARED_LINKING && (defined(_WIN32) || defined(_WIN64)))
+        #define vkh_public __declspec(dllimport)
+    #else
+        #define vkh_public
+    #endif
 #endif
 
-typedef struct _vkh_app_t*		VkhApp;
-typedef struct _vkh_phy_t*		VkhPhyInfo;
+typedef struct _vkh_app_t*      VkhApp;
+typedef struct _vkh_phy_t*      VkhPhyInfo;
 typedef struct _vkh_device_t*   VkhDevice;
 typedef struct _vkh_image_t*    VkhImage;
 typedef struct _vkh_buffer_t*   VkhBuffer;
@@ -159,11 +161,11 @@ vkh_public
 void                vkh_app_free_phyinfos   (uint32_t count, VkhPhyInfo* infos);
 vkh_public
 void                vkh_app_enable_debug_messenger (VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
-                                                                                                        VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
-                                                                                                        PFN_vkDebugUtilsMessengerCallbackEXT callback);
+                                                                VkDebugUtilsMessageSeverityFlagsEXT severityFlags,
+                                                                PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 vkh_public
-VkPhysicalDeviceProperties          vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
+VkPhysicalDeviceProperties vkh_app_get_phy_properties (VkhApp app, uint32_t phyIndex);
 
 /*************
  * VkhPhy    *
