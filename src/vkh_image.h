@@ -28,6 +28,7 @@ extern "C" {
 
 #include "vkh.h"
 #include "vk_mem_alloc.h"
+#include "deps/tinycthread.h"
 
 typedef struct _vkh_image_t {
 	VkhDevice				pDev;

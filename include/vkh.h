@@ -30,8 +30,6 @@ extern "C" {
 
 #include <vulkan/vulkan.h>
 
-#include "deps/tinycthread.h"
-
 typedef enum VkhMemoryUsage
 {
     /** No intended memory usage specified.
