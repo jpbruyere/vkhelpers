@@ -6,7 +6,7 @@ OPTION(VKH_USE_VMA "enable Vulkan Memory Allocator" ON)
 SET(LANG "C")
 SET(CMAKE_${LANG}_STANDARD 11)
 
-PROJECT(vkh VERSION 0.1.0 DESCRIPTION "Vulkan helpers library")# LANGUAGES ${LANG})
+PROJECT(vkh VERSION 0.1.0 DESCRIPTION "Vulkan helpers library" LANGUAGES ${LANG})
 
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -63,15 +63,18 @@ FUNCTION (setup_lib LibName)
             C_STANDARD 11
             C_EXTENSIONS OFF
             PUBLIC_HEADER include/vkh.h
+			LINKER_LANGUAGE C
     )
     TARGET_INCLUDE_DIRECTORIES("${LibName}"
         PRIVATE
             ${CMAKE_CURRENT_SOURCE_DIR}/src
         PUBLIC
             ${CMAKE_CURRENT_SOURCE_DIR}/include
-            ${Vulkan_INCLUDE_DIRS}
+			${Vulkan_INCLUDE_DIRS}
     )
     TARGET_LINK_LIBRARIES("${LibName}"
+		PRIVATE
+			libVMA
         PUBLIC
             ${Vulkan_LIBRARIES}
             Threads::Threads
@@ -88,18 +91,17 @@ GET_DIRECTORY_PROPERTY (vkh_has_root_project PARENT_DIRECTORY)
 if (VKH_USE_VMA)
     ADD_DEFINITIONS (-DVKH_USE_VMA)
     SET(VKH_USE_VMA ON PARENT_SCOPE)
-    ADD_LIBRARY(libVMA OBJECT src/VmaUsage.cpp)
+	ADD_LIBRARY(libVMA STATIC src/vma/VmaUsage.cpp)
     SET_TARGET_PROPERTIES(
         libVMA PROPERTIES
             POSITION_INDEPENDENT_CODE ON
-            LINKER_LANGUAGE CXX
+			LINKER_LANGUAGE C
     )
     TARGET_INCLUDE_DIRECTORIES(libVMA
         PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/include
+			${CMAKE_CURRENT_SOURCE_DIR}/src/vma
             ${Vulkan_INCLUDE_DIRS}
     )
-    LIST (APPEND VKH_SRC $<TARGET_OBJECTS:libVMA>)
 ENDIF()
 
 IF (vkh_has_root_project)

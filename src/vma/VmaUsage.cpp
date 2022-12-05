@@ -5,5 +5,5 @@ vk_mem_alloc.h to include definitions of its internal implementation
 #pragma warning(push)
 #pragma warning(disable:4100;disable:4127;disable:4324)
 #define VMA_IMPLEMENTATION
-#include "vk_mem_alloc.h"
+#include "../vk_mem_alloc.h"
 #pragma warning(pop)
