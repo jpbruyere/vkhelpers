@@ -286,7 +286,6 @@ bool vkh_memory_type_from_properties(VkPhysicalDeviceMemoryProperties* memory_pr
 				return true;
 			}
 		}
-		typeBits >>= 1;
 	}
 	// No memory types matched, return failure
 	return false;
