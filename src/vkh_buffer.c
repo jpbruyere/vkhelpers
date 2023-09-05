@@ -28,7 +28,7 @@ void _set_size_and_bind(VkhDevice pDev, VkBufferUsageFlags usage, VkhMemoryUsage
 	vkGetBufferMemoryRequirements(pDev->dev, buff->buffer, &memReq);
 	VkMemoryAllocateInfo memAllocInfo = { .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 										  .allocationSize = memReq.size };
-	vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memoryUsage, &memAllocInfo.memoryTypeIndex);
+	assert(vkh_memory_type_from_properties(&pDev->phyMemProps, memReq.memoryTypeBits, memoryUsage, &memAllocInfo.memoryTypeIndex) == true);
 	VK_CHECK_RESULT(vkAllocateMemory(pDev->dev, &memAllocInfo, NULL, &buff->memory));
 
 	buff->alignment = memReq.alignment;
