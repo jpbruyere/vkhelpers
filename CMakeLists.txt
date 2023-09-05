@@ -72,9 +72,13 @@ FUNCTION (setup_lib LibName)
             ${CMAKE_CURRENT_SOURCE_DIR}/include
 			${Vulkan_INCLUDE_DIRS}
     )
+	if (VKH_USE_VMA)
+		TARGET_LINK_LIBRARIES("${LibName}"
+			PRIVATE
+				libVMA
+		)
+	ENDIF()
     TARGET_LINK_LIBRARIES("${LibName}"
-		PRIVATE
-			libVMA
         PUBLIC
             ${Vulkan_LIBRARIES}
             Threads::Threads

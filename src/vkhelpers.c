@@ -395,6 +395,7 @@ void vkh_instance_extensions_check_init () {
 }
 void vkh_instance_extensions_check_release () {
     free (instExtProps);
+    instExtCount = 0;
 }
 
 static VkLayerProperties* instLayerProps;
@@ -413,4 +414,5 @@ void vkh_layers_check_init () {
 }
 void vkh_layers_check_release () {
     free (instLayerProps);
+    instance_layer_count = 0;
 }

@@ -220,7 +220,7 @@ void vkh_image_set_layout(VkCommandBuffer cmdBuff, VkhImage image, VkImageAspect
 	VkImageSubresourceRange subres = {aspectMask,0,1,0,1};
 	vkh_image_set_layout_subres(cmdBuff, image, subres, old_image_layout, new_image_layout, src_stages, dest_stages);
 }
-
+// This method is based on https://github.com/SaschaWillems/Vulkan/blob/master/base/VulkanTools.h#L88
 void vkh_image_set_layout_subres(VkCommandBuffer cmdBuff, VkhImage image, VkImageSubresourceRange subresourceRange,
 							 VkImageLayout old_image_layout, VkImageLayout new_image_layout,
 							 VkPipelineStageFlags src_stages, VkPipelineStageFlags dest_stages) {
