@@ -336,6 +336,8 @@ vkh_public
 VkFence         vkh_fence_create_signaled	(VkhDevice dev);
 vkh_public
 VkSemaphore     vkh_semaphore_create		(VkhDevice dev);
+
+#ifdef VK_VERSION_1_2
 vkh_public
 VkSemaphore		vkh_timeline_create			(VkhDevice dev, uint64_t initialValue);
 vkh_public
@@ -346,6 +348,8 @@ void			vkh_cmd_submit_timelined	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSe
 vkh_public
 void			vkh_cmd_submit_timelined2	(VkhQueue queue, VkCommandBuffer *pCmdBuff, VkSemaphore timelines[2],
                                                                                                 const uint64_t waits[2], const uint64_t signals[2]);
+#endif
+
 vkh_public
 VkEvent			vkh_event_create				(VkhDevice dev);
 
