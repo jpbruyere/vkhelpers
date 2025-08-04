@@ -40,7 +40,7 @@ typedef struct _vkh_device_t {
 #ifdef VKH_USE_VMA
     VmaAllocator allocator;
 #endif
-    VkhApp vkhApplication;
+    VkhApp   vkhApplication;
     VkResult status;
 } vkh_device_t;
 

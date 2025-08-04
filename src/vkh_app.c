@@ -25,7 +25,7 @@
 #define ENGINE_VERSION 1
 uint32_t vkh_log_level = VKH_LOG_DEBUG;
 
-//default debug messenger callback enabled with 'vkh_app_enable_debug_messenger'
+// default debug messenger callback enabled with 'vkh_app_enable_debug_messenger'
 VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
                                      VkDebugUtilsMessageTypeFlagsEXT             messageTypes,
                                      const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData, void *pUserData) {
@@ -65,7 +65,8 @@ VkhApp vkh_app_create(uint32_t version_major, uint32_t version_minor, const char
                       const char **enabledLayers, uint32_t ext_count, const char *extentions[]) {
     uint32_t apiVersion;
     vkEnumerateInstanceVersion(&apiVersion);
-    LOG(VKH_LOG_INFO, "VkhApp create: instance api version = %d.%d", VK_API_VERSION_MAJOR(apiVersion), VK_API_VERSION_MINOR(apiVersion));
+    LOG(VKH_LOG_INFO, "VkhApp create: instance api version = %d.%d", VK_API_VERSION_MAJOR(apiVersion),
+        VK_API_VERSION_MINOR(apiVersion));
 
     VkhApp app = (VkhApp)malloc(sizeof(vkh_app_t));
     if (!app) {
@@ -91,7 +92,8 @@ VkhApp vkh_app_create(uint32_t version_major, uint32_t version_minor, const char
                                       .enabledLayerCount       = enabledLayersCount,
                                       .ppEnabledLayerNames     = enabledLayers};
 
-    VKH_CHECK_RESULT(app->status, vkCreateInstance(&inst_info, NULL, &app->inst));
+    //VKH_CHECK_RESULT(app->status, vkCreateInstance(&inst_info, NULL, &app->inst));
+    app->status = vkCreateInstance(&inst_info, NULL, &app->inst);
     app->infos          = infos;
     app->debugMessenger = VK_NULL_HANDLE;
     return app;
@@ -106,7 +108,7 @@ void vkh_app_destroy(VkhApp app) {
     vkDestroyInstance(app->inst, NULL);
     free(app);
 }
-VkResult vkh_app_status(VkhApp app) { return app==NULL ? VK_ERROR_UNKNOWN : app->status; }
+VkResult vkh_app_status(VkhApp app) { return app == NULL ? VK_ERROR_UNKNOWN : app->status; }
 
 VkInstance vkh_app_get_inst(VkhApp app) { return vkh_app_status(app) ? VK_NULL_HANDLE : app->inst; }
 

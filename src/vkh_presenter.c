@@ -48,7 +48,7 @@ VkhPresenter vkh_presenter_create(VkhDevice dev, uint32_t presentQueueFamIdx, Vk
     r->height  = height;
     vkGetDeviceQueue(r->dev->dev, r->qFam, 0, &r->queue);
 
-    r->cmdPool        = vkh_cmd_pool_create(r->dev, presentQueueFamIdx, 0);
+    r->cmdPool = vkh_cmd_pool_create(r->dev, presentQueueFamIdx, VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);
     r->semaPresentEnd = vkh_semaphore_create(r->dev);
     r->semaDrawEnd    = vkh_semaphore_create(r->dev);
     r->fenceDraw      = vkh_fence_create_signaled(r->dev);

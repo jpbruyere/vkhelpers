@@ -250,7 +250,7 @@ typedef struct {
     CRITICAL_SECTION mWaitersCountLock; /* Serialize access to mWaitersCount. */
 } cnd_t;
 #else
-typedef pthread_cond_t  cnd_t;
+typedef pthread_cond_t cnd_t;
 #endif
 
 /** Create a condition variable object.
@@ -315,7 +315,7 @@ int cnd_timedwait(cnd_t *cond, mtx_t *mtx, const struct timespec *ts);
 #if defined(_TTHREAD_WIN32_)
 typedef HANDLE thrd_t;
 #else
-typedef pthread_t       thrd_t;
+typedef pthread_t thrd_t;
 #endif
 
 /** Thread start function.
@@ -396,7 +396,7 @@ void thrd_yield(void);
 #if defined(_TTHREAD_WIN32_)
 typedef DWORD tss_t;
 #else
-typedef pthread_key_t   tss_t;
+typedef pthread_key_t tss_t;
 #endif
 
 /** Destructor function for a thread-specific storage.

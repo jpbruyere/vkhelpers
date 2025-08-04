@@ -130,11 +130,10 @@ typedef enum VkhMemoryUsage {
 #endif
 #endif
 
-
-#define VKH_LOG_ERR        0x00000001
-#define VKH_LOG_DEBUG      0x00000002
-#define VKH_LOG_INFO       0x00000004
-#define VKH_LOG_FULL       0xffffffff
+#define VKH_LOG_ERR   0x00000001
+#define VKH_LOG_DEBUG 0x00000002
+#define VKH_LOG_INFO  0x00000004
+#define VKH_LOG_FULL  0xffffffff
 
 #ifdef DEBUG
 extern uint32_t vkh_log_level;
@@ -144,7 +143,7 @@ extern uint32_t vkh_log_level;
 #ifdef DEBUG
 #define LOG(level, ...)                                                                                                \
     {                                                                                                                  \
-        if ((vkh_log_level) & (level))                                                                                \
+        if ((vkh_log_level) & (level))                                                                                 \
             fprintf(stdout, __VA_ARGS__);                                                                              \
     }
 #else
@@ -156,20 +155,19 @@ extern uint32_t vkh_log_level;
     {                                                                                                                  \
         VkResult res = (f);                                                                                            \
         if (res != VK_SUCCESS) {                                                                                       \
-            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", res, __FILE__, __LINE__);                     \
+            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", res, __FILE__, __LINE__);                    \
             assert(res == VK_SUCCESS);                                                                                 \
         }                                                                                                              \
     }
 
 #define VKH_CHECK_RESULT(status, f)                                                                                    \
     {                                                                                                                  \
-        status = (f);                                                                                            \
-        if (status != VK_SUCCESS) {                                                                                       \
-            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", status, __FILE__, __LINE__);                     \
-            assert(status == VK_SUCCESS);                                                                                 \
+        status = (f);                                                                                                  \
+        if (status != VK_SUCCESS) {                                                                                    \
+            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", status, __FILE__, __LINE__);                 \
+            assert(status == VK_SUCCESS);                                                                              \
         }                                                                                                              \
     }
-
 
 typedef struct _vkh_app_t       *VkhApp;
 typedef struct _vkh_phy_t       *VkhPhyInfo;
@@ -182,16 +180,16 @@ typedef struct _vkh_presenter_t *VkhPresenter;
 /*************
  * VkhApp    *
  *************/
-vkh_public VkhApp     vkh_app_create(uint32_t version_major, uint32_t version_minor, const char *app_name,
-                                     uint32_t enabledLayersCount, const char **enabledLayers, uint32_t ext_count,
-                                     const char *extentions[]);
-vkh_public void       vkh_app_destroy(VkhApp app);
+vkh_public VkhApp vkh_app_create(uint32_t version_major, uint32_t version_minor, const char *app_name,
+                                 uint32_t enabledLayersCount, const char **enabledLayers, uint32_t ext_count,
+                                 const char *extentions[]);
+vkh_public void   vkh_app_destroy(VkhApp app);
 /**
  * @brief Get current status of vkh application
  * @param app
  * @return VkResult
  */
-vkh_public VkResult   vkh_app_status (VkhApp app);
+vkh_public VkResult   vkh_app_status(VkhApp app);
 vkh_public VkInstance vkh_app_get_inst(VkhApp app);
 // VkPhysicalDevice    vkh_app_select_phy  (VkhApp app, VkPhysicalDeviceType preferedPhyType);
 vkh_public VkhPhyInfo *vkh_app_get_phyinfos(VkhApp app, uint32_t *count, VkSurfaceKHR surface);
@@ -203,9 +201,9 @@ vkh_public void        vkh_app_free_phyinfos(uint32_t count, VkhPhyInfo *infos);
  * @param Message severity flags.
  * @param optional message callback, if null a default one which print to stdout is configured.
  */
-vkh_public void        vkh_app_enable_debug_messenger(VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
-                                                      VkDebugUtilsMessageSeverityFlagsEXT  severityFlags,
-                                                      PFN_vkDebugUtilsMessengerCallbackEXT callback);
+vkh_public void vkh_app_enable_debug_messenger(VkhApp app, VkDebugUtilsMessageTypeFlagsEXT typeFlags,
+                                               VkDebugUtilsMessageSeverityFlagsEXT  severityFlags,
+                                               PFN_vkDebugUtilsMessengerCallbackEXT callback);
 
 vkh_public VkPhysicalDeviceProperties vkh_app_get_phy_properties(VkhApp app, uint32_t phyIndex);
 
@@ -256,7 +254,7 @@ vkh_public void vkh_device_set_object_name(VkhDevice dev, VkObjectType objectTyp
 
 vkh_public VkSampler vkh_device_create_sampler(VkhDevice dev, VkFilter magFilter, VkFilter minFilter,
                                                VkSamplerMipmapMode mipmapMode, VkSamplerAddressMode addressMode);
-vkh_public void vkh_device_destroy_sampler(VkhDevice dev, VkSampler sampler);
+vkh_public void      vkh_device_destroy_sampler(VkhDevice dev, VkSampler sampler);
 
 /****************
  * VkhPresenter *
@@ -264,9 +262,9 @@ vkh_public void vkh_device_destroy_sampler(VkhDevice dev, VkSampler sampler);
 vkh_public VkhPresenter vkh_presenter_create(VkhDevice dev, uint32_t presentQueueFamIdx, VkSurfaceKHR surface,
                                              uint32_t width, uint32_t height, VkFormat preferedFormat,
                                              VkPresentModeKHR presentMode);
-vkh_public void vkh_presenter_destroy(VkhPresenter r);
-vkh_public bool vkh_presenter_draw(VkhPresenter r);
-vkh_public bool vkh_presenter_acquireNextImage(VkhPresenter r, VkFence fence, VkSemaphore semaphore);
+vkh_public void         vkh_presenter_destroy(VkhPresenter r);
+vkh_public bool         vkh_presenter_draw(VkhPresenter r);
+vkh_public bool         vkh_presenter_acquireNextImage(VkhPresenter r, VkFence fence, VkSemaphore semaphore);
 vkh_public void vkh_presenter_build_blit_cmd(VkhPresenter r, VkImage blitSource, uint32_t width, uint32_t height);
 vkh_public void vkh_presenter_create_swapchain(VkhPresenter r);
 vkh_public void vkh_presenter_get_size(VkhPresenter r, uint32_t *pWidth, uint32_t *pHeight);

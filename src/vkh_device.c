@@ -53,7 +53,7 @@ VkhDevice vkh_device_import(VkInstance inst, VkPhysicalDevice phy, VkDevice vkDe
 
     return dev;
 }
-VkResult         vkh_device_status(VkhDevice dev) { return dev==NULL ? VK_ERROR_UNKNOWN : dev->status; }
+VkResult         vkh_device_status(VkhDevice dev) { return dev == NULL ? VK_ERROR_UNKNOWN : dev->status; }
 VkDevice         vkh_device_get_vkdev(VkhDevice dev) { return vkh_device_status(dev) ? VK_NULL_HANDLE : dev->dev; }
 VkPhysicalDevice vkh_device_get_phy(VkhDevice dev) { return vkh_device_status(dev) ? VK_NULL_HANDLE : dev->phy; }
 VkhApp           vkh_device_get_app(VkhDevice dev) { return vkh_device_status(dev) ? NULL : dev->vkhApplication; }
