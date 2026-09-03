@@ -22,6 +22,10 @@
 #include "vkh_phyinfo.h"
 #include "vkh_app.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
 VkhPhyInfo vkh_phyinfo_create(VkPhysicalDevice phy, VkSurfaceKHR surface) {
     VkhPhyInfo pi = (vkh_phy_t *)calloc(1, sizeof(vkh_phy_t));
     pi->phy       = phy;

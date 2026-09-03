@@ -22,7 +22,9 @@
 #include "vkh_device.h"
 #include "vkh_phyinfo.h"
 #include "vkh_app.h"
-#include "string.h"
+
+#include <stdlib.h>
+#include <string.h>
 
 static PFN_vkSetDebugUtilsObjectNameEXT   SetDebugUtilsObjectNameEXT;
 static PFN_vkQueueBeginDebugUtilsLabelEXT QueueBeginDebugUtilsLabelEXT;

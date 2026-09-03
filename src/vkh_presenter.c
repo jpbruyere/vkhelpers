@@ -22,6 +22,9 @@
 #include "vkh_presenter.h"
 #include "vkh_device.h"
 #include "vkh_image.h"
+#include "vkh_app.h"
+
+#include <stdlib.h>
 
 #ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))

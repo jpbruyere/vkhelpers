@@ -22,11 +22,30 @@
 #ifndef VKH_APP_H
 #define VKH_APP_H
 
+#include "vkh.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include "vkh.h"
+#include <assert.h>
+#define VK_CHECK_RESULT(f)                                                                                             \
+{                                                                                                                  \
+    VkResult res = (f);                                                                                            \
+    if (res != VK_SUCCESS) {                                                                                       \
+        LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", res, __FILE__, __LINE__);                    \
+        assert(res == VK_SUCCESS);                                                                                 \
+    }                                                                                                              \
+}
+
+#define VKH_CHECK_RESULT(status, f)                                                                                    \
+{                                                                                                                  \
+    status = (f);                                                                                                  \
+    if (status != VK_SUCCESS) {                                                                                    \
+        LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", status, __FILE__, __LINE__);                 \
+        assert(status == VK_SUCCESS);                                                                              \
+    }                                                                                                              \
+}
 
 // console colors for debug output on stdout with debug utils or debug report
 #ifdef __unix__

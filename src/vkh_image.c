@@ -21,6 +21,9 @@
  */
 #include "vkh_image.h"
 #include "vkh_device.h"
+#include "vkh_app.h"
+
+#include <stdlib.h>
 
 VkhImage _vkh_image_create(VkhDevice pDev, VkImageType imageType, VkFormat format, uint32_t width, uint32_t height,
                            VkhMemoryUsage memprops, VkImageUsageFlags usage, VkSampleCountFlagBits samples,

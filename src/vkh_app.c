@@ -19,11 +19,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdarg.h>
+
 #include "vkh_app.h"
 
 #define ENGINE_NAME    "vkhelpers"
 #define ENGINE_VERSION 1
 uint32_t vkh_log_level = VKH_LOG_DEBUG;
+
+void _vkh_log(uint32_t log_level, const char* format, ...) {
+    if ((vkh_log_level) & (log_level)) {
+        va_list args;
+        va_start(args, format);
+        vfprintf(stdout, format, args);
+        va_end(args);
+        fprintf(stdout, "\n");
+        fflush(stdout);
+    }
+}
 
 // default debug messenger callback enabled with 'vkh_app_enable_debug_messenger'
 VkBool32 debugUtilsMessengerCallback(VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,

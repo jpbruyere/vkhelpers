@@ -21,7 +21,9 @@
  */
 #include "vkh_queue.h"
 #include "vkh_device.h"
-#include "vkh_phyinfo.h"
+//#include "vkh_phyinfo.h"
+
+#include <stdlib.h>
 
 VkhQueue _init_queue(VkhDevice dev) {
     VkhQueue q = (vkh_queue_t *)calloc(1, sizeof(vkh_queue_t));

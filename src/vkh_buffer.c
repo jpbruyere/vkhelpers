@@ -21,6 +21,9 @@
  */
 #include "vkh_buffer.h"
 #include "vkh_device.h"
+#include "vkh_app.h"
+
+#include <stdlib.h>
 
 #ifndef VKH_USE_VMA
 void _set_size_and_bind(VkhDevice pDev, VkBufferUsageFlags usage, VkhMemoryUsage memoryUsage, VkDeviceSize size,
@@ -54,8 +57,7 @@ void vkh_buffer_init(VkhDevice pDev, VkBufferUsageFlags usage, VkhMemoryUsage me
     buff->allocCreateInfo.usage = (VmaMemoryUsage)memprops;
     if (mapped)
         buff->allocCreateInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT;
-    VK_CHECK_RESULT(
-        vmaCreateBuffer(pDev->allocator, pInfo, &buff->allocCreateInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
+    VK_CHECK_RESULT(vmaCreateBuffer(pDev->allocator, pInfo, &buff->allocCreateInfo, &buff->buffer, &buff->alloc, &buff->allocInfo));
 #else
     VK_CHECK_RESULT(vkCreateBuffer(pDev->dev, pInfo, NULL, &buff->buffer));
     _set_size_and_bind(pDev, usage, memprops, size, buff);

@@ -21,6 +21,12 @@
  */
 #include "vkh_queue.h"
 #include "vkh_device.h"
+#include "vkh_app.h"
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 
 #define CHECK_BIT(var, pos) (((var) >> (pos)) & 1)
 

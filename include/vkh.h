@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018-2022 Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
+ * Copyright (c) 2018-2026 Jean-Philippe Bruyère <jp_bruyere@hotmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,13 +22,32 @@
 #ifndef VK_HELPERS_H
 #define VK_HELPERS_H
 
+#include <stdint.h>
+#include <stddef.h>
+
+#include <vulkan/vulkan.h>
+
+#ifndef vkh_public
+#ifdef VKH_SHARED_BUILD
+#if (defined(_WIN32) || defined(__CYGWIN__))
+#define vkh_public __declspec(dllexport)
+#else
+#define vkh_public __attribute__((visibility("default")))
+#endif
+#elif (VKH_SHARED_LINKING && (defined(_WIN32) || defined(__CYGWIN__)))
+#define vkh_public __declspec(dllimport)
+#else
+#define vkh_public
+#endif
+#endif
+
 #ifdef __cplusplus
 extern "C" {
+#else
+#include <stdbool.h>
 #endif
 
 #define _CRT_SECURE_NO_WARNINGS
-
-#include <vulkan/vulkan.h>
 
 typedef enum VkhMemoryUsage {
     /** No intended memory usage specified.
@@ -102,33 +121,9 @@ typedef enum VkhMemoryUsage {
     VKH_MEMORY_USAGE_MAX_ENUM = 0x7FFFFFFF
 } VkhMemoryUsage;
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <assert.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
-
-#define _USE_MATH_DEFINES // to have M_PI* defined with MSVC
-#include <math.h>
-
 #define VKH_KO 0x00000400
 #define VKH_MO 0x00100000
 #define VKH_GO 0x40000000
-
-#ifndef vkh_public
-#ifdef VKH_SHARED_BUILD
-#if (defined(_WIN32) || defined(_WIN64))
-#define vkh_public __declspec(dllexport)
-#else
-#define vkh_public __attribute__((visibility("default")))
-#endif
-#elif (VKH_SHARED_LINKING && (defined(_WIN32) || defined(_WIN64)))
-#define vkh_public __declspec(dllimport)
-#else
-#define vkh_public
-#endif
-#endif
 
 #define VKH_LOG_ERR   0x00000001
 #define VKH_LOG_DEBUG 0x00000002
@@ -139,35 +134,15 @@ typedef enum VkhMemoryUsage {
 extern uint32_t vkh_log_level;
 #endif
 
+void _vkh_log(uint32_t log_level, const char * format, ...);
+
 #ifndef LOG
 #ifdef DEBUG
-#define LOG(level, ...)                                                                                                \
-    {                                                                                                                  \
-        if ((vkh_log_level) & (level))                                                                                 \
-            fprintf(stdout, __VA_ARGS__);                                                                              \
-    }
+#define LOG(level, fmt, ...) _vkh_log(level, fmt, ##__VA_ARGS__)
 #else
-#define LOG
+#define LOG(...) ((void)0)
 #endif
 #endif
-
-#define VK_CHECK_RESULT(f)                                                                                             \
-    {                                                                                                                  \
-        VkResult res = (f);                                                                                            \
-        if (res != VK_SUCCESS) {                                                                                       \
-            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", res, __FILE__, __LINE__);                    \
-            assert(res == VK_SUCCESS);                                                                                 \
-        }                                                                                                              \
-    }
-
-#define VKH_CHECK_RESULT(status, f)                                                                                    \
-    {                                                                                                                  \
-        status = (f);                                                                                                  \
-        if (status != VK_SUCCESS) {                                                                                    \
-            LOG(VKH_LOG_ERR, "Fatal : VkResult is %d in %s at line %d\n", status, __FILE__, __LINE__);                 \
-            assert(status == VK_SUCCESS);                                                                              \
-        }                                                                                                              \
-    }
 
 typedef struct _vkh_app_t       *VkhApp;
 typedef struct _vkh_phy_t       *VkhPhyInfo;
