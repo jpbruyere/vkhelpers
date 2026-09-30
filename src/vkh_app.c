@@ -35,7 +35,7 @@ void _vkh_log(uint32_t log_level, const char* format, ...) {
         va_start(args, format);
         vfprintf(stdout, format, args);
         va_end(args);
-        fprintf(stdout, "\n");
+        //fprintf(stdout, "\n");
         fflush(stdout);
     }
 }

@@ -84,6 +84,9 @@ bool vkh_presenter_acquireNextImage(VkhPresenter r, VkFence fence, VkSemaphore s
 }
 
 bool vkh_presenter_draw(VkhPresenter r) {
+    vkWaitForFences(r->dev->dev, 1, &r->fenceDraw, VK_TRUE, FENCE_TIMEOUT);
+    vkResetFences(r->dev->dev, 1, &r->fenceDraw);
+
     if (!vkh_presenter_acquireNextImage(r, VK_NULL_HANDLE, r->semaPresentEnd)) {
         vkh_presenter_create_swapchain(r);
         return false;
@@ -98,9 +101,6 @@ bool vkh_presenter_draw(VkhPresenter r) {
                                          .pWaitSemaphores      = &r->semaPresentEnd,
                                          .pWaitDstStageMask    = &dstStageMask,
                                          .pCommandBuffers      = &r->cmdBuffs[r->currentScBufferIndex]};
-
-    vkWaitForFences(r->dev->dev, 1, &r->fenceDraw, VK_TRUE, FENCE_TIMEOUT);
-    vkResetFences(r->dev->dev, 1, &r->fenceDraw);
 
     VK_CHECK_RESULT(vkQueueSubmit(r->queue, 1, &submit_info, r->fenceDraw));
 
