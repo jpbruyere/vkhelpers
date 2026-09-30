@@ -79,29 +79,29 @@ endif
 if (get_option('VMA_DEBUG_ALIGNMENT') != 1)
     vkh_compile_options += '-DVMA_DEBUG_ALIGNMENT=' + get_option(
         'VMA_DEBUG_ALIGNMENT',
-    )
+    ).to_string()
 endif
 
 if (get_option('VMA_DEBUG_MARGIN') != 0)
-    vkh_compile_options += '-DVMA_DEBUG_MARGIN=' + get_option('VMA_DEBUG_MARGIN')
+    vkh_compile_options += '-DVMA_DEBUG_MARGIN=' + get_option('VMA_DEBUG_MARGIN').to_string()
 endif
 
 if (get_option('VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY') != 1)
     vkh_compile_options += '-DVMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY=' + get_option(
         'VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY',
-    )
+    ).to_string()
 endif
 
 if (get_option('VMA_SMALL_HEAP_MAX_SIZE') != 1073741824)  # 1 Gigabyte
     vkh_compile_options += '-DVMA_SMALL_HEAP_MAX_SIZE=' + get_option(
         'VMA_SMALL_HEAP_MAX_SIZE',
-    )
+    ).to_string()
 endif
 
 if (get_option('VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE') != 268435456)  # 256 Megabytes
     vkh_compile_options += '-DVMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE=' + get_option(
         'VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE',
-    )
+    ).to_string()
 endif
 
 # vkh dependencies
