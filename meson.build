@@ -7,7 +7,6 @@ project(
     'c',
     'cpp',
     version: '0.3.0',
-    meson_version: '>=0.62.0',
     default_options: ['c_std=c11', 'cpp_std=c++11'],
 )
 
@@ -41,7 +40,6 @@ endif
 if (get_option('ENABLE_VALIDATION_OPT'))
     vkh_compile_options += '-DVKH_USE_VALIDATION'
 endif
-
 
 # VMA Options Define Flags
 if (get_option('VMA_RECORDING_ENABLED'))
@@ -92,13 +90,15 @@ if (get_option('VMA_DEBUG_MIN_BUFFER_IMAGE_GRANULARITY') != 1)
     ).to_string()
 endif
 
-if (get_option('VMA_SMALL_HEAP_MAX_SIZE') != 1073741824)  # 1 Gigabyte
+if (get_option('VMA_SMALL_HEAP_MAX_SIZE') != 1073741824)
+    # 1 Gigabyte
     vkh_compile_options += '-DVMA_SMALL_HEAP_MAX_SIZE=' + get_option(
         'VMA_SMALL_HEAP_MAX_SIZE',
     ).to_string()
 endif
 
-if (get_option('VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE') != 268435456)  # 256 Megabytes
+if (get_option('VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE') != 268435456)
+    # 256 Megabytes
     vkh_compile_options += '-DVMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE=' + get_option(
         'VMA_DEFAULT_LARGE_HEAP_BLOCK_SIZE',
     ).to_string()
@@ -110,7 +110,6 @@ threads_dep = dependency('threads')
 vkh_dependencies = [vulkan_dep, threads_dep]
 
 pkg_conf = import('pkgconfig')
-
 
 vkh_src = [
     'src/vkh_app.c',
