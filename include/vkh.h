@@ -130,9 +130,7 @@ typedef enum VkhMemoryUsage {
 #define VKH_LOG_INFO  0x00000004
 #define VKH_LOG_FULL  0xffffffff
 
-#ifdef DEBUG
 extern uint32_t vkh_log_level;
-#endif
 
 void _vkh_log(uint32_t log_level, const char * format, ...);
 
