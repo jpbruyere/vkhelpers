@@ -33,15 +33,15 @@ extern "C" {
 #endif
 
 typedef struct _vkh_device_t {
+    VkResult                         status;
     VkDevice                         dev;
-    VkPhysicalDeviceMemoryProperties phyMemProps;
     VkPhysicalDevice                 phy;
     VkInstance                       instance;
+    VkPhysicalDeviceMemoryProperties phyMemProps;
 #ifdef VKH_USE_VMA
     VmaAllocator allocator;
 #endif
     VkhApp   vkhApplication;
-    VkResult status;
 } vkh_device_t;
 
 #ifdef __cplusplus

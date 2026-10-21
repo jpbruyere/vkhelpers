@@ -48,8 +48,10 @@ VkhDevice vkh_device_import(VkInstance inst, VkPhysicalDevice phy, VkDevice vkDe
 
     vkGetPhysicalDeviceMemoryProperties(phy, &dev->phyMemProps);
 #ifdef VKH_USE_VMA
-    VmaAllocatorCreateInfo allocatorInfo = {.physicalDevice = phy, .device = vkDev};
-    vmaCreateAllocator(&allocatorInfo, &dev->allocator);
+    if (!dev->allocator) {
+        VmaAllocatorCreateInfo allocatorInfo = {.physicalDevice = phy, .device = vkDev};
+        vmaCreateAllocator(&allocatorInfo, &dev->allocator);
+    }
 #else
 #endif
 
