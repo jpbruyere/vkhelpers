@@ -38,6 +38,7 @@ VkhDevice vkh_device_create(VkhApp app, VkhPhyInfo phyInfo, VkDeviceCreateInfo *
     VK_CHECK_RESULT(vkCreateDevice(phyInfo->phy, pDevice_info, NULL, &dev));
     VkhDevice vkhd       = vkh_device_import(app->inst, phyInfo->phy, dev);
     vkhd->vkhApplication = app;
+    vkhd->imported = false;
     return vkhd;
 }
 VkhDevice vkh_device_import(VkInstance inst, VkPhysicalDevice phy, VkDevice vkDev) {
@@ -45,16 +46,14 @@ VkhDevice vkh_device_import(VkInstance inst, VkPhysicalDevice phy, VkDevice vkDe
     dev->dev      = vkDev;
     dev->phy      = phy;
     dev->instance = inst;
+    dev->imported = true;
 
     vkGetPhysicalDeviceMemoryProperties(phy, &dev->phyMemProps);
 #ifdef VKH_USE_VMA
-    if (!dev->allocator) {
-        VmaAllocatorCreateInfo allocatorInfo = {.physicalDevice = phy, .device = vkDev};
-        vmaCreateAllocator(&allocatorInfo, &dev->allocator);
-    }
+    VmaAllocatorCreateInfo allocatorInfo = {.physicalDevice = phy, .device = vkDev};
+    vmaCreateAllocator(&allocatorInfo, &dev->allocator);
 #else
 #endif
-
     return dev;
 }
 VkResult         vkh_device_status(VkhDevice dev) { return dev == NULL ? VK_ERROR_UNKNOWN : dev->status; }
@@ -99,7 +98,8 @@ void vkh_device_destroy(VkhDevice dev) {
     vmaDestroyAllocator(dev->allocator);
 #else
 #endif
-    vkDestroyDevice(dev->dev, NULL);
+    if (!dev->imported)
+        vkDestroyDevice(dev->dev, NULL);
     free(dev);
 }
 
