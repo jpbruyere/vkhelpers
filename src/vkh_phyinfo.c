@@ -100,6 +100,7 @@ void vkh_phyinfo_destroy(VkhPhyInfo phy) {
 
 VkPhysicalDeviceProperties       vkh_phyinfo_get_properties(VkhPhyInfo phy) { return phy->properties; }
 VkPhysicalDeviceMemoryProperties vkh_phyinfo_get_memory_properties(VkhPhyInfo phy) { return phy->memProps; }
+VkPhysicalDevice                 vkh_phyinfo_get_phy(VkhPhyInfo phy) { return phy->phy; }
 
 void vkh_phyinfo_get_queue_fam_indices(VkhPhyInfo phy, int *pQueue, int *gQueue, int *tQueue, int *cQueue) {
     if (pQueue)

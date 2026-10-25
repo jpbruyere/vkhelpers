@@ -188,6 +188,7 @@ vkh_public void       vkh_phyinfo_destroy(VkhPhyInfo phy);
 
 vkh_public VkPhysicalDeviceProperties       vkh_phyinfo_get_properties(VkhPhyInfo phy);
 vkh_public VkPhysicalDeviceMemoryProperties vkh_phyinfo_get_memory_properties(VkhPhyInfo phy);
+vkh_public VkPhysicalDevice                 vkh_phyinfo_get_phy(VkhPhyInfo phy);
 
 vkh_public void vkh_phyinfo_get_queue_fam_indices(VkhPhyInfo phy, int *pQueue, int *gQueue, int *tQueue, int *cQueue);
 vkh_public VkQueueFamilyProperties *vkh_phyinfo_get_queues_props(VkhPhyInfo phy, uint32_t *qCount);
