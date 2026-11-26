@@ -75,6 +75,13 @@ VkhImage _vkh_image_create(VkhDevice pDev, VkImageType imageType, VkFormat forma
 
     return img;
 }
+VkImageFormatProperties vkh_image_get_format_props(VkhImage img) {
+    VkImageFormatProperties imgProps;
+    VK_CHECK_RESULT(vkGetPhysicalDeviceImageFormatProperties(img->pDev->phy,
+         img->infos.format, img->infos.imageType, img->infos.tiling, img->infos.usage,
+         img->infos.flags, &imgProps));
+    return imgProps;
+}
 void vkh_image_destroy(VkhImage img) {
     if (img == NULL)
         return;

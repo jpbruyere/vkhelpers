@@ -130,7 +130,7 @@ typedef enum VkhMemoryUsage {
 #define VKH_LOG_INFO  0x00000004
 #define VKH_LOG_FULL  0xffffffff
 
-extern uint32_t vkh_log_level;
+vkh_public extern uint32_t vkh_log_level;
 
 void _vkh_log(uint32_t log_level, const char * format, ...);
 
@@ -275,6 +275,7 @@ vkh_public void    *vkh_image_map(VkhImage img);
 vkh_public void     vkh_image_unmap(VkhImage img);
 vkh_public void     vkh_image_set_name(VkhImage img, const char *name);
 vkh_public uint64_t vkh_image_get_stride(VkhImage img);
+vkh_public VkImageFormatProperties vkh_image_get_format_props(VkhImage img);
 
 vkh_public VkImage               vkh_image_get_vkimage(VkhImage img);
 vkh_public VkImageView           vkh_image_get_view(VkhImage img);
