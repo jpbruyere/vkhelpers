@@ -70,8 +70,7 @@ VkhImage _vkh_image_create(VkhDevice pDev, VkImageType imageType, VkFormat forma
     VK_CHECK_RESULT(vkBindImageMemory(pDev->dev, img->image, img->memory, 0));
 #endif
 
-    mtx_init(&img->mutex, mtx_plain);
-    img->references = 1;
+    atomic_init(&img->references, 1);
 
     return img;
 }
@@ -86,15 +85,8 @@ void vkh_image_destroy(VkhImage img) {
     if (img == NULL)
         return;
 
-    mtx_lock(&img->mutex);
-    img->references--;
-    if (img->references > 0) {
-        mtx_unlock(&img->mutex);
+    if (atomic_fetch_sub_explicit(&img->references, 1, memory_order_acq_rel) != 1)
         return;
-    }
-
-    mtx_unlock(&img->mutex);
-    mtx_destroy(&img->mutex);
 
     if (img->view != VK_NULL_HANDLE)
         vkDestroyImageView(img->pDev->dev, img->view, NULL);
@@ -115,9 +107,7 @@ void vkh_image_destroy(VkhImage img) {
     img = NULL;
 }
 void vkh_image_reference(VkhImage img) {
-    mtx_lock(&img->mutex);
-    img->references++;
-    mtx_unlock(&img->mutex);
+    atomic_fetch_add_explicit(&img->references, 1, memory_order_relaxed);
 }
 VkResult vkh_image_status(VkhImage img) { return img == NULL ? VK_ERROR_UNKNOWN : img->status; }
 
@@ -147,9 +137,8 @@ VkhImage vkh_image_import(VkhDevice pDev, VkImage vkImg, VkFormat format, uint32
     pInfo->mipLevels         = 1;
     pInfo->arrayLayers       = 1;
     // pInfo->samples		= samples;
-    img->references = 1;
 
-    mtx_init(&img->mutex, mtx_plain);
+    atomic_init(&img->references, 1);
 
     return img;
 }

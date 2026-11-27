@@ -28,7 +28,7 @@ extern "C" {
 
 #include "vkh.h"
 #include "vk_mem_alloc.h"
-#include "deps/tinycthread.h"
+#include "stdatomic.h"
 
 typedef struct _vkh_image_t {
     VkResult          status;
@@ -39,15 +39,13 @@ typedef struct _vkh_image_t {
     VmaAllocation     alloc;
     VmaAllocationInfo allocInfo;
 #else
-    VkDeviceMemory memory;
+    VkDeviceMemory    memory;
 #endif
-    VkSampler     sampler;
-    VkImageView   view;
-    VkImageLayout layout;   // current layout
-    bool          imported; // dont destroy vkimage at end
-
-    uint32_t references;
-    mtx_t    mutex;
+    VkSampler         sampler;
+    VkImageView       view;
+    VkImageLayout     layout;   // current layout
+    bool              imported; // dont destroy vkimage at end
+    atomic_int        references;
 } vkh_image_t;
 
 #ifdef __cplusplus
